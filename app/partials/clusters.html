@@ -1,0 +1,59 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8 col-md-12">
+            <div class="page-header page-header-bleed-right">
+                <div class="actions pull-right">
+                    <a href="#"><span class="pficon pficon-refresh"></span> Refresh Results</a>
+                </div>
+                <h1>Clusters</h1>
+            </div>
+            <div class="row" ng-controller="GetStatusCtrl">
+                <div class="col-sm-6">
+                    <div>
+                        <button ng-click="click()">Make REST API call</button>
+                        {{ details }}
+                    </div>
+                    <table class="table">
+                        <tr>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Master</th>
+                        </tr>
+                        <tr ng-repeat="entry in details">
+                            <td><a ng-href="#/clusters/{{entry.Id}}">{{entry.Name}}</a></td>
+                            <td>{{entry.Status}}</td>
+                            <td>{{entry.Master}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <hr/>
+            <div class="row">
+                <div class="col-sm-6">
+                    <table class="table">
+                        <tr>
+                            <th>Status</th>
+                            <th>Application Data</th>
+                            <th>Workers</th>
+                        </tr>
+                        <tr>
+                            <td><span class="label label-success">Active</span></td>
+                            <td><strong>Fusce leo massa</strong><br>Created April 21, 2016 09:34:36 AM</td>
+                            <td><span class="label label-default">11</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="label label-danger">Error</span></td>
+                            <td><strong>Iaculis at dapibus eget</strong><br>Created April 02, 2016 08:34:36 AM</td>
+                            <td><span class="label label-default">9</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="label label-default">Stopped</span></td>
+                            <td><strong>Dapibus nec metus</strong><br>Created April 3, 2016 03:34:36 AM</td>
+                            <td><span class="label label-default">25</span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div><!-- /col -->
+    </div><!-- /row -->
+</div><!-- /container -->

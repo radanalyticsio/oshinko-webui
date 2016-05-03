@@ -1,0 +1,25 @@
+{
+  "Clusters": [
+    {
+      "Id": "000001",
+      "Name": "fakeclustername1",
+      "Status": "Active",
+      "Master": "172.10.0.1"
+
+    },
+    {
+      "Id": "000002",
+      "Name": "fakeclustername2",
+      "Status": "Stopped",
+      "Master": "172.10.0.12"
+
+    },
+    {
+      "Id": "0000003",
+      "Name": "fakeclustername3",
+      "Status": "Scaling",
+      "Master": "172.10.0.31"
+
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8 col-md-12">
+            <div class="page-header page-header-bleed-right">
+                <div class="actions pull-right">
+                    <a href="#"><span class="pficon pficon-refresh"></span> Refresh Results</a>
+                </div>
+                <h1>Cluster Detail</h1>
+            </div>
+            <div class="row" ng-controller="ClusterDetailCtrl">
+                <div class="col-sm-6">
+                    <div>
+                        <button ng-click="click()">Make REST API call</button>
+                        {{ details }}
+                    </div>
+                    <table class="table">
+                        <tr>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Master</th>
+                        </tr>
+                        <tr ng-repeat="entry in details">
+                            <td><a ng-href="#/clusters/{{entry.Id}}">{{entry.Name}}</a></td>
+                            <td>{{entry.Status}}</td>
+                            <td>{{entry.Master}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <hr/>
+        </div><!-- /col -->
+    </div><!-- /row -->
+</div><!-- /container -->
