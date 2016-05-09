@@ -1,0 +1,13 @@
+<div class="modal-header">
+    <h3 class="modal-title">Scale cluster {{cluster_name}}</h3>
+</div>
+<div class="modal-body">
+    <form>
+        <label for="numworkers" id="numworkers">Number of workers</label>
+        <input name="numworkers" value="{{worker_count}}"/>
+        </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="ok()">Scale</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>

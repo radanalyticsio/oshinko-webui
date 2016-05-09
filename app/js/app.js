@@ -1,15 +1,16 @@
 'use strict';
 
 
-// Declare app level module which depends on filters, and services
-angular.module('Oshinko', [
-  'ngRoute',
-  'Oshinko.filters',
-  'Oshinko.services',
-  'Oshinko.directives',
-  'Oshinko.controllers'
-]).
-config(['$routeProvider', function($routeProvider) {
+var app = angular.module('Oshinko', [
+    'ngRoute',
+    'Oshinko.filters',
+    'Oshinko.services',
+    'Oshinko.directives',
+    'Oshinko.controllers',
+    'Oshinko.factories'
+    ]);
+
+app.config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/clusters/:Id',
       {templateUrl: 'partials/cluster-detail.html',
        controller: 'ClusterDetailCtrl',
@@ -23,4 +24,5 @@ config(['$routeProvider', function($routeProvider) {
        controller: 'AboutCtrl',
        activetab: 'about'});
   $routeProvider.otherwise({redirectTo: '/clusters'});
+
 }]);

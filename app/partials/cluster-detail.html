@@ -5,26 +5,40 @@
                 <div class="actions pull-right">
                     <a href="#"><span class="pficon pficon-refresh"></span> Refresh Results</a>
                 </div>
-                <h1>Cluster Detail</h1>
+                <h1>Cluster Details</h1>
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">Actions
+                        <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">Restart</a>
+                            <a href="#">Stop</a>
+                            <a href="#">Scale</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div class="row" ng-controller="ClusterDetailCtrl">
                 <div class="col-sm-6">
+                    <ul>
+                        <li>Name: {{cluster_details.name}}</li>
+                        <li>Status: {{cluster_details.status}}</li>
+                        <li>Created: {{cluster_details.created}}</li>
+                        <li>Updated: {{cluster_details.updated}}</li>
+                        <li>Notes: {{cluster_details.notes}}</li>
+                        <li>Tags: {{cluster_details.tags}}</li>
+                        <li>GUID: {{cluster_details.guid}}</li>
+                        <li>Master address: {{cluster_details.master_address}}</li>
+                        <li>Workers count: {{cluster_details.worker_addresses.length}}
+                        <li>Worker addresses: {{cluster_details.master_address}}</li>
+                            <ul>
+                                <li ng-repeat="worker in cluster_details.worker_addresses">{{worker.ip_address}}</li>
+                            </ul>
+                        </li>
+                    </ul>
                     <div>
-                        <button ng-click="click()">Make REST API call</button>
-                        {{ details }}
+                        <button ng-click="reloadDetails()">Make REST API call</button>
                     </div>
-                    <table class="table">
-                        <tr>
-                            <th>Name</th>
-                            <th>Status</th>
-                            <th>Master</th>
-                        </tr>
-                        <tr ng-repeat="entry in details">
-                            <td><a ng-href="#/clusters/{{entry.Id}}">{{entry.Name}}</a></td>
-                            <td>{{entry.Status}}</td>
-                            <td>{{entry.Master}}</td>
-                        </tr>
-                    </table>
                 </div>
             </div>
             <hr/>

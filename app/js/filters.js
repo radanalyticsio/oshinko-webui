@@ -1,9 +1,8 @@
 'use strict';
 
-/* Filters */
+var module = angular.module('Oshinko.filters', []);
 
-angular.module('Oshinko.filters', []).
-  filter('interpolate', ['version', function(version) {
+module.filter('interpolate', ['version', function(version) {
     return function(text) {
       return String(text).replace(/\%VERSION\%/mg, version);
     }

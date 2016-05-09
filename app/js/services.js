@@ -1,9 +1,5 @@
 'use strict';
 
-/* Services */
+var module = angular.module('Oshinko.services', []);
 
-
-// Demonstrate how to register services
-// In this case it is a simple value service.
-angular.module('Oshinko.services', []).
-  value('version', '0.1');
+module.value('version', '0.1');
