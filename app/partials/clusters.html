@@ -2,10 +2,13 @@
     <div class="row">
         <div class="col-sm-8 col-md-12">
             <div class="page-header page-header-bleed-right">
-                <div class="actions pull-right">
-                    <a><span class="pficon pficon-refresh" ng-click="reloadClick()">Refresh Results</span></a>
+                <div ng-controller="NewClusterCtrl" class="pull-right">
+                    <button class="btn" ng-click="openNewCluster()">Start a new cluster</button>
                 </div>
                 <h1>Clusters</h1>
+            </div>
+            <div class="pull-right">
+                <pf-notification-list></pf-notification-list>
             </div>
             <div class="row">
                 <div class="col-sm-6">
@@ -31,13 +34,13 @@
                             </td>
                             <td>{{entry.master_address}}</td>
                             <td>
-                                <div class="dropdown" ng-controller="ModalDemoCtrl">
+                                <div class="dropdown" ng-controller="ModalCtrl">
                                     <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">Actions
                                         <span class="caret"></span></button>
                                     <ul class="dropdown-menu">
                                         <li>
                                             <a href="#" ng-click="open('', 'startform.html', 'StartModalInstanceCtrl')">Restart</a>
-                                            <a href="#" ng-click="open('', 'stopform.html', 'StopModalInstanceCtrl')">Stop</a>
+                                            <a href="#" ng-click="open('', 'stopform.html', 'StopModalInstanceCtrl')">Delete</a>
                                             <a href="#" ng-click="open('', 'scaleform.html', 'ScaleModalInstanceCtrl')">Scale</a>
                                             <a href="#/clusters/{{entry.id}}">View details</a>
                                         </li>

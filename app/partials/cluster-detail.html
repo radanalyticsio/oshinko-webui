@@ -2,42 +2,44 @@
     <div class="row">
         <div class="col-sm-8 col-md-12">
             <div class="page-header page-header-bleed-right">
-                <div class="actions pull-right">
-                    <a href="#"><span class="pficon pficon-refresh"></span> Refresh Results</a>
+                <div class="pull-right">
+                    <pf-notification-list></pf-notification-list>
                 </div>
                 <h1>Cluster Details</h1>
+            </div>
+            <!--<div ng-repeat="entry in cluster_details">-->
+            <div>
                 <div class="dropdown">
                     <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">Actions
                         <span class="caret"></span></button>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu" ng-controller="DetailsModalCtrl">
+                    <!--<ul class="dropdown-menu">-->
                         <li>
-                            <a href="#">Restart</a>
-                            <a href="#">Stop</a>
-                            <a href="#">Scale</a>
+                            <a href="javascript:void(0);" ng-click="open('', 'startform.html', 'StartModalInstanceCtrl')">Restart</a>
+                            <a href="javascript:void(0);" ng-click="open('', 'stopform.html', 'StopModalInstanceCtrl')">Stop</a>
+                            <a href="javascript:void(0);" ng-click="open('', 'scaleform.html', 'ScaleModalInstanceCtrl')">Scale</a>
                         </li>
                     </ul>
                 </div>
-            </div>
-            <div class="row" ng-controller="ClusterDetailCtrl">
-                <div class="col-sm-6">
-                    <ul>
-                        <li>Name: {{cluster_details.name}}</li>
-                        <li>Status: {{cluster_details.status}}</li>
-                        <li>Created: {{cluster_details.created}}</li>
-                        <li>Updated: {{cluster_details.updated}}</li>
-                        <li>Notes: {{cluster_details.notes}}</li>
-                        <li>Tags: {{cluster_details.tags}}</li>
-                        <li>GUID: {{cluster_details.guid}}</li>
-                        <li>Master address: {{cluster_details.master_address}}</li>
-                        <li>Workers count: {{cluster_details.worker_addresses.length}}
-                        <li>Worker addresses: {{cluster_details.master_address}}</li>
-                            <ul>
-                                <li ng-repeat="worker in cluster_details.worker_addresses">{{worker.ip_address}}</li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <div>
-                        <button ng-click="reloadDetails()">Make REST API call</button>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <ul>
+                            <li>Name: {{cluster_details.name}}</li>
+                            <li>Status: {{cluster_details.status}}</li>
+                            <li>Created: {{cluster_details.created}}</li>
+                            <li>Updated: {{cluster_details.updated}}</li>
+                            <li>Notes: {{cluster_details.notes}}</li>
+                            <li>Tags: {{cluster_details.tags}}</li>
+                            <li>Annotations: {{cluster_details.annotations}}</li>
+                            <li>GUID: {{cluster_details.guid}}</li>
+                            <li>Master address: {{cluster_details.master_address}}</li>
+                            <li>Workers count: {{cluster_details.worker_addresses.length}}
+                            <li>Worker addresses: {{cluster_details.master_address}}</li>
+                                <ul>
+                                    <li ng-repeat="worker in cluster_details.worker_addresses">{{worker.ip_address}}</li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

@@ -4,8 +4,8 @@
 <div class="modal-body">
     <form>
         <label for="numworkers" id="numworkers">Number of workers</label>
-        <input name="numworkers" value="{{worker_count}}"/>
-        </form>
+        <input name="numworkers" type="number" min="1" value="{{worker_count}}"/>
+    </form>
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" type="button" ng-click="ok()">Scale</button>

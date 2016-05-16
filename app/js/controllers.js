@@ -1,60 +1,66 @@
 'use strict';
 
-var module = angular.module('Oshinko.controllers', ['ngAnimate','ui.bootstrap']);
+var module = angular.module('Oshinko.controllers', ['ngAnimate', 'ui.bootstrap', 'patternfly.notification']);
 
-module.controller('ClusterCtrl', function($scope, $interval, clusterDataFactory) {
-      $scope.predicate = 'name';
-      $scope.reverse = false;
+module.controller('ClusterCtrl', function ($scope, $interval, clusterDataFactory, sendNotifications) {
+    $scope.predicate = 'name';
+    $scope.reverse = false;
 
-      $scope.order = function(predicate) {
+    $scope.order = function (predicate) {
         $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
         $scope.predicate = predicate;
-      };
-
-      $scope.reloadClick = function() {
-        clusterDataFactory.getClusters()
-            .then(function(response) {
-              $scope.details = response.data;
-            }, function(error) {
-              console.log("Unable to fetch data");
-            });
-      };
-
-      $interval(function() {
-        $scope.reloadClick();
-      }.bind(this), 10000);
-      $scope.reloadClick();
-  });
-
-module.controller('AboutCtrl', ['$scope', '$route', function($scope, $route) {
-
-  }]);
-
-module.controller('NavCtrl', function($scope, $location) {
-    $scope.isActive = function(route) {
-      $scope.path = $location.path();
-      return $location.path() === route;
     };
-  });
 
-module.controller('ClusterDetailCtrl', function($scope, $route, $interval, clusterDataFactory) {
-    $scope.cluster_id = $route.current.params.Id;
-    $scope.reloadDetails = function() {
-      clusterDataFactory.getCluster($scope.cluster_id)
-          .then(function(response) {
-            $scope.cluster_details = response.data[Math.floor(Math.random() * response.data.length)];
-          }, function(error) {
-            console.log("Unable to fetch data");
-          });
-      };
+    $scope.reloadClusters = function () {
+        clusterDataFactory.getClusters()
+            .then(function (response) {
+                $scope.details = response.data;
+                sendNotifications.notify("Success", "Cluster information updated");
+            }, function (error) {
+                sendNotifications.notify("Error", "Unable to fetch data");
+            });
+    };
 
-      // $interval(function() {
-      //   $scope.reloadDetails();
-      // }.bind(this), 5000);
-      $scope.reloadDetails();
+    var intervalPromise;
+    intervalPromise = $interval(function () {
+        $scope.reloadClusters();
+    }.bind(this), 10000);
+
+    // do not continuously update when this page isn't displayed
+    $scope.$on('$destroy', function () {
+        if (intervalPromise)
+            $interval.cancel(intervalPromise);
+    });
+
+    $scope.reloadClusters();
 });
 
-module.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
+module.controller('AboutCtrl', ['$scope', '$route', function ($scope, $route) {
+
+}]);
+
+module.controller('NavCtrl', function ($scope, $location) {
+    $scope.isActive = function (route) {
+        $scope.path = $location.path();
+        return $location.path() === route;
+    };
+});
+
+module.controller('ClusterDetailCtrl', function ($scope, $route, clusterDataFactory) {
+    $scope.cluster_details = {};
+    $scope.cluster_id = $route.current.params.Id;
+    $scope.reloadDetails = function () {
+        clusterDataFactory.getCluster($scope.cluster_id)
+            .then(function (response) {
+                $scope.cluster_details = response.data[Math.floor(Math.random() * response.data.length)];
+            }, function (error) {
+                console.log("Unable to fetch data");
+            });
+    };
+    $scope.reloadDetails();
+});
+
+module.controller('ModalCtrl', function ($scope, $uibModal, $log, sendNotifications) {
     $scope.cluster = {
         "id": $scope.entry.id,
         "name": $scope.entry.name,
@@ -75,8 +81,68 @@ module.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
             }
         });
 
-        modalInstance.result.then(function (selectedItem) {
-            $scope.selected = selectedItem;
+        modalInstance.result.then(function (result) {
+            sendNotifications.notify("Success", "Test message");
+        }, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+    };
+
+    $scope.toggleAnimation = function () {
+        $scope.animationsEnabled = !$scope.animationsEnabled;
+    };
+});
+
+module.controller('DetailsModalCtrl', function ($scope, $uibModal, $log, sendNotifications) {
+    $scope.animationsEnabled = true;
+    $scope.open = function (size, template, ctrl) {
+
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: '/forms/' + template,
+            controller: ctrl,
+            size: size,
+            resolve: {
+                cluster: function () {
+                    return {
+                        "id": $scope.cluster_details.id,
+                        "name": $scope.cluster_details.name,
+                        "worker_count": $scope.cluster_details.worker_addresses.length
+                    }
+                }
+            }
+        });
+
+        modalInstance.result.then(function (result) {
+            sendNotifications.notify("Success", "Test message");
+        }, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+    };
+
+    $scope.toggleAnimation = function () {
+        $scope.animationsEnabled = !$scope.animationsEnabled;
+    };
+});
+
+module.controller('NewClusterCtrl', function ($scope, $uibModal, $log, sendNotifications) {
+    $scope.animationsEnabled = true;
+    $scope.openNewCluster = function () {
+
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: '/forms/newform.html',
+            controller: 'NewModalInstanceCtrl',
+            size: 'lg',
+            resolve: {
+                cluster: function () {
+                    return $scope.cluster;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (result) {
+            sendNotifications.notify("Success", "Test message");
         }, function () {
             $log.info('Modal dismissed at: ' + new Date());
         });
@@ -91,31 +157,30 @@ module.controller('StartModalInstanceCtrl', function ($scope, $uibModalInstance,
 
     $scope.cluster_id = cluster.id;
     $scope.cluster_name = cluster.name;
+    $scope.cluster = cluster;
 
     $scope.ok = function () {
-        alert("Here's where I'd restart cluster: " + $scope.cluster_id);
         $uibModalInstance.close($scope.cluster);
         clusterDataFactory.getCluster($scope.cluster_id);
     };
 
     $scope.cancel = function () {
-        alert("Not gonna do it");
         $uibModalInstance.dismiss('cancel');
     };
 });
 
-module.controller('StopModalInstanceCtrl', function ($scope, $uibModalInstance, cluster) {
+module.controller('StopModalInstanceCtrl', function ($scope, $uibModalInstance, cluster, clusterDataFactory) {
 
     $scope.cluster_id = cluster.id;
     $scope.cluster_name = cluster.name;
+    $scope.cluster = cluster;
 
     $scope.ok = function () {
-        alert("Here's where I'd stop cluster: " + $scope.cluster_id);
+        clusterDataFactory.deleteCluster($scope.cluster_id);
         $uibModalInstance.close($scope.cluster);
     };
 
     $scope.cancel = function () {
-        alert("Not gonna stop it");
         $uibModalInstance.dismiss('cancel');
     };
 });
@@ -125,15 +190,25 @@ module.controller('ScaleModalInstanceCtrl', function ($scope, $uibModalInstance,
     $scope.cluster_id = cluster.id;
     $scope.cluster_name = cluster.name;
     $scope.worker_count = cluster.worker_count;
+    $scope.cluster = cluster;
 
     $scope.ok = function () {
-        alert("Here's where I'd scale cluster: " + $scope.cluster_id);
-
         $uibModalInstance.close($scope.cluster);
     };
 
     $scope.cancel = function () {
-        alert("Not gonna scale it");
+        $uibModalInstance.dismiss('cancel');
+    };
+});
+
+module.controller('NewModalInstanceCtrl', function ($scope, $uibModalInstance, clusterDataFactory) {
+
+    $scope.ok = function () {
+        $uibModalInstance.close($scope.cluster);
+        clusterDataFactory.getCluster($scope.cluster_id);
+    };
+
+    $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
 });
