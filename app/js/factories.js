@@ -2,8 +2,8 @@
 
 var module = angular.module('Oshinko.factories', ['ui.bootstrap', 'patternfly.notification']);
 
-module.factory('clusterDataFactory', function ($http, sendNotifications) {
-    var urlBase = 'http://10.16.40.63/';
+module.factory('clusterDataFactory', function ($rootScope, $http, sendNotifications) {
+    var urlBase = $rootScope.oshinko_rest_location;
     var dataFactory = {};
 
     dataFactory.getClusters = function () {
@@ -11,7 +11,7 @@ module.factory('clusterDataFactory', function ($http, sendNotifications) {
     };
 
     dataFactory.getCluster = function (id) {
-        return $http.get(urlBase + 'details.html?cluster_id=' + id);
+        return $http.get(urlBase + 'details.html?cluster_id=' + id + "&" + Date.now());
     };
 
     dataFactory.deleteCluster = function (id) {
@@ -48,7 +48,7 @@ module.factory('sendNotifications', function (Notifications) {
         'Info': Notifications.info,
         'Success': Notifications.success,
         'Warning': Notifications.warn,
-        'Danger': Notifications.error
+        'Error': Notifications.error
     };
 
     notificationFactory.notify = function (type, message) {
@@ -56,3 +56,50 @@ module.factory('sendNotifications', function (Notifications) {
     };
     return notificationFactory;
 });
+
+module.factory('OshinkoAuthService',
+    ['$http', '$cookieStore', '$rootScope', '$timeout',
+        function ($http, $cookieStore, $rootScope, $timeout) {
+            var service = {};
+
+            service.Login = function (username, password, callback) {
+
+                $timeout(function () {
+                    var response = {success: username != '' && password != ''};
+                    if (!response.success) {
+                        response.message = 'Username or password is incorrect';
+                    }
+                    callback(response);
+                }, 1000);
+
+
+                //$http.post('/actualauth endpoint', { login data })
+                //    .success(function (response) {
+                //        callback(response);
+                //    });
+
+            };
+
+            service.SetCredentials = function (username, password) {
+                var authdata = btoa(username + ':' + password);
+
+                $rootScope.globals = {
+                    currentUser: {
+                        username: username,
+                        authdata: authdata
+                    }
+                };
+
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata;
+                $cookieStore.put('globals', $rootScope.globals);
+            };
+
+            service.ClearCredentials = function () {
+                $rootScope.globals = {};
+                $cookieStore.remove('globals');
+                $http.defaults.headers.common.Authorization = 'Basic ';
+            };
+
+            return service;
+        }]);
+

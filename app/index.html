@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Spark Cluster Management</title>
-    <!--<link rel="stylesheet" href="/css/app.css"/>-->
+    <link rel="stylesheet" href="/css/app.css"/>
     <link rel="stylesheet" href="/bower_components/patternfly/dist/css/patternfly.min.css">
     <link rel="stylesheet" href="/bower_components/patternfly/dist/css/patternfly-additions.min.css">
     <link rel="stylesheet" href="/bower_components/angular-patternfly/dist/styles/angular-patternfly.min.css">
@@ -11,6 +11,7 @@
     <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="/bower_components/patternfly/dist/js/patternfly.min.js"></script>
     <script src="/bower_components/angular/angular.js"></script>
+    <script src="/bower_components/angular-cookies/angular-cookies.js"></script>
     <script src="/bower_components/angular-patternfly/dist/angular-patternfly.min.js"></script>
     <script src="/bower_components/angular-route/angular-route.js"></script>
     <script src="/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
@@ -35,17 +36,14 @@
     </div>
     <div class="collapse navbar-collapse navbar-collapse-1">
         <ul class="nav navbar-nav navbar-utility">
-            <li>
-                <a href="#">Status</a>
-            </li>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
                     <span class="pficon pficon-user"></span>
-                    Joe User <b class="caret"></b>
+                    {{globals.currentUser.username || 'Not logged in'}} <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="#">Account management</a>
+                        <a ng-click="logout()">Log out</a>
                     </li>
                 </ul>
             </li>

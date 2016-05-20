@@ -28,3 +28,12 @@
   content: "";
   padding: 0;
 }
+
+.login-pf {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  position: absolute;
+  top: 40px;
+  width: 100%;
+  padding-top:30px;
+}

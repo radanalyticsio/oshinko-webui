@@ -39,10 +39,14 @@ module.controller('AboutCtrl', ['$scope', '$route', function ($scope, $route) {
 
 }]);
 
-module.controller('NavCtrl', function ($scope, $location) {
+module.controller('NavCtrl', function ($rootScope, $scope, $location, OshinkoAuthService) {
     $scope.isActive = function (route) {
         $scope.path = $location.path();
         return $location.path() === route;
+    };
+    $scope.logout = function () {
+        OshinkoAuthService.ClearCredentials();
+        $location.path('/login');
     };
 });
 
@@ -212,3 +216,23 @@ module.controller('NewModalInstanceCtrl', function ($scope, $uibModalInstance, c
         $uibModalInstance.dismiss('cancel');
     };
 });
+
+
+module.controller('LoginController',
+    ['$scope', '$rootScope', '$location', 'OshinkoAuthService',
+        function ($scope, $rootScope, $location, OshinkoAuthService) {
+            OshinkoAuthService.ClearCredentials();
+            $scope.login = function () {
+                $scope.dataLoading = true;
+                OshinkoAuthService.Login($scope.username, $scope.password, function(response) {
+                    OshinkoAuthService.ClearCredentials();
+                    if(response.success) {
+                        OshinkoAuthService.SetCredentials($scope.username, $scope.password);
+                        $location.path('/clusters');
+                    } else {
+                        $scope.error = response.message;
+                        $scope.dataLoading = false;
+                    }
+                });
+            };
+        }]);
