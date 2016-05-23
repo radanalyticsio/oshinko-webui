@@ -58,8 +58,8 @@ module.factory('sendNotifications', function (Notifications) {
 });
 
 module.factory('OshinkoAuthService',
-    ['$http', '$cookieStore', '$rootScope', '$timeout',
-        function ($http, $cookieStore, $rootScope, $timeout) {
+    ['$http', '$cookies', '$rootScope', '$timeout',
+        function ($http, $cookies, $rootScope, $timeout) {
             var service = {};
 
             service.Login = function (username, password, callback) {
@@ -90,13 +90,16 @@ module.factory('OshinkoAuthService',
                     }
                 };
 
+                var now = new Date();
+                var expireDate = new Date(now.setDate(now.getDate() + 1));
+                // var expireDate = new Date(now.setTime(now.getTime() + (30 * 1000))); //expire cookie in 30 sec
                 $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata;
-                $cookieStore.put('globals', $rootScope.globals);
+                $cookies.putObject('daikoncookie', $rootScope.globals, {'expires': expireDate});
             };
 
             service.ClearCredentials = function () {
                 $rootScope.globals = {};
-                $cookieStore.remove('globals');
+                $cookies.remove('daikoncookie');
                 $http.defaults.headers.common.Authorization = 'Basic ';
             };
 

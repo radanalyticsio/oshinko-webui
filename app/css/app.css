@@ -37,3 +37,8 @@
   width: 100%;
   padding-top:30px;
 }
+
+.login-pf .details {
+    border-left: 1px solid #474747;
+    padding-left: 40px;
+}

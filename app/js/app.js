@@ -30,34 +30,26 @@ app.config(['$routeProvider', function ($routeProvider) {
             controller: 'ClusterCtrl',
             activetab: 'clusters'
         });
-    $routeProvider.when('/about',
-        {
-            templateUrl: 'partials/about.html',
-            controller: 'AboutCtrl',
-            activetab: 'about'
-        });
     $routeProvider.when('/login',
         {
-            templateUrl: 'login.html',
+            templateUrl: 'partials/login.html',
             controller: 'LoginController',
             activetab: ''
         });
-
     $routeProvider.otherwise({redirectTo: '/login'});
-
 }]);
 
-app.run(['$rootScope', '$location', '$cookieStore', '$http',
-    function ($rootScope, $location, $cookieStore, $http) {
+app.run(['$rootScope', '$location', '$cookies', '$http',
+    function ($rootScope, $location, $cookies, $http) {
         // keep user logged in after page refresh
-        $rootScope.globals = $cookieStore.get('globals') || {};
+        $rootScope.globals = $cookies.getObject('daikoncookie') || {};
         if ($rootScope.globals.currentUser) {
             $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
         }
 
         $rootScope.$on('$locationChangeStart', function (event, next, current) {
             // redirect to login page if not logged in
-            if ($location.path() !== '/login' && !$rootScope.globals.currentUser) {
+            if ($location.path() !== '/login' && !$cookies.getObject('daikoncookie')) {
                 $location.path('/login');
             }
         });

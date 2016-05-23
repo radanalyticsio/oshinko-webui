@@ -24,7 +24,7 @@
                                 <a ng-click="order('master_address')">Master</a></th>
                             <th>Actions</th>
                         </tr>
-                        <tr ng-repeat="entry in details | orderBy:predicate:reverse">
+                        <tr ng-repeat="entry in details | orderBy:predicate:reverse" name="cluster-row-{{$index}}">
                             <td><a ng-href="#/clusters/{{entry.id}}">{{entry.name}}</a></td>
                             <td ng-switch="entry.status">
                                 <span ng-switch-when="Active" class="label label-success">{{entry.status}}</span>
@@ -35,13 +35,13 @@
                             <td>{{entry.master_address}}</td>
                             <td>
                                 <div class="dropdown" ng-controller="ModalCtrl">
-                                    <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">Actions
+                                    <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" name="actions{{$index}}">Actions
                                         <span class="caret"></span></button>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <a href="#" ng-click="open('', 'startform.html', 'StartModalInstanceCtrl')">Restart</a>
-                                            <a href="#" ng-click="open('', 'stopform.html', 'StopModalInstanceCtrl')">Delete</a>
-                                            <a href="#" ng-click="open('', 'scaleform.html', 'ScaleModalInstanceCtrl')">Scale</a>
+                                            <a href="javascript:void(0);" ng-click="open('', 'startform.html', 'StartModalInstanceCtrl')" name="restart{{$index}}">Restart</a>
+                                            <a href="javascript:void(0);" ng-click="open('', 'stopform.html', 'StopModalInstanceCtrl')" name="delete{{$index}}">Delete</a>
+                                            <a href="javascript:void(0);" ng-click="open('', 'scaleform.html', 'ScaleModalInstanceCtrl')" name="scale{{$index}}">Scale</a>
                                             <a href="#/clusters/{{entry.id}}">View details</a>
                                         </li>
                                     </ul>
