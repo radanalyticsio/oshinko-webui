@@ -11,43 +11,53 @@
             <div>
                 <div class="dropdown">
                     <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">Actions
-                        <span class="caret"></span></button>
+                        <span class="caret"></span>
+                    </button>
                     <ul class="dropdown-menu" ng-controller="DetailsModalCtrl">
                         <!--<ul class="dropdown-menu">-->
                         <li>
-                            <a href="javascript:void(0);"
-                               ng-click="open('', 'startform.html', 'StartModalInstanceCtrl')">Restart</a>
+                            <a href="javascript:void(0);" ng-click="open('', 'startform.html', 'StartModalInstanceCtrl')">Restart</a>
                             <a href="javascript:void(0);" ng-click="open('', 'stopform.html', 'StopModalInstanceCtrl')">Stop</a>
-                            <a href="javascript:void(0);"
-                               ng-click="open('', 'scaleform.html', 'ScaleModalInstanceCtrl')">Scale</a>
+                            <a href="javascript:void(0);" ng-click="open('', 'scaleform.html', 'ScaleModalInstanceCtrl')">Scale</a>
                         </li>
                     </ul>
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
                         <ul>
-                            <li>Name: {{cluster_details.name}}</li>
-                            <li>Status: {{cluster_details.status}}</li>
-                            <li>Created: {{cluster_details.created}}</li>
-                            <li>Updated: {{cluster_details.updated}}</li>
-                            <li>Notes: {{cluster_details.notes}}</li>
+                            <li>Name:
+                                {{cluster_details.name}}</li>
+                            <li>Status:
+                                {{cluster_details.status}}</li>
+                            <li>Created:
+                                {{cluster_details.created}}</li>
+                            <li>Updated:
+                                {{cluster_details.updated}}</li>
+                            <li>Notes:
+                                {{cluster_details.notes}}</li>
                             <li>Tags:
                                 <span ng-repeat="indtag in cluster_details.tags">{{indtag}}{{$last ? '' : ', '}}</span>
                             </li>
                             <li>Annotations:
                                 <span ng-repeat="annotation in cluster_details.annotations">{{annotation}}{{$last ? '' : ', '}}</span>
                             </li>
-                            <li>GUID: {{cluster_details.guid}}</li>
-                            <li>Master address: {{cluster_details.master_address}}</li>
-                            <li>Workers count: {{cluster_details.worker_addresses.length}}
+                            <li>GUID:
+                                {{cluster_details.guid}}</li>
+                            <li>Master address:
+                                {{cluster_details.master_address}}</li>
+                            <li>Workers count:
+                                {{cluster_details.worker_addresses.length}}
                             <li>Worker addresses:<br/>
-                            <span ng-repeat="worker in cluster_details.worker_addresses">{{worker.ip_address}}<br/></span>
+                                <span ng-repeat="worker in cluster_details.worker_addresses">{{worker.ip_address}}<br/></span>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
             <hr/>
-        </div><!-- /col -->
-    </div><!-- /row -->
-</div><!-- /container -->
+        </div>
+        <!-- /col -->
+    </div>
+    <!-- /row -->
+</div>
+<!-- /container -->

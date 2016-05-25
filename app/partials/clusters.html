@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-sm-8 col-md-12">
             <div class="page-header page-header-bleed-right">
-                <div ng-controller="NewClusterCtrl" class="pull-right">
+                <div ng-controller="NewClusterCtrl" class="pull-right newbutton">
                     <button class="btn" ng-click="openNewCluster()">Start a new cluster</button>
                 </div>
                 <h1>Clusters</h1>
@@ -11,7 +11,7 @@
                 <pf-notification-list></pf-notification-list>
             </div>
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-8">
                     <table class="table">
                         <tr>
                             <th>
@@ -21,11 +21,14 @@
                                 <a ng-click="order('status')">Status</a>
                             </th>
                             <th>
-                                <a ng-click="order('master_address')">Master</a></th>
+                                <a ng-click="order('master_address')">Master</a>
+                            </th>
                             <th>Actions</th>
                         </tr>
                         <tr ng-repeat="entry in details | orderBy:predicate:reverse" name="cluster-row-{{$index}}">
-                            <td><a ng-href="#/clusters/{{entry.id}}">{{entry.name}}</a></td>
+                            <td>
+                                <a ng-href="#/clusters/{{entry.id}}">{{entry.name}}</a>
+                            </td>
                             <td ng-switch="entry.status">
                                 <span ng-switch-when="Active" class="label label-success">{{entry.status}}</span>
                                 <span ng-switch-when="Error" class="label label-danger">{{entry.status}}</span>
@@ -36,7 +39,8 @@
                             <td>
                                 <div class="dropdown" ng-controller="ModalCtrl">
                                     <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" name="actions{{$index}}">Actions
-                                        <span class="caret"></span></button>
+                                        <span class="caret"></span>
+                                    </button>
                                     <ul class="dropdown-menu">
                                         <li>
                                             <a href="javascript:void(0);" ng-click="open('', 'startform.html', 'StartModalInstanceCtrl')" name="restart{{$index}}">Restart</a>
@@ -51,6 +55,6 @@
                     </table>
                 </div>
             </div>
-        </div><!-- /col -->
-    </div><!-- /row -->
-</div><!-- /container -->
+        </div>
+    </div>
+</div>

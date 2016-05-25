@@ -202,6 +202,8 @@ module.controller('ScaleModalInstanceCtrl', function($scope, $uibModalInstance, 
 });
 
 module.controller('NewModalInstanceCtrl', function($scope, $uibModalInstance, clusterDataFactory) {
+    $scope.clusterName = "";
+    $scope.workerCount = 1;
 
     $scope.ok = function() {
         $uibModalInstance.close($scope.cluster);

@@ -2,18 +2,24 @@
     <h3 class="modal-title">Start a new cluster</h3>
 </div>
 <div class="modal-body">
-    <form>
+    <form name="newClusterForm">
         <div style="margin-bottom: 15px;">
             <div class="form-group">
                 <label for="clustername">Name</label>
-                <input class="form-control" name="clustername" id="clustername" type="text"/>
-                <div class="help-block">The name of your cluster (alphanumeric characters only)</div>
+                <input class="form-control" name="clustername" id="clustername" type="text" ng-pattern="/^\w*$/" ng-model="clusterName" required/>
+                <div class="help-block">The name of your cluster</div>
+                <div role="alert">
+                  <span class="error" ng-show="newClusterForm.clustername.$dirty && newClusterForm.clustername.$error.required">
+                    You must give your cluster a name</span>
+                  <span class="error" ng-show="newClusterForm.clustername.$error.pattern">
+                    Single word, alphanumeric characters only</span>
+                </div>
             </div>
         </div>
         <div style="margin-bottom: 15px;">
             <div class="form-group">
                 <label for="numworkers">Number of workers</label>
-                <input name="numworkers" id="numworkers" type="number" min="1" value="1"/>
+                <input name="numworkers" id="numworkers" type="number" min="1" value="1" ng-model="workerCount"/>
                 <div class="help-block">Your cluster will be launched with this number of worker nodes</div>
             </div>
         </div>
