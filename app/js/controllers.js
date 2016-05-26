@@ -207,7 +207,7 @@ module.controller('NewModalInstanceCtrl', function($scope, $uibModalInstance, cl
 
     $scope.ok = function() {
         $uibModalInstance.close($scope.cluster);
-        clusterDataFactory.getCluster($scope.cluster_id);
+        clusterDataFactory.createCluster($scope.clusterName, $scope.workerCount);
     };
 
     $scope.cancel = function() {

@@ -28,14 +28,24 @@ module.factory('clusterDataFactory', function($rootScope, $http, sendNotificatio
         return result;
     };
 
-    dataFactory.createCluster = function(json_data) {
-        var result = $http.post(urlBase, json_data);
+    dataFactory.createCluster = function(name, workerCount) {
+        var jsonData = {
+            "master-count": 1,
+            "worker-count": workerCount,
+            "name": name
+        }
+        var result = $http.post(urlBase + "/clusters", jsonData);
         sendNotifications.notify("Success", "New cluster started");
         return result;
     };
 
-    dataFactory.updateCluster = function(id, json_data) {
-        var result = $http.put(urlBase + '/' + id, json_data);
+    dataFactory.updateCluster = function(id, name, workerCount) {
+        var jsonData = {
+            "master-count": 1,
+            "worker-count": workerCount,
+            "name": name
+        }
+        var result = $http.put(urlBase + '/clusters/' + id, jsonData);
         sendNotifications.notify("Success", "Cluster updated");
         return result;
     };
