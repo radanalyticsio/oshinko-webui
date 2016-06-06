@@ -36,15 +36,14 @@ app.config(['$routeProvider', function ($routeProvider) {
             controller: 'LoginController',
             activetab: ''
         });
-    $routeProvider.otherwise({redirectTo: '/login'});
+    $routeProvider.otherwise({redirectTo: '/clusters'});
 }]);
 
 app.run(['$rootScope', '$location', '$cookies', '$http',
     function ($rootScope, $location, $cookies, $http) {
-        // keep user logged in after page refresh
         $rootScope.globals = $cookies.getObject('daikoncookie') || {};
         if ($rootScope.globals.currentUser) {
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
+            $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata;
         }
 
         $rootScope.$on('$locationChangeStart', function (event, next, current) {

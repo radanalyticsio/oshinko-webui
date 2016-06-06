@@ -3,21 +3,21 @@
 var module = angular.module('Oshinko.factories', ['ui.bootstrap', 'patternfly.notification']);
 
 module.factory('clusterDataFactory', function($rootScope, $http, sendNotifications) {
-    var urlBase = $rootScope.oshinko_rest_location;
+    var urlBase = 'api';
     var dataFactory = {};
 
     dataFactory.getClusters = function() {
-        return $http.get(urlBase + "?" + Date.now());
+        return $http.get(urlBase + "/clusters");
     };
 
     dataFactory.getCluster = function(id) {
-        return $http.get(urlBase + 'details.html?cluster_id=' + id + "&" + Date.now());
+        return $http.get(urlBase + '/clusters/' + id);
     };
 
     dataFactory.deleteCluster = function(id) {
         var result = $http({
             method: "DELETE",
-            url: urlBase + id,
+            url: urlBase + '/clusters/' + id,
             data: '',
             headers: {
                 'Content-Type': 'application/json',
@@ -34,9 +34,7 @@ module.factory('clusterDataFactory', function($rootScope, $http, sendNotificatio
             "worker-count": workerCount,
             "name": name
         }
-        var result = $http.post(urlBase + "/clusters", jsonData);
-        sendNotifications.notify("Success", "New cluster started");
-        return result;
+        return $http.post(urlBase + "/clusters", jsonData);
     };
 
     dataFactory.updateCluster = function(id, name, workerCount) {

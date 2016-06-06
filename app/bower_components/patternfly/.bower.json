@@ -1,6 +1,6 @@
 {
   "name": "patternfly",
-  "version": "3.3.5",
+  "version": "3.4.0",
   "authors": "Red Hat",
   "license": "Apache-2.0",
   "homepage": "https://www.patternfly.org",
@@ -39,13 +39,13 @@
     "eonasdan-bootstrap-datetimepicker": "~4.17.37",
     "moment": "~2.11.0"
   },
-  "_release": "3.3.5",
+  "_release": "3.4.0",
   "_resolution": {
     "type": "version",
-    "tag": "v3.3.5",
-    "commit": "e53ce5d07b0a9e8309513b24bf50c0db3d5f3b58"
+    "tag": "v3.4.0",
+    "commit": "2667fe50ca1ef096a6e51cba68f2f5c13e19c302"
   },
   "_source": "https://github.com/patternfly/patternfly.git",
-  "_target": "~3.3.4",
+  "_target": "^3.3.4",
   "_originalSource": "patternfly"
 }

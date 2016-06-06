@@ -15,7 +15,6 @@ module.controller('ClusterCtrl', function($scope, $interval, clusterDataFactory,
         clusterDataFactory.getClusters()
             .then(function(response) {
                 $scope.details = response.data;
-                sendNotifications.notify("Success", "Cluster information updated");
             }, function(error) {
                 sendNotifications.notify("Error", "Unable to fetch data");
             });
@@ -24,9 +23,9 @@ module.controller('ClusterCtrl', function($scope, $interval, clusterDataFactory,
     var intervalPromise;
     intervalPromise = $interval(function() {
         $scope.reloadClusters();
-    }.bind(this), 10000);
+    }.bind(this), 30000);
 
-    // do not continuously update when this page isn't displayed
+    // no update when this page isn't displayed
     $scope.$on('$destroy', function() {
         if (intervalPromise)
             $interval.cancel(intervalPromise);
@@ -54,7 +53,7 @@ module.controller('ClusterDetailCtrl', function($scope, $route, clusterDataFacto
             .then(function(response) {
                 $scope.cluster_details = response.data[Math.floor(Math.random() * response.data.length)];
             }, function(error) {
-                console.log("Unable to fetch data");
+                sendNotifications.notify("Error", "Unable to fetch cluster details");
             });
     };
     $scope.reloadDetails();
@@ -66,11 +65,10 @@ module.controller('ModalCtrl', function($scope, $uibModal, $log, sendNotificatio
         "name": $scope.entry.name,
         "worker_count": $scope.entry.worker_count
     };
-    $scope.animationsEnabled = true;
     $scope.open = function(size, template, ctrl) {
 
         var modalInstance = $uibModal.open({
-            animation: $scope.animationsEnabled,
+            animation: true,
             templateUrl: '/forms/' + template,
             controller: ctrl,
             size: size,
@@ -80,25 +78,14 @@ module.controller('ModalCtrl', function($scope, $uibModal, $log, sendNotificatio
                 }
             }
         });
-
-        modalInstance.result.then(function(result) {
-            sendNotifications.notify("Success", "Test message");
-        }, function() {
-            $log.info('Modal dismissed at: ' + new Date());
-        });
-    };
-
-    $scope.toggleAnimation = function() {
-        $scope.animationsEnabled = !$scope.animationsEnabled;
     };
 });
 
 module.controller('DetailsModalCtrl', function($scope, $uibModal, $log, sendNotifications) {
-    $scope.animationsEnabled = true;
     $scope.open = function(size, template, ctrl) {
 
         var modalInstance = $uibModal.open({
-            animation: $scope.animationsEnabled,
+            animation: true,
             templateUrl: '/forms/' + template,
             controller: ctrl,
             size: size,
@@ -112,25 +99,13 @@ module.controller('DetailsModalCtrl', function($scope, $uibModal, $log, sendNoti
                 }
             }
         });
-
-        modalInstance.result.then(function(result) {
-            sendNotifications.notify("Success", "Test message");
-        }, function() {
-            $log.info('Modal dismissed at: ' + new Date());
-        });
-    };
-
-    $scope.toggleAnimation = function() {
-        $scope.animationsEnabled = !$scope.animationsEnabled;
     };
 });
 
 module.controller('NewClusterCtrl', function($scope, $uibModal, $log, sendNotifications) {
-    $scope.animationsEnabled = true;
     $scope.openNewCluster = function() {
-
         var modalInstance = $uibModal.open({
-            animation: $scope.animationsEnabled,
+            animation: true,
             templateUrl: '/forms/newform.html',
             controller: 'NewModalInstanceCtrl',
             size: 'lg',
@@ -140,32 +115,6 @@ module.controller('NewClusterCtrl', function($scope, $uibModal, $log, sendNotifi
                 }
             }
         });
-
-        modalInstance.result.then(function(result) {
-            sendNotifications.notify("Success", "Test message");
-        }, function() {
-            $log.info('Modal dismissed at: ' + new Date());
-        });
-    };
-
-    $scope.toggleAnimation = function() {
-        $scope.animationsEnabled = !$scope.animationsEnabled;
-    };
-});
-
-module.controller('StartModalInstanceCtrl', function($scope, $uibModalInstance, clusterDataFactory, cluster) {
-
-    $scope.cluster_id = cluster.id;
-    $scope.cluster_name = cluster.name;
-    $scope.cluster = cluster;
-
-    $scope.ok = function() {
-        $uibModalInstance.close($scope.cluster);
-        clusterDataFactory.getCluster($scope.cluster_id);
-    };
-
-    $scope.cancel = function() {
-        $uibModalInstance.dismiss('cancel');
     };
 });
 
@@ -176,7 +125,11 @@ module.controller('StopModalInstanceCtrl', function($scope, $uibModalInstance, c
     $scope.cluster = cluster;
 
     $scope.ok = function() {
-        clusterDataFactory.deleteCluster($scope.cluster_id);
+        clusterDataFactory.deleteCluster($scope.cluster_id).then(function(response) {
+          sendNotifications.notify("Success", "Cluster deleted");
+        }, function(error) {
+          sendNotifications.notify("Error", "Unable to delete cluster");
+        });
         $uibModalInstance.close($scope.cluster);
     };
 
@@ -193,6 +146,11 @@ module.controller('ScaleModalInstanceCtrl', function($scope, $uibModalInstance, 
     $scope.cluster = cluster;
 
     $scope.ok = function() {
+        clusterDataFactory.updateCluster($scope.cluster_id, $scope.cluster_name, $scope.worker_count).then(function(response) {
+          sendNotifications.notify("Success", "Cluster scaling initiated");
+        }, function(error) {
+          sendNotifications.notify("Error", "Unable to scale cluster");
+        });
         $uibModalInstance.close($scope.cluster);
     };
 
@@ -201,13 +159,17 @@ module.controller('ScaleModalInstanceCtrl', function($scope, $uibModalInstance, 
     };
 });
 
-module.controller('NewModalInstanceCtrl', function($scope, $uibModalInstance, clusterDataFactory) {
+module.controller('NewModalInstanceCtrl', function($scope, $uibModalInstance, clusterDataFactory, sendNotifications) {
     $scope.clusterName = "";
     $scope.workerCount = 1;
 
     $scope.ok = function() {
         $uibModalInstance.close($scope.cluster);
-        clusterDataFactory.createCluster($scope.clusterName, $scope.workerCount);
+        clusterDataFactory.createCluster($scope.clusterName, $scope.workerCount).then(function(response) {
+          sendNotifications.notify("Success", "New cluster started");
+        }, function(error) {
+          sendNotifications.notify("Error", "Unable to start new cluster");
+        });
     };
 
     $scope.cancel = function() {

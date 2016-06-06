@@ -7,16 +7,13 @@
                 </div>
                 <h1>Cluster Details</h1>
             </div>
-            <!--<div ng-repeat="entry in cluster_details">-->
             <div>
                 <div class="dropdown">
                     <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">Actions
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" ng-controller="DetailsModalCtrl">
-                        <!--<ul class="dropdown-menu">-->
                         <li>
-                            <a href="javascript:void(0);" ng-click="open('', 'startform.html', 'StartModalInstanceCtrl')">Restart</a>
                             <a href="javascript:void(0);" ng-click="open('', 'stopform.html', 'StopModalInstanceCtrl')">Stop</a>
                             <a href="javascript:void(0);" ng-click="open('', 'scaleform.html', 'ScaleModalInstanceCtrl')">Scale</a>
                         </li>
@@ -33,16 +30,12 @@
                                 {{cluster_details.created}}</li>
                             <li>Updated:
                                 {{cluster_details.updated}}</li>
-                            <li>Notes:
-                                {{cluster_details.notes}}</li>
                             <li>Tags:
-                                <span ng-repeat="indtag in cluster_details.tags">{{indtag}}{{$last ? '' : ', '}}</span>
+                                <span ng-repeat="indtag in cluster_details.tags track by $index">{{indtag}}{{$last ? '' : ', '}}</span>
                             </li>
                             <li>Annotations:
-                                <span ng-repeat="annotation in cluster_details.annotations">{{annotation}}{{$last ? '' : ', '}}</span>
+                                <span ng-repeat="annotation in cluster_details.annotations track by $index">{{annotation}}{{$last ? '' : ', '}}</span>
                             </li>
-                            <li>GUID:
-                                {{cluster_details.guid}}</li>
                             <li>Master address:
                                 {{cluster_details.master_address}}</li>
                             <li>Workers count:
@@ -56,8 +49,5 @@
             </div>
             <hr/>
         </div>
-        <!-- /col -->
     </div>
-    <!-- /row -->
 </div>
-<!-- /container -->
