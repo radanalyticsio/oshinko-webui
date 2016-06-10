@@ -99,7 +99,10 @@ app.delete('/api/clusters/:id', function(request, response) {
         host: oshinko_rest_location,
         port: oshinko_rest_port,
         path: '/clusters/' + request.params.id,
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
     };
     console.log("Performing delete for id: " + request.params.id);
     fetchResponse(request, response, options, null);
