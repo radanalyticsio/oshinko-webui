@@ -11,6 +11,7 @@ app.configure(function() {
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(express.static(__dirname + '/app'));
+    app.use('/bower_components',  express.static(__dirname + '/app/bower_components'));
     app.use(app.router);
     app.engine('html', require('ejs').renderFile);
 });
