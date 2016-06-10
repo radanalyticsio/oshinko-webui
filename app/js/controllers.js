@@ -21,9 +21,10 @@ module.controller('ClusterCtrl', function($scope, $interval, clusterDataFactory,
     };
 
     var intervalPromise;
+    var REFRESH_SECONDS = 10;
     intervalPromise = $interval(function() {
         $scope.reloadClusters();
-    }.bind(this), 30000);
+    }.bind(this), REFRESH_SECONDS * 1000);
 
     // no update when this page isn't displayed
     $scope.$on('$destroy', function() {
