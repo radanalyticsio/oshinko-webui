@@ -30,7 +30,7 @@
                                 <a ng-href="#/clusters/{{entry.name}}">{{entry.name}}</a>
                             </td>
                             <td ng-switch="entry.status">
-                                <span ng-switch-when="Active" class="label label-success">{{entry.status}}</span>
+                                <span ng-switch-when="Running" class="label label-success">{{entry.status}}</span>
                                 <span ng-switch-when="Error" class="label label-danger">{{entry.status}}</span>
                                 <span ng-switch-when="Scaling" class="label label-default">{{entry.status}}</span>
                                 <span ng-switch-default class="label label-default">{{entry.status}}</span>
