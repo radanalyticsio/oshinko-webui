@@ -117,7 +117,7 @@ module.controller('NewClusterCtrl', function($scope, $uibModal, $log, sendNotifi
     };
 });
 
-module.controller('StopModalInstanceCtrl', function($scope, $uibModalInstance, cluster, clusterDataFactory) {
+module.controller('StopModalInstanceCtrl', function($scope, $uibModalInstance, cluster, clusterDataFactory, sendNotifications) {
     $scope.cluster_name = cluster.name;
     $scope.cluster = cluster;
 
@@ -135,7 +135,7 @@ module.controller('StopModalInstanceCtrl', function($scope, $uibModalInstance, c
     };
 });
 
-module.controller('ScaleModalInstanceCtrl', function($scope, $uibModalInstance, clusterDataFactory, cluster) {
+module.controller('ScaleModalInstanceCtrl', function($scope, $uibModalInstance, clusterDataFactory, cluster, sendNotifications) {
 
     $scope.cluster_name = cluster.name;
     $scope.workerCount = cluster.workerCount;

@@ -24,7 +24,6 @@ module.factory('clusterDataFactory', function($rootScope, $http, sendNotificatio
                 'allow-access-control-origin': "*"
             }
         });
-        sendNotifications.notify("Success", "Cluster " + id + " deleted");
         return result;
     };
 
@@ -44,7 +43,6 @@ module.factory('clusterDataFactory', function($rootScope, $http, sendNotificatio
             "name": name
         }
         var result = $http.put(urlBase + '/clusters/' + id, jsonData);
-        sendNotifications.notify("Success", "Cluster updated");
         return result;
     };
     return dataFactory;
