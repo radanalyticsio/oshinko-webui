@@ -27,7 +27,7 @@
                         </tr>
                         <tr ng-repeat="entry in details | orderBy:predicate:reverse" name="cluster-row-{{$index}}">
                             <td>
-                                <a ng-href="#/clusters/{{entry.id}}">{{entry.name}}</a>
+                                <a ng-href="#/clusters/{{entry.name}}">{{entry.name}}</a>
                             </td>
                             <td ng-switch="entry.status">
                                 <span ng-switch-when="Active" class="label label-success">{{entry.status}}</span>
@@ -35,7 +35,7 @@
                                 <span ng-switch-when="Scaling" class="label label-default">{{entry.status}}</span>
                                 <span ng-switch-default class="label label-default">{{entry.status}}</span>
                             </td>
-                            <td>{{entry.master_address}}</td>
+                            <td>{{entry.masterUrl}}</td>
                             <td>
                                 <div class="dropdown" ng-controller="ModalCtrl">
                                     <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" name="actions{{$index}}">Actions

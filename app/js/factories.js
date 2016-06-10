@@ -30,8 +30,8 @@ module.factory('clusterDataFactory', function($rootScope, $http, sendNotificatio
 
     dataFactory.createCluster = function(name, workerCount) {
         var jsonData = {
-            "master-count": 1,
-            "worker-count": workerCount,
+            "masterCount": 1,
+            "workerCount": workerCount,
             "name": name
         }
         return $http.post(urlBase + "/clusters", jsonData);
@@ -39,8 +39,8 @@ module.factory('clusterDataFactory', function($rootScope, $http, sendNotificatio
 
     dataFactory.updateCluster = function(id, name, workerCount) {
         var jsonData = {
-            "master-count": 1,
-            "worker-count": workerCount,
+            "masterCount": 1,
+            "workerCount": workerCount,
             "name": name
         }
         var result = $http.put(urlBase + '/clusters/' + id, jsonData);

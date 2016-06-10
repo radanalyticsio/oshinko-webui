@@ -6,13 +6,15 @@
         <div style="margin-bottom: 15px;">
             <div class="form-group">
                 <label for="clustername">Name</label>
-                <input class="form-control" name="clustername" id="clustername" type="text" ng-pattern="/^\w*$/" ng-model="clusterName" required/>
+                <input class="form-control" name="clustername" id="clustername" type="text" ng-maxlength="10" ng-pattern="/^\w*$/" ng-model="clusterName" required/>
                 <div class="help-block">The name of your cluster</div>
                 <div role="alert">
                   <span class="error" ng-show="newClusterForm.clustername.$dirty && newClusterForm.clustername.$error.required">
                     You must give your cluster a name</span>
                   <span class="error" ng-show="newClusterForm.clustername.$error.pattern">
                     Single word, alphanumeric characters only</span>
+                  <span class="error" ng-show="newClusterForm.clustername.$error.maxlength">
+                    10 characters is the maximum length</span>
                 </div>
             </div>
         </div>
@@ -26,6 +28,6 @@
     </form>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="ok()">Create</button>
-    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-primary" type="button" ng-disabled="newClusterForm.$invalid" ng-click="ok()">Create</button>
+    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
 </div>

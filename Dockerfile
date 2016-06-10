@@ -1,5 +1,4 @@
 FROM nodesource/centos7:0.10.45
-#FROM centos:7
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app

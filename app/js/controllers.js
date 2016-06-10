@@ -14,7 +14,7 @@ module.controller('ClusterCtrl', function($scope, $interval, clusterDataFactory,
     $scope.reloadClusters = function() {
         clusterDataFactory.getClusters()
             .then(function(response) {
-                $scope.details = response.data;
+                $scope.details = response.data.clusters;
             }, function(error) {
                 sendNotifications.notify("Error", "Unable to fetch data");
             });
@@ -61,9 +61,8 @@ module.controller('ClusterDetailCtrl', function($scope, $route, clusterDataFacto
 
 module.controller('ModalCtrl', function($scope, $uibModal, $log, sendNotifications) {
     $scope.cluster = {
-        "id": $scope.entry.id,
         "name": $scope.entry.name,
-        "worker_count": $scope.entry.worker_count
+        "workerCount": $scope.entry.workerCount
     };
     $scope.open = function(size, template, ctrl) {
 
@@ -92,9 +91,8 @@ module.controller('DetailsModalCtrl', function($scope, $uibModal, $log, sendNoti
             resolve: {
                 cluster: function() {
                     return {
-                        "id": $scope.cluster_details.id,
                         "name": $scope.cluster_details.name,
-                        "worker_count": $scope.cluster_details.worker_addresses.length
+                        "workerCount": $scope.cluster_details.worker_addresses.length
                     }
                 }
             }
@@ -119,13 +117,11 @@ module.controller('NewClusterCtrl', function($scope, $uibModal, $log, sendNotifi
 });
 
 module.controller('StopModalInstanceCtrl', function($scope, $uibModalInstance, cluster, clusterDataFactory) {
-
-    $scope.cluster_id = cluster.id;
     $scope.cluster_name = cluster.name;
     $scope.cluster = cluster;
 
     $scope.ok = function() {
-        clusterDataFactory.deleteCluster($scope.cluster_id).then(function(response) {
+        clusterDataFactory.deleteCluster($scope.cluster_name).then(function(response) {
           sendNotifications.notify("Success", "Cluster deleted");
         }, function(error) {
           sendNotifications.notify("Error", "Unable to delete cluster");
@@ -140,13 +136,12 @@ module.controller('StopModalInstanceCtrl', function($scope, $uibModalInstance, c
 
 module.controller('ScaleModalInstanceCtrl', function($scope, $uibModalInstance, clusterDataFactory, cluster) {
 
-    $scope.cluster_id = cluster.id;
     $scope.cluster_name = cluster.name;
-    $scope.worker_count = cluster.worker_count;
+    $scope.workerCount = cluster.workerCount;
     $scope.cluster = cluster;
 
     $scope.ok = function() {
-        clusterDataFactory.updateCluster($scope.cluster_id, $scope.cluster_name, $scope.worker_count).then(function(response) {
+        clusterDataFactory.updateCluster($scope.cluster_id, $scope.cluster_name, $scope.workerCount).then(function(response) {
           sendNotifications.notify("Success", "Cluster scaling initiated");
         }, function(error) {
           sendNotifications.notify("Error", "Unable to scale cluster");

@@ -1,7 +1,7 @@
 {
-  "name": "oshinko",
-  "description": "A quickstart AngularJS project for OpenShift",
-  "main": "scripts/server.js",
+  "name": "oshinko-web",
+  "description": "A web ui for managing spark clusters on Openshift",
+  "main": "server.js",
   "authors": [
     "Chad Roberts <croberts@redhat.com>"
   ],
