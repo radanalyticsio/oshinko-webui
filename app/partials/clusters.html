@@ -23,6 +23,9 @@
                             <th>
                                 <a ng-click="order('master_address')">Master</a>
                             </th>
+                            <th>
+                                <a ng-click="order('worker_count')">Worker count</a>
+                            </th>
                             <th>Actions</th>
                         </tr>
                         <tr ng-repeat="entry in details | orderBy:predicate:reverse" name="cluster-row-{{$index}}">
@@ -36,6 +39,7 @@
                                 <span ng-switch-default class="label label-default">{{entry.status}}</span>
                             </td>
                             <td>{{entry.masterUrl}}</td>
+                            <td>{{entry.workerCount}}</td>
                             <td>
                                 <div class="dropdown" ng-controller="ModalCtrl">
                                     <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" name="actions{{$index}}">Actions
