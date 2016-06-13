@@ -26,10 +26,6 @@
                                 {{cluster_details.name}}</li>
                             <li>Status:
                                 {{cluster_details.status}}</li>
-                            <li>Created:
-                                {{cluster_details.created}}</li>
-                            <li>Updated:
-                                {{cluster_details.updated}}</li>
                             <li>Tags:
                                 <span ng-repeat="indtag in cluster_details.tags track by $index">{{indtag}}{{$last ? '' : ', '}}</span>
                             </li>
@@ -37,9 +33,9 @@
                                 <span ng-repeat="annotation in cluster_details.annotations track by $index">{{annotation}}{{$last ? '' : ', '}}</span>
                             </li>
                             <li>Master address:
-                                {{cluster_details.master_address}}</li>
+                                {{cluster_details.masterUrl}}</li>
                             <li>Workers count:
-                                {{cluster_details.worker_addresses.length}}
+                                {{cluster_details.workerCount}}
                             <li>Worker addresses:<br/>
                                 <span ng-repeat="worker in cluster_details.worker_addresses">{{worker.ip_address}}<br/></span>
                             </li>

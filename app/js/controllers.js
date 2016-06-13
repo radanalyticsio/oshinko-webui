@@ -52,7 +52,7 @@ module.controller('ClusterDetailCtrl', function($scope, $route, clusterDataFacto
     $scope.reloadDetails = function() {
         clusterDataFactory.getCluster($scope.cluster_id)
             .then(function(response) {
-                $scope.cluster_details = response.data[Math.floor(Math.random() * response.data.length)];
+                $scope.cluster_details = response.data.clusters[0];
             }, function(error) {
                 sendNotifications.notify("Error", "Unable to fetch cluster details");
             });
@@ -93,7 +93,7 @@ module.controller('DetailsModalCtrl', function($scope, $uibModal, $log, sendNoti
                 cluster: function() {
                     return {
                         "name": $scope.cluster_details.name,
-                        "workerCount": $scope.cluster_details.worker_addresses.length
+                        "workerCount": $scope.cluster_details.workerCount
                     }
                 }
             }
