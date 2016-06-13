@@ -4,9 +4,6 @@
 var app = angular.module('Oshinko', [
     'ngCookies',
     'ngRoute',
-    'Oshinko.filters',
-    'Oshinko.services',
-    'Oshinko.directives',
     'Oshinko.controllers',
     'Oshinko.factories'
 ]);
