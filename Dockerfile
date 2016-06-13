@@ -5,11 +5,11 @@ WORKDIR /usr/src/app
 
 COPY ./package.json /usr/src/app/
 COPY ./bower.json /usr/src/app/
-COPY ./.bowerrc /usr/src/app/
-RUN echo '{ "allow_root": true }' > /usr/src/app/.bowerrc
+
+RUN echo '{ "allow_root": true, "directory": "app/bower_components" }' > /usr/src/app/.bowerrc
 RUN npm install
-#RUN npm install -g bower
-#RUN bower install
+RUN npm install -g bower
+RUN bower install
 
 COPY . /usr/src/app
 
