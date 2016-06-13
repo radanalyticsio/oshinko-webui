@@ -123,9 +123,9 @@ module.controller('StopModalInstanceCtrl', function($scope, $uibModalInstance, c
 
     $scope.ok = function() {
         clusterDataFactory.deleteCluster($scope.cluster_name).then(function(response) {
-          sendNotifications.notify("Success", "Cluster deleted");
+          sendNotifications.notify("Success", "Cluster " + $scope.cluster_name + " deleted");
         }, function(error) {
-          sendNotifications.notify("Error", "Unable to delete cluster");
+          sendNotifications.notify("Error", "Unable to delete cluster: " + $scope.cluster_name);
         });
         $uibModalInstance.close($scope.cluster);
     };
@@ -162,7 +162,7 @@ module.controller('NewModalInstanceCtrl', function($scope, $uibModalInstance, cl
     $scope.ok = function() {
         $uibModalInstance.close($scope.cluster);
         clusterDataFactory.createCluster($scope.clusterName, $scope.workerCount).then(function(response) {
-          sendNotifications.notify("Success", "New cluster started");
+          sendNotifications.notify("Success", "New cluster " + $scope.clusterName + " started");
         }, function(error) {
           sendNotifications.notify("Error", "Unable to start new cluster");
         });

@@ -1,7 +1,7 @@
 describe('Login page functionality', function() {
 
     it('should login', function() {
-        browser.get('http://localhost:8889/');
+        browser.get('');
         element(by.name('username')).sendKeys('admin');
         expect(element(by.css('button[type="submit"]')).getAttribute("disabled")).toEqual('true');
         element(by.name('password')).sendKeys('admin');
@@ -15,23 +15,21 @@ describe('Login page functionality', function() {
 
 describe('Cluster page functionality', function() {
     it('should display clusters', function() {
-        browser.get('http://localhost:8889/');
+        browser.get('');
         element(by.name('username')).sendKeys('admin');
         element(by.name('password')).sendKeys('admin');
         element(by.css('button[type="submit"]')).click();
         expect(element(by.tagName('h1')).getText()).toEqual("Clusters");
 
-        // Restart modal + functionality
-        element.all(by.cssContainingText('button', 'Actions')).get(0).click();
-        element.all(by.cssContainingText('a', 'Restart')).get(0).click();
-        element(by.cssContainingText('button', 'Start')).click();
+        // Create a cluster
+
         // Stop modal + functionality
         element.all(by.cssContainingText('button', 'Actions')).get(0).click();
         element.all(by.cssContainingText('a', 'Delete')).get(0).click();
         element(by.cssContainingText('button', 'Stop')).click();
         // Scale modal + functionality
-        element.all(by.cssContainingText('button', 'Actions')).get(0).click();
-        element.all(by.cssContainingText('a', 'Scale')).get(0).click();
-        element(by.cssContainingText('button', 'Scale')).click();
+        // element.all(by.cssContainingText('button', 'Actions')).get(0).click();
+        // element.all(by.cssContainingText('a', 'Scale')).get(0).click();
+        // element(by.cssContainingText('button', 'Scale')).click();
       });
 });
