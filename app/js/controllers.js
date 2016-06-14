@@ -142,10 +142,10 @@ module.controller('ScaleModalInstanceCtrl', function($scope, $uibModalInstance, 
     $scope.cluster = cluster;
 
     $scope.ok = function() {
-        clusterDataFactory.updateCluster($scope.cluster_id, $scope.cluster_name, $scope.workerCount).then(function(response) {
-          sendNotifications.notify("Success", "Cluster scaling initiated");
+        clusterDataFactory.updateCluster($scope.cluster_name, $scope.cluster_name, $scope.workerCount).then(function(response) {
+          sendNotifications.notify("Success", "Cluster scaling initiated for: " + $scope.cluster_name);
         }, function(error) {
-          sendNotifications.notify("Error", "Unable to scale cluster");
+          sendNotifications.notify("Error", "Unable to scale cluster " + $scope.cluster_name);
         });
         $uibModalInstance.close($scope.cluster);
     };
