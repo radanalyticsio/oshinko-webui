@@ -46,7 +46,7 @@ module.controller('NavCtrl', function($rootScope, $scope, $location, OshinkoAuth
     };
 });
 
-module.controller('ClusterDetailCtrl', function($scope, $route, clusterDataFactory) {
+module.controller('ClusterDetailCtrl', function($scope, $interval, $route, clusterDataFactory) {
     $scope.cluster_details = {};
     $scope.cluster_id = $route.current.params.Id;
     $scope.reloadDetails = function() {
@@ -57,6 +57,19 @@ module.controller('ClusterDetailCtrl', function($scope, $route, clusterDataFacto
                 sendNotifications.notify("Error", "Unable to fetch cluster details");
             });
     };
+
+    var intervalPromise;
+    var REFRESH_SECONDS = 10;
+    intervalPromise = $interval(function() {
+        $scope.reloadDetails();
+    }.bind(this), REFRESH_SECONDS * 1000);
+
+    // no update when this page isn't displayed
+    $scope.$on('$destroy', function() {
+        if (intervalPromise)
+            $interval.cancel(intervalPromise);
+    });
+
     $scope.reloadDetails();
 });
 

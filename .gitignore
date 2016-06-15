@@ -46,3 +46,4 @@ target/
 # Development related
 .idea/
 node_modules/
+debug
