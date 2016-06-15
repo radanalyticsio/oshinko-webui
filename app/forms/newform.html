@@ -6,7 +6,7 @@
         <div style="margin-bottom: 15px;">
             <div class="form-group">
                 <label for="clustername">Name</label>
-                <input class="form-control" name="clustername" id="clustername" type="text" ng-maxlength="10" ng-pattern="/^\w*$/" ng-model="clusterName" required/>
+                <input class="form-control" name="clustername" id="clustername" type="text" ng-maxlength="21" ng-pattern="/^\w*$/" ng-model="clusterName" required/>
                 <div class="help-block">The name of your cluster</div>
                 <div role="alert">
                   <span class="error" ng-show="newClusterForm.clustername.$dirty && newClusterForm.clustername.$error.required">
@@ -14,7 +14,7 @@
                   <span class="error" ng-show="newClusterForm.clustername.$error.pattern">
                     Single word, alphanumeric characters only</span>
                   <span class="error" ng-show="newClusterForm.clustername.$error.maxlength">
-                    10 characters is the maximum length</span>
+                    21 characters is the maximum length</span>
                 </div>
             </div>
         </div>
