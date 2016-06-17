@@ -1,6 +1,6 @@
 describe('Login page functionality', function() {
 
-    it('should login', function() {
+    it('should login and display the clusters page', function() {
         browser.get('');
         element(by.name('username')).sendKeys('admin');
         expect(element(by.css('button[type="submit"]')).getAttribute("disabled")).toEqual('true');
@@ -28,7 +28,7 @@ describe('Cluster page functionality', function() {
         element(by.id('createbutton')).click();
         browser.wait(EC.visibilityOf(element(by.name('clusterlink-testcluster'))));
 
-        // //Scale modal + functionality
+        // Scale up
         element(by.name('actions-testcluster')).click();
         element(by.name('scale-testcluster')).click();
         element(by.name('numworkers')).sendKeys(protractor.Key.CONTROL, "a", protractor.Key.NULL, "3");
@@ -37,13 +37,16 @@ describe('Cluster page functionality', function() {
         browser.wait(EC.visibilityOf(element(by.name('clusterlink-testcluster'))));
         browser.wait(EC.textToBePresentInElement(element(by.name('workercount-testcluster')), "3"));
 
-        // element(by.name('actions-testcluster')).click();
-        // element(by.name('scale-testcluster')).click();
-        // element(by.name('numworkers')).sendKeys(protractor.Key.CONTROL, "a", protractor.Key.NULL, "2");
-        // element(by.id('scalebutton')).click();
-        // browser.get('/#/clusters');
+        // Scale down
+        element(by.name('actions-testcluster')).click();
+        element(by.name('scale-testcluster')).click();
+        element(by.name('numworkers')).sendKeys(protractor.Key.CONTROL, "a", protractor.Key.NULL, "2");
+        element(by.id('scalebutton')).click();
+        browser.get('/#/clusters');
+        browser.wait(EC.visibilityOf(element(by.name('clusterlink-testcluster'))));
+        browser.wait(EC.textToBePresentInElement(element(by.name('workercount-testcluster')), "2"));
 
-        // Stop modal + functionality
+        // Delete
         browser.get('/#/clusters');
         browser.wait(EC.visibilityOf(element(by.name('clusterlink-testcluster'))));
         element(by.name('actions-testcluster')).click();
