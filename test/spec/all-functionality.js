@@ -15,21 +15,40 @@ describe('Login page functionality', function() {
 
 describe('Cluster page functionality', function() {
     it('should display clusters', function() {
-        browser.get('');
+        var EC = protractor.ExpectedConditions;
+        browser.get('/#/login');
         element(by.name('username')).sendKeys('admin');
         element(by.name('password')).sendKeys('admin');
         element(by.css('button[type="submit"]')).click();
         expect(element(by.tagName('h1')).getText()).toEqual("Clusters");
 
         // Create a cluster
+        element(by.id('startbutton')).click();
+        element(by.id('clustername')).sendKeys('testcluster');
+        element(by.id('createbutton')).click();
+        browser.wait(EC.visibilityOf(element(by.name('clusterlink-testcluster'))));
+
+        // //Scale modal + functionality
+        element(by.name('actions-testcluster')).click();
+        element(by.name('scale-testcluster')).click();
+        element(by.name('numworkers')).sendKeys(protractor.Key.CONTROL, "a", protractor.Key.NULL, "3");
+        element(by.id('scalebutton')).click();
+        browser.get('/#/clusters');
+        browser.wait(EC.visibilityOf(element(by.name('clusterlink-testcluster'))));
+        browser.wait(EC.textToBePresentInElement(element(by.name('workercount-testcluster')), "3"));
+
+        // element(by.name('actions-testcluster')).click();
+        // element(by.name('scale-testcluster')).click();
+        // element(by.name('numworkers')).sendKeys(protractor.Key.CONTROL, "a", protractor.Key.NULL, "2");
+        // element(by.id('scalebutton')).click();
+        // browser.get('/#/clusters');
 
         // Stop modal + functionality
-        element.all(by.cssContainingText('button', 'Actions')).get(0).click();
-        element.all(by.cssContainingText('a', 'Delete')).get(0).click();
-        element(by.cssContainingText('button', 'Stop')).click();
-        // Scale modal + functionality
-        // element.all(by.cssContainingText('button', 'Actions')).get(0).click();
-        // element.all(by.cssContainingText('a', 'Scale')).get(0).click();
-        // element(by.cssContainingText('button', 'Scale')).click();
+        browser.get('/#/clusters');
+        browser.wait(EC.visibilityOf(element(by.name('clusterlink-testcluster'))));
+        element(by.name('actions-testcluster')).click();
+        element(by.name('delete-testcluster')).click();
+        element(by.id('deletebutton')).click();
+        browser.get('/#/clusters');
       });
 });

@@ -3,7 +3,7 @@
         <div class="col-sm-8 col-md-12">
             <div class="page-header page-header-bleed-right">
                 <div ng-controller="NewClusterCtrl" class="pull-right newbutton">
-                    <button class="btn" ng-click="openNewCluster()">Start a new cluster</button>
+                    <button id="startbutton" class="btn" ng-click="openNewCluster()">Start a new cluster</button>
                 </div>
                 <h1>Clusters</h1>
             </div>
@@ -30,7 +30,7 @@
                         </tr>
                         <tr ng-repeat="entry in details | orderBy:predicate:reverse" name="cluster-row-{{$index}}">
                             <td>
-                                <a ng-href="#/clusters/{{entry.name}}">{{entry.name}}</a>
+                                <a name="clusterlink-{{entry.name}}" ng-href="#/clusters/{{entry.name}}">{{entry.name}}</a>
                             </td>
                             <td ng-switch="entry.status">
                                 <span ng-switch-when="Running" class="label label-success">{{entry.status}}</span>
@@ -38,17 +38,17 @@
                                 <span ng-switch-when="Scaling" class="label label-default">{{entry.status}}</span>
                                 <span ng-switch-default class="label label-default">{{entry.status}}</span>
                             </td>
-                            <td>{{entry.masterUrl}}</td>
-                            <td>{{entry.workerCount}}</td>
+                            <td name="masterurl-{{entry.name}}">{{entry.masterUrl}}</td>
+                            <td name="workercount-{{entry.name}}">{{entry.workerCount}}</td>
                             <td>
                                 <div class="dropdown" ng-controller="ModalCtrl">
-                                    <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" name="actions{{$index}}">Actions
+                                    <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" name="actions-{{entry.name}}">Actions
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <a href="javascript:void(0);" ng-click="open('', 'stopform.html', 'StopModalInstanceCtrl')" name="delete{{$index}}">Delete</a>
-                                            <a href="javascript:void(0);" ng-click="open('', 'scaleform.html', 'ScaleModalInstanceCtrl')" name="scale{{$index}}">Scale</a>
+                                            <a href="javascript:void(0);" ng-click="open('', 'stopform.html', 'StopModalInstanceCtrl')" name="delete-{{entry.name}}">Delete</a>
+                                            <a href="javascript:void(0);" ng-click="open('', 'scaleform.html', 'ScaleModalInstanceCtrl')" name="scale-{{entry.name}}">Scale</a>
                                             <a href="#/clusters/{{entry.name}}">View details</a>
                                         </li>
                                     </ul>
