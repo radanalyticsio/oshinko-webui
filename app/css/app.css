@@ -17,3 +17,7 @@
 .newbutton {
   padding-right: 20px;
 }
+
+.capitalize {
+   text-transform: capitalize;
+}

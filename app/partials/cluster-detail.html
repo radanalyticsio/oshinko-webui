@@ -36,30 +36,29 @@
                                 {{cluster_details.masterUrl}}</li>
                             <li>Workers count:
                                 {{cluster_details.workerCount}}
-                            <li>Pods:<br/>
-                                <div class="row">
-                                    <div class="col-sm-8">
-                                        <table class="table">
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>Status</th>
-                                                <th>Type</th>
-                                            </tr>
-                                            <tr ng-repeat="pod in cluster_details.pods">
-                                                <td>{{pod.ip}}</td>
-                                                <td>{{pod.type}}</td>
-                                                <td ng-switch="pod.status">
-                                                    <span ng-switch-when="Running" class="label label-success">{{pod.status}}</span>
-                                                    <span ng-switch-when="Error" class="label label-danger">{{pod.status}}</span>
-                                                    <span ng-switch-when="Scaling" class="label label-default">{{pod.status}}</span>
-                                                    <span ng-switch-default class="label label-default">{{pod.status}}</span>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                            </li>
                         </ul>
+                        <h2>Pods</h2>
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <table class="table">
+                                        <tr>
+                                            <th>Cluster IP</th>
+                                            <th>Status</th>
+                                            <th>Type</th>
+                                        </tr>
+                                        <tr ng-repeat="pod in cluster_details.pods">
+                                            <td>{{pod.ip}}</td>
+                                            <td class="capitalize">{{pod.type}}</td>
+                                            <td ng-switch="pod.status">
+                                                <span ng-switch-when="Running" class="label label-success">{{pod.status}}</span>
+                                                <span ng-switch-when="Error" class="label label-danger">{{pod.status}}</span>
+                                                <span ng-switch-when="Scaling" class="label label-default">{{pod.status}}</span>
+                                                <span ng-switch-default class="label label-default">{{pod.status}}</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
                     </div>
                 </div>
             </div>
