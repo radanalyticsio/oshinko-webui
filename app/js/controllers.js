@@ -52,7 +52,7 @@ module.controller('ClusterDetailCtrl', function($scope, $interval, $route, clust
     $scope.reloadDetails = function() {
         clusterDataFactory.getCluster($scope.cluster_id)
             .then(function(response) {
-                $scope.cluster_details = response.data.clusters[0];
+                $scope.cluster_details = response.data.cluster;
             }, function(error) {
                 sendNotifications.notify("Error", "Unable to fetch cluster details");
             });

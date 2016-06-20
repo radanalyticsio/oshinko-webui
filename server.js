@@ -57,7 +57,7 @@ app.get('/api/clusters/:id', function(request, response) {
     var options = {
         host: oshinko_rest_location,
         port: oshinko_rest_port,
-        path: '/clusters',
+        path: '/clusters/' + request.params.id,
         method: 'GET'
     };
     console.log("Fetching for id: " + request.params.id);
