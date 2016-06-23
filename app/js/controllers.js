@@ -14,7 +14,11 @@ module.controller('ClusterCtrl', function($scope, $interval, clusterDataFactory,
     $scope.reloadClusters = function() {
         clusterDataFactory.getClusters()
             .then(function(response) {
-                $scope.details = response.data.clusters;
+                console.log(response);
+                if(response.data.clusters)
+                    $scope.details = response.data.clusters;
+                else
+                    $scope.details = null;
             }, function(error) {
                 sendNotifications.notify("Error", "Unable to fetch data");
             });
