@@ -19,5 +19,48 @@
 }
 
 .capitalize {
-   text-transform: capitalize;
+  text-transform: capitalize;
 }
+
+
+/* login page css */
+.login-pf {
+  height: 100%;
+}
+.login-pf .container {
+  background-color: #181818;
+  background-color: rgba(255, 255, 255, 0.055);
+  clear: right;
+  padding-bottom: 40px;
+  padding-top: 20px;
+  width: auto;
+}
+
+.login-pf .container .details p:first-child {
+  border-top: 1px solid #474747;
+  padding-top: 25px;
+  margin-top: 25px;
+}
+
+.login-pf .container .details p {
+  margin-bottom: 2px;
+}
+.login-pf .container .form-horizontal .control-label {
+  font-size: 13px;
+  font-weight: 400;
+  text-align: left;
+}
+.login-pf .container .form-horizontal .form-group:last-child,
+.login-pf .container .form-horizontal .form-group:last-child .help-block:last-child {
+  margin-bottom: 0;
+}
+.login-pf .container .help-block {
+  color: #fff;
+}
+.login-button-container{
+    float: right;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 25%;
+}
+/* login page css */
