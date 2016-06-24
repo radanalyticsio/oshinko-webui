@@ -8,6 +8,49 @@
 
 var module = angular.module('Oshinko.factories', ['ui.bootstrap', 'patternfly.notification']);
 
+module.factory('clusterActions', [
+        '$uibModal',
+        function($uibModal) {
+            function deleteCluster(clusterName) {
+                return $uibModal.open({
+                    animation: true,
+                    controller: 'ClusterDeleteCtrl',
+                    templateUrl: '/forms/' + 'delete-cluster.html',
+                    resolve: {
+                        dialogData: function() {
+                            return { clusterName: clusterName };
+                        }
+                    },
+                }).result;
+            }
+        return {
+                deleteCluster: deleteCluster,
+            };
+        }
+    ]);
+
+module.factory('clusterData', [
+        '$http',
+        '$q',
+        function($http, $q) {
+            function sendDeleteCluster(clusterName) {
+                var urlBase = 'api';
+                return $http({
+                    method: "DELETE",
+                    url: urlBase + '/clusters/' + clusterName,
+                    data: '',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'allow-access-control-origin': "*"
+                    }
+                });
+            }
+        return {
+                sendDeleteCluster: sendDeleteCluster,
+            };
+        }
+    ]);
+
 module.factory('clusterDataFactory', function($rootScope, $http, sendNotifications) {
     var urlBase = 'api';
     var dataFactory = {};

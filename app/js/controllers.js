@@ -6,12 +6,17 @@
  */
 'use strict';
 
-var module = angular.module('Oshinko.controllers', ['ngAnimate', 'ui.bootstrap', 'patternfly.notification']);
+var module = angular.module('Oshinko.controllers', [
+    'ngAnimate', 
+    'ui.bootstrap', 
+    'patternfly.notification',
+    'ui.cockpit',
+    ]);
 
-module.controller('ClusterCtrl', function($scope, $interval, $location, clusterDataFactory, sendNotifications) {
+module.controller('ClusterCtrl', function($scope, $interval, $location, clusterDataFactory, sendNotifications, clusterActions) {
     $scope.predicate = 'name';
     $scope.reverse = false;
-
+     angular.extend($scope, clusterActions);
     $scope.order = function(predicate) {
         $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
         $scope.predicate = predicate;
@@ -144,6 +149,33 @@ module.controller('NewClusterCtrl', function($scope, $uibModal, $log, sendNotifi
         });
     };
 });
+
+module.controller('ClusterDeleteCtrl', [
+    '$q',
+    '$scope',
+    "dialogData",
+    "clusterData",
+    "sendNotifications",
+     function($q, $scope, dialogData, clusterData, sendNotifications) {
+    
+        $scope.clusterName = dialogData.clusterName;
+
+        $scope.deleteCluster = function deleteCluster() {
+            var defer = $q.defer();
+            clusterData.sendDeleteCluster($scope.clusterName)
+                .then(function(response) {
+                    sendNotifications.notify("Success", "Cluster " + $scope.clusterName + " deleted");
+                    defer.resolve("Cluster " + $scope.clusterName + " deleted");
+                }, function(error) {
+                    sendNotifications.notify("Error", "Unable to delete cluster: " + $scope.clusterName);
+                    defer.reject("Unable to delete cluster: " + $scope.clusterName);
+                });
+            return defer.promise;
+        };
+
+    }
+]);
+
 
 module.controller('StopModalInstanceCtrl', function($scope, $uibModalInstance, cluster, clusterDataFactory, sendNotifications) {
     $scope.cluster_name = cluster.name;

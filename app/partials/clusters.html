@@ -63,12 +63,17 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="javascript:void(0);" ng-click="open('', 'stopform.html', 'StopModalInstanceCtrl')" name="delete-{{entry.name}}">Delete</a>
+                                        <!-- <a href="javascript:void(0);" ng-click="open('', 'stopform.html', 'StopModalInstanceCtrl')" name="delete-{{entry.name}}">Delete</a> -->
                                         <a href="javascript:void(0);" ng-click="open('', 'scaleform.html', 'ScaleModalInstanceCtrl')" name="scale-{{entry.name}}">Scale</a>
-                                        <a href="#/clusters/{{entry.name}}">View details</a>
+                                        <!-- <a href="#/clusters/{{entry.name}}">View details</a> -->
                                     </li>
                                 </ul>
                             </div>
+                        </td>
+                        <td>
+                            <a class="pull-right close-icon">
+                                <i translatable="yes" class=" pficon-close" ng-click="deleteCluster(entry.name)"></i>
+                            </a>
                         </td>
                     </tr>
                 </tbody>
