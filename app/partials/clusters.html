@@ -1,3 +1,11 @@
+<!--
+/*
+ * This file is part of Oshinko.
+ *
+ * Copyright (C) 2016 Red Hat, Inc.
+ *
+ */
+-->
 <div class="container-cards-pf dashboard-cards">
     <div class="card-pf card-pf-double" id="cluster-list">
         <div class="card-pf-heading">
@@ -10,13 +18,12 @@
         <div class="card-pf-body">
             <div class="well blank-slate-pf spacious" ng-if="!details" >
                 <div class="blank-slate-pf-icon">
-                    <i class="fa fa-rocket"></i>
+                    <i class="fa fa-hourglass-start"></i>
                 </div>
                 <h3>No Spark Cluster present</h3>
                 <p translatable="yes">You can deploy a new spark cluster.</p>
             </div>
-            <table class="listing-ct dashboard-list" 
-                ng-class="{editable: editServices}" ng-if="details">
+            <table class="listing-ct dashboard-list" ng-if="details">
                 <thead>
                     <tr>
                         <th>
@@ -31,27 +38,28 @@
                         <th>
                             <a ng-click="order('worker_count')">Worker count</a>
                         </th>
-                        <th>Actions</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="listing-ct-item" 
+                    <tr class="listing-ct-item"   
                         ng-repeat="entry in details | orderBy:predicate:reverse" name="cluster-row-{{$index}}">
-                        <td>
-                            <a name="clusterlink-{{entry.name}}" ng-href="#/clusters/{{entry.name}}">{{entry.name}}</a>
-                        </td>
-                        <td ng-switch="entry.status">
+                        <div >
+                        <td ng-click="gotoCluster(entry.name)">{{entry.name}}</td>
+                        <td ng-switch="entry.status" ng-click="gotoCluster(entry.name)">
                             <span ng-switch-when="Running" class="label label-success">{{entry.status}}</span>
                             <span ng-switch-when="Error" class="label label-danger">{{entry.status}}</span>
                             <span ng-switch-when="Scaling" class="label label-default">{{entry.status}}</span>
                             <span ng-switch-default class="label label-default">{{entry.status}}</span>
                         </td>
-                        <td name="masterurl-{{entry.name}}">{{entry.masterUrl}}</td>
-                        <td name="workercount-{{entry.name}}">{{entry.workerCount}}</td>
+                        <td name="masterurl-{{entry.name}}" ng-click="gotoCluster(entry.name)">{{entry.masterUrl}}</td>
+                        <td name="workercount-{{entry.name}}" ng-click="gotoCluster(entry.name)">{{entry.workerCount}}</td>
+                        </div>
                         <td>
-                            <div class="dropdown" ng-controller="ModalCtrl">
-                                <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" name="actions-{{entry.name}}">Actions
-                                <span class="caret"></span>
+                            <div class="btn-group bootstrap-select namespace-filter" dropdown ng-controller="ModalCtrl">
+                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" name="actions-{{entry.name}}">
+                                    <span class="pull-left">Actions</span>
+                                    <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>

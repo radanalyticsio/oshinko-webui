@@ -1,3 +1,11 @@
+<!--
+/*
+ * This file is part of Oshinko.
+ *
+ * Copyright (C) 2016 Red Hat, Inc.
+ *
+ */
+-->
 var express = require("express");
 var http = require("http");
 var app = express();
@@ -115,4 +123,5 @@ app.get('/oshinko-rest-location', function(request, response) {
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 app.listen(port, function() {
     console.log("Listening on " + port);
+    console.log("Oshinko REST Server on " + oshinko_rest_location + ":" + oshinko_rest_port);
 });

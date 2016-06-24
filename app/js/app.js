@@ -1,3 +1,10 @@
+/*
+ * This file is part of Oshinko.
+ *
+ * Copyright (C) 2016 Red Hat, Inc.
+ *
+ */
+
 'use strict';
 
 
