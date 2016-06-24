@@ -10,9 +10,9 @@
     <h3 class="modal-title">Delete cluster</h3>
 </div>
 <div class="modal-body">
-    <span>Confirm that you wish to delete cluster {{cluster_name}}</span>
+    <span>Do you want to delete cluster : {{cluster_name}} ?</span>
 </div>
 <div class="modal-footer">
-    <button id="deletebutton" class="btn btn-primary" type="button" ng-click="ok()">Delete</button>
-    <button id="cancelbutton" class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+    <button id="deletebutton" class="btn btn-primary" type="button" ng-click="deleteCluster()">Delete</button>
+    <button id="cancelbutton" class="btn btn-default btn-cancel" translatable="yes">Cancel</button>
 </div>
