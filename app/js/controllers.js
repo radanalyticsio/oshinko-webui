@@ -1,8 +1,14 @@
+/*
+ * This file is part of Oshinko.
+ *
+ * Copyright (C) 2016 Red Hat, Inc.
+ *
+ */
 'use strict';
 
 var module = angular.module('Oshinko.controllers', ['ngAnimate', 'ui.bootstrap', 'patternfly.notification']);
 
-module.controller('ClusterCtrl', function($scope, $interval, clusterDataFactory, sendNotifications) {
+module.controller('ClusterCtrl', function($scope, $interval, $location, clusterDataFactory, sendNotifications) {
     $scope.predicate = 'name';
     $scope.reverse = false;
 
@@ -22,6 +28,11 @@ module.controller('ClusterCtrl', function($scope, $interval, clusterDataFactory,
             }, function(error) {
                 sendNotifications.notify("Error", "Unable to fetch data");
             });
+    };
+
+    $scope.gotoCluster = function gotoCluster(clusterName) {
+        var path = '/clusters/' + encodeURIComponent(clusterName);
+        $location.path(path);
     };
 
     var intervalPromise;
