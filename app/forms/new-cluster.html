@@ -1,0 +1,40 @@
+<!--
+/*
+ * This file is part of Oshinko.
+ *
+ * Copyright (C) 2016 Red Hat, Inc.
+ *
+ */
+-->
+<modal-dialog>
+    <div class="modal-header">
+        <h4 class="modal-title" translatable="yes">Deploy cluster</h4>
+    </div>
+    <div class="modal-body">
+        <table class="listing-ct">
+            <tr>
+                <td class="top">
+                    <label translatable="yes" class="control-label" for="cluster-new-name">Name</label>
+                </td>
+                <td>
+                    <input id="cluster-new-name" class="form-control" type="text"
+                        ng-model="fields.name" autofocus>
+                </td>
+            </tr>
+            <tr>
+                <td class="top">
+                    <label class="control-label" for="cluster-new-workers" translatable="yes">Number of workers</label>
+                </td>
+                <td>
+                    <input id="cluster-new-workers" class="form-control" type="text"
+                        ng-model="fields.workers">
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-default btn-cancel" translatable="yes">Cancel</button>
+        <button class="btn btn-primary" translatable="yes" ng-click="complete(newCluster())">Delete</button>
+    </div>
+</modal-dialog>
+

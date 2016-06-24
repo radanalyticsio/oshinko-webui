@@ -158,7 +158,8 @@ module.controller('ClusterDeleteCtrl', [
     "sendNotifications",
      function($q, $scope, dialogData, clusterData, sendNotifications) {
     
-        $scope.clusterName = dialogData.clusterName;
+        $scope.clusterName = dialogData.clusterName || "";
+        $scope.workerCount = dialogData.workerCount || "";
 
         $scope.deleteCluster = function deleteCluster() {
             var defer = $q.defer();
@@ -173,6 +174,31 @@ module.controller('ClusterDeleteCtrl', [
             return defer.promise;
         };
 
+        $scope.scaleCluster = function scaleCluster(count) {
+            var defer = $q.defer();
+            clusterData.sendScaleCluster($scope.clusterName, count)
+                .then(function(response) {
+                    sendNotifications.notify("Success", "Cluster scaling initiated for: " + $scope.clusterName);
+                    defer.resolve("Cluster scaling initiated for: " + $scope.clusterName);
+                }, function(error) {
+                    sendNotifications.notify("Error", "Unable to scale cluster " + $scope.clusterName);
+                    defer.reject("Unable to scale cluster " + $scope.clusterName);
+                });
+            return defer.promise;
+        };
+
+
+        $scope.newCluster = function newCluster() {
+            var defer = $q.defer();
+            clusterData.sendCreateCluster($scope.clusterName, $scope.workerCount).then(function(response) {
+                    sendNotifications.notify("Success", "New cluster " + $scope.clusterName + " started");
+                    defer.resolve("New cluster " + $scope.clusterName + " started");
+                }, function(error) {
+                    sendNotifications.notify("Error", "Unable to start new cluster");
+                    defer.reject("Unable to start new cluster");
+                });
+            return defer.promise;
+        };
     }
 ]);
 
