@@ -23,8 +23,36 @@ module.factory('clusterActions', [
                     },
                 }).result;
             }
+            function newCluster(cluster) {
+                return $uibModal.open({
+                    animation: true,
+                    controller: 'ClusterDeleteCtrl',
+                    templateUrl: '/forms/' + 'new-cluster.html',
+                    resolve: {
+                        dialogData: function() {
+                            return { clusterName: cluster.name,
+                                workerCount: cluster.workerCount };
+                        }
+                    },
+                }).result;
+            }
+            function scaleCluster(cluster) {
+                return $uibModal.open({
+                    animation: true,
+                    controller: 'ClusterDeleteCtrl',
+                    templateUrl: '/forms/' + 'scale-cluster.html',
+                    resolve: {
+                        dialogData: function() {
+                            return { clusterName: cluster.name,
+                                workerCount: cluster.workerCount };
+                        }
+                    },
+                }).result;
+            }
         return {
                 deleteCluster: deleteCluster,
+                newCluster: newCluster,
+                scaleCluster: scaleCluster,
             };
         }
     ]);
@@ -33,8 +61,8 @@ module.factory('clusterData', [
         '$http',
         '$q',
         function($http, $q) {
+             var urlBase = 'api';
             function sendDeleteCluster(clusterName) {
-                var urlBase = 'api';
                 return $http({
                     method: "DELETE",
                     url: urlBase + '/clusters/' + clusterName,
@@ -45,8 +73,26 @@ module.factory('clusterData', [
                     }
                 });
             }
+            function sendCreateCluster(clusterName, workerCount) {
+                var jsonData = {
+                    "masterCount": 1,
+                    "workerCount": workerCount,
+                     "name": clusterName
+                }
+                return $http.post(urlBase + "/clusters", jsonData);
+            }
+            function sendScaleCluster(clusterName, workerCount) {
+                var jsonData = {
+                    "masterCount": 1,
+                    "workerCount": workerCount,
+                    "name": clusterName
+                }
+                return $http.put(urlBase + '/clusters/' + clusterName, jsonData);
+            }
         return {
                 sendDeleteCluster: sendDeleteCluster,
+                sendCreateCluster: sendCreateCluster,
+                sendScaleCluster: sendScaleCluster,
             };
         }
     ]);

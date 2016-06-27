@@ -56,19 +56,20 @@
                         <td name="workercount-{{entry.name}}" ng-click="gotoCluster(entry.name)">{{entry.workerCount}}</td>
                         </div>
                         <td>
-                            <div class="btn-group bootstrap-select namespace-filter" dropdown ng-controller="ModalCtrl">
+                            <button class="btn btn-default" translatable="yes" ng-click="scaleCluster(entry)">Scale</button>
+                            <!-- <div class="btn-group bootstrap-select namespace-filter" dropdown ng-controller="ModalCtrl">
                                 <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" name="actions-{{entry.name}}">
                                     <span class="pull-left">Actions</span>
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <!-- <a href="javascript:void(0);" ng-click="open('', 'stopform.html', 'StopModalInstanceCtrl')" name="delete-{{entry.name}}">Delete</a> -->
+                                        <a href="javascript:void(0);" ng-click="open('', 'stopform.html', 'StopModalInstanceCtrl')" name="delete-{{entry.name}}">Delete</a>
                                         <a href="javascript:void(0);" ng-click="open('', 'scaleform.html', 'ScaleModalInstanceCtrl')" name="scale-{{entry.name}}">Scale</a>
-                                        <!-- <a href="#/clusters/{{entry.name}}">View details</a> -->
+                                        <a href="#/clusters/{{entry.name}}">View details</a>
                                     </li>
                                 </ul>
-                            </div>
+                            </div> -->
                         </td>
                         <td>
                             <a class="pull-right close-icon">
