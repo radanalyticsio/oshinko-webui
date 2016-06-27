@@ -23,9 +23,10 @@
                 <h3>No Spark Cluster present</h3>
                 <p translatable="yes">You can deploy a new spark cluster.</p>
             </div>
-            <table class="listing-ct dashboard-list" ng-if="details">
+            <table listing-table  class="listing-ct dashboard-list" ng-if="details">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>
                             <a ng-click="order('name')">Name</a>
                         </th>
@@ -39,12 +40,16 @@
                             <a ng-click="order('worker_count')">Worker count</a>
                         </th>
                         <th></th>
+                        <th></th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr class="listing-ct-item"   
-                        ng-repeat="entry in details | orderBy:predicate:reverse" name="cluster-row-{{$index}}">
-                        <div >
+                <tbody  ng-repeat="entry in details | orderBy:predicate:reverse" ng-init="id = entry.name" name="cluster-row-{{$index}}" 
+                    data-id="{{id}}" ng-class="{open: listing.expanded(id)}">
+                    <tr ng-click="listing.activate(id)" class="listing-ct-item">
+                        <td ng-click="listing.toggle(id, $event)"
+                            class="listing-ct-toggle">
+                            <i class="fa fa-fw"></i>
+                        </td>
                         <td ng-click="gotoCluster(entry.name)">{{entry.name}}</td>
                         <td ng-switch="entry.status" ng-click="gotoCluster(entry.name)">
                             <span ng-switch-when="Running" class="label label-success">{{entry.status}}</span>
@@ -54,27 +59,17 @@
                         </td>
                         <td name="masterurl-{{entry.name}}" ng-click="gotoCluster(entry.name)">{{entry.masterUrl}}</td>
                         <td name="workercount-{{entry.name}}" ng-click="gotoCluster(entry.name)">{{entry.workerCount}}</td>
-                        </div>
                         <td>
                             <button class="btn btn-default" translatable="yes" ng-click="scaleCluster(entry)">Scale</button>
-                            <!-- <div class="btn-group bootstrap-select namespace-filter" dropdown ng-controller="ModalCtrl">
-                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" name="actions-{{entry.name}}">
-                                    <span class="pull-left">Actions</span>
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="javascript:void(0);" ng-click="open('', 'stopform.html', 'StopModalInstanceCtrl')" name="delete-{{entry.name}}">Delete</a>
-                                        <a href="javascript:void(0);" ng-click="open('', 'scaleform.html', 'ScaleModalInstanceCtrl')" name="scale-{{entry.name}}">Scale</a>
-                                        <a href="#/clusters/{{entry.name}}">View details</a>
-                                    </li>
-                                </ul>
-                            </div> -->
                         </td>
                         <td>
                             <a class="pull-right close-icon">
                                 <i translatable="yes" class=" pficon-close" ng-click="deleteCluster(entry.name)"></i>
                             </a>
+                        </td>
+                    </tr>
+                    <tr class="listing-ct-panel" ng-if="listing.expanded(id)" ng-init="clusterId = id">
+                        <td cluster-panel colspan="7"></td>
                         </td>
                     </tr>
                 </tbody>

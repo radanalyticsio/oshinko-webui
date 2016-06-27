@@ -8,52 +8,64 @@
 
 var module = angular.module('Oshinko.controllers', [
     'ngAnimate', 
-    'ui.bootstrap', 
+    'ui.bootstrap',
     'patternfly.notification',
     'ui.cockpit',
+    'ui.listing',
+    'Oshinko.directives',
     ]);
 
-module.controller('ClusterCtrl', function($scope, $interval, $location, clusterDataFactory, sendNotifications, clusterActions) {
-    $scope.predicate = 'name';
-    $scope.reverse = false;
-     angular.extend($scope, clusterActions);
-    $scope.order = function(predicate) {
-        $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
-        $scope.predicate = predicate;
-    };
+module.controller('ClusterCtrl', [
+    '$scope',
+    '$interval',
+    '$location',
+    'clusterDataFactory',
+    'sendNotifications',
+    'clusterActions',
+    "ListingState",
+    function($scope, $interval, $location, clusterDataFactory, sendNotifications, clusterActions, ListingState) {
+        $scope.predicate = 'name';
+        $scope.reverse = false;
+        angular.extend($scope, clusterActions);
+        $scope.listing = new ListingState($scope);
+        $scope.order = function(predicate) {
+            $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+            $scope.predicate = predicate;
+        };
 
-    $scope.reloadClusters = function() {
-        clusterDataFactory.getClusters()
-            .then(function(response) {
-                console.log(response);
-                if(response.data.clusters)
-                    $scope.details = response.data.clusters;
-                else
-                    $scope.details = null;
-            }, function(error) {
-                sendNotifications.notify("Error", "Unable to fetch data");
-            });
-    };
+        $scope.reloadClusters = function() {
+            clusterDataFactory.getClusters()
+                .then(function(response) {
+                    console.log(response);
+                    if(response.data.clusters)
+                        $scope.details = response.data.clusters;
+                    else
+                        $scope.details = null;
+                }, function(error) {
+                    sendNotifications.notify("Error", "Unable to fetch data");
+                });
+        };
 
-    $scope.gotoCluster = function gotoCluster(clusterName) {
-        var path = '/clusters/' + encodeURIComponent(clusterName);
-        $location.path(path);
-    };
+        $scope.gotoCluster = function gotoCluster(clusterName) {
+            var path = '/clusters/' + encodeURIComponent(clusterName);
+            $location.path(path);
+        };
 
-    var intervalPromise;
-    var REFRESH_SECONDS = 10;
-    intervalPromise = $interval(function() {
+        var intervalPromise;
+        var REFRESH_SECONDS = 10;
+        intervalPromise = $interval(function() {
+            $scope.reloadClusters();
+        }.bind(this), REFRESH_SECONDS * 1000);
+
+        // no update when this page isn't displayed
+        $scope.$on('$destroy', function() {
+            if (intervalPromise)
+                $interval.cancel(intervalPromise);
+        });
+
         $scope.reloadClusters();
-    }.bind(this), REFRESH_SECONDS * 1000);
-
-    // no update when this page isn't displayed
-    $scope.$on('$destroy', function() {
-        if (intervalPromise)
-            $interval.cancel(intervalPromise);
-    });
-
-    $scope.reloadClusters();
-});
+    }
+]);
 
 module.controller('NavCtrl', function($rootScope, $scope, $location, OshinkoAuthService) {
     $scope.isActive = function(route) {
