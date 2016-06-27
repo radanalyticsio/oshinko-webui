@@ -26,7 +26,7 @@
                (el && inClassOrTag(el.parentNode, cls, tag));
     }
 
-    angular.module('kubernetes.listing', [])
+    angular.module('ui.listing', [])
 
     .directive('listingTable', [
         function() {
@@ -126,7 +126,7 @@
                 },
                 templateUrl: function(element, attrs) {
                     var kind = attrs.kind;
-                    return "views/" + kind.toLowerCase() + "-panel.html";
+                    return "forms/" + kind.toLowerCase() + "-panel.html";
                 }
             };
         }
