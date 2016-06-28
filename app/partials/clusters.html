@@ -20,13 +20,13 @@
                 <div class="blank-slate-pf-icon">
                     <i class="fa fa-hourglass-start"></i>
                 </div>
-                <h3>No Spark Cluster present</h3>
+                <h3>No Spark Clusters present</h3>
                 <p translatable="yes">You can deploy a new spark cluster.</p>
             </div>
             <table listing-table  class="listing-ct dashboard-list" ng-if="details">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th class="listing-ct-empty"></th>
                         <th>
                             <a ng-click="order('name')">Name</a>
                         </th>
@@ -43,7 +43,7 @@
                         <th></th>
                     </tr>
                 </thead>
-                <tbody  ng-repeat="entry in details | orderBy:predicate:reverse" ng-init="id = entry.name" name="cluster-row-{{$index}}" 
+                <tbody  ng-repeat="entry in details | orderBy:predicate:reverse" ng-init="id = entry.name" name="cluster-row-{{$index}}"
                     data-id="{{id}}" ng-class="{open: listing.expanded(id)}">
                     <tr ng-click="listing.activate(id)" class="listing-ct-item">
                         <td ng-click="listing.toggle(id, $event)"
