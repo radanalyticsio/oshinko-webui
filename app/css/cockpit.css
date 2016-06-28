@@ -529,7 +529,7 @@ tr.listing-ct-item .listing-ct-toggle {
 table.listing-ct thead .listing-ct-toggle + th,
 tr.listing-ct-item .listing-ct-toggle + td,
 tr.listing-ct-item .listing-ct-toggle + th {
-    padding-left: 0;
+    padding-left: 10px;
 }
 
 td.listing-ct-toggle:hover {
