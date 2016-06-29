@@ -23,15 +23,14 @@ module.factory('clusterActions', [
                     },
                 }).result;
             }
-            function newCluster(cluster) {
+            function newCluster() {
                 return $uibModal.open({
                     animation: true,
-                    controller: 'ClusterDeleteCtrl',
+                    controller: 'ClusterNewCtrl',
                     templateUrl: '/forms/' + 'new-cluster.html',
                     resolve: {
                         dialogData: function() {
-                            return { clusterName: cluster.name,
-                                workerCount: cluster.workerCount };
+                            return { };
                         }
                     },
                 }).result;

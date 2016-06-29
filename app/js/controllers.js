@@ -198,22 +198,79 @@ module.controller('ClusterDeleteCtrl', [
                 });
             return defer.promise;
         };
+    }
+]);
 
+module.controller('ClusterNewCtrl', [
+    '$q',
+    '$scope',
+    "dialogData",
+    "clusterData",
+    "sendNotifications",
+     function($q, $scope, dialogData, clusterData, sendNotifications) {
+        var NAME_RE = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/;
+        var NUMBER_RE = /^[0-9]*$/;
+        var fields = {
+                name: "",
+                workers: 0,
+            };
+        $scope.fields = fields;
 
+        function validate(name, workers) {
+            var defer = $q.defer();
+            var ex;
+            if (name !== undefined) {
+                if (!name)
+                    ex = new Error("The cluster name cannot be empty.");
+                else if (!NAME_RE.test(name))
+                    ex = new Error("The member name contains invalid characters.");
+
+                if (ex) {
+                    ex.target = "#cluster-new-name";
+                    defer.reject(ex);
+                }
+            }
+            if (workers !== undefined) {
+                if (!workers)
+                    ex = new Error("The number of workers count cannot be empty.");
+                else if (!NUMBER_RE.test(workers))
+                    ex = new Error("Please give a valid number of workers.");
+                else if (workers <= 0)
+                    ex = new Error("Please give a value greater than 0.");
+
+                if (ex) {
+                    ex.target = "#cluster-new-workers";
+                    defer.reject(ex);
+                }
+            }
+
+            if (!ex) {
+                defer.resolve();
+            }
+
+            return defer.promise;
+        }
         $scope.newCluster = function newCluster() {
             var defer = $q.defer();
-            clusterData.sendCreateCluster($scope.clusterName, $scope.workerCount).then(function(response) {
-                    sendNotifications.notify("Success", "New cluster " + $scope.clusterName + " started");
-                    defer.resolve("New cluster " + $scope.clusterName + " started");
+            var name = $scope.fields.name.trim();
+            var workersInt = $scope.fields.workers;
+
+            validate(name, workersInt)
+                .then(function() {
+                    clusterData.sendCreateCluster(name, workersInt).then(function(response) {
+                        sendNotifications.notify("Success", "New cluster " + name + " deployed.");
+                        defer.resolve("New cluster " + name + " deployed.");
+                    }, function(error) {
+                        sendNotifications.notify("Error", "Unable to deploy new cluster.");
+                        defer.reject("Unable to deploy new cluster.");
+                    });
                 }, function(error) {
-                    sendNotifications.notify("Error", "Unable to start new cluster");
-                    defer.reject("Unable to start new cluster");
+                    defer.reject(error);
                 });
             return defer.promise;
         };
     }
 ]);
-
 
 module.controller('StopModalInstanceCtrl', function($scope, $uibModalInstance, cluster, clusterDataFactory, sendNotifications) {
     $scope.cluster_name = cluster.name;
