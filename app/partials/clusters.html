@@ -60,10 +60,10 @@
                         <td name="masterurl-{{entry.name}}" ng-click="gotoCluster(entry.name)">{{entry.masterUrl}}</td>
                         <td name="workercount-{{entry.name}}" ng-click="gotoCluster(entry.name)">{{entry.workerCount}}</td>
                         <td>
-                            <button class="btn btn-default" translatable="yes" ng-click="scaleCluster(entry)">Scale</button>
+                            <button name="scalebutton-{{entry.name}}" class="btn btn-default" translatable="yes" ng-click="scaleCluster(entry)">Scale</button>
                         </td>
                         <td>
-                            <a class="pull-right close-icon">
+                            <a class="pull-right close-icon" name="deletebutton-{{entry.name}}">
                                 <i translatable="yes" class=" pficon-close" ng-click="deleteCluster(entry.name)"></i>
                             </a>
                         </td>

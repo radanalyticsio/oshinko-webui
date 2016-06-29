@@ -4,6 +4,6 @@ exports.config = {
   specs: ['spec/all-functionality.js'],
   baseUrl: 'http://localhost:8080',
   jasmineNodeOpts: {
-    defaultTimeoutInterval: 60000
+    defaultTimeoutInterval: 90000
   }
 },
