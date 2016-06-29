@@ -209,6 +209,7 @@ module.controller('ClusterNewCtrl', [
     "sendNotifications",
      function($q, $scope, dialogData, clusterData, sendNotifications) {
         var NAME_RE = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/;
+        var NUMBER_RE = /^[0-9]*$/;
         var fields = {
                 name: "",
                 workers: 0,
@@ -229,10 +230,18 @@ module.controller('ClusterNewCtrl', [
                     defer.reject(ex);
                 }
             }
-            if (!workers || workers == 0) {
-                ex = new Error("Please set the number of workers.");
-                ex.target = "#cluster-new-workers";
-                defer.reject(ex);
+            if (workers !== undefined) {
+                if (!workers)
+                    ex = new Error("The number of workers count cannot be empty.");
+                else if (!NUMBER_RE.test(workers))
+                    ex = new Error("Please give a valid number of workers.");
+                else if (workers <= 0)
+                    ex = new Error("Please give a value greater than 0.");
+
+                if (ex) {
+                    ex.target = "#cluster-new-workers";
+                    defer.reject(ex);
+                }
             }
 
             if (!ex) {
@@ -244,8 +253,7 @@ module.controller('ClusterNewCtrl', [
         $scope.newCluster = function newCluster() {
             var defer = $q.defer();
             var name = $scope.fields.name.trim();
-            var workers = $scope.fields.workers;
-            var workersInt = parseInt(workers, 10);
+            var workersInt = $scope.fields.workers;
 
             validate(name, workersInt)
                 .then(function() {
