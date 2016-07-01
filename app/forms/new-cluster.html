@@ -26,7 +26,7 @@
                     <label class="control-label" for="cluster-new-workers" translatable="yes">Number of workers</label>
                 </td>
                 <td>
-                    <input id="cluster-new-workers" class="form-control" type="text"
+                    <input id="cluster-new-workers" class="form-control" type="number"
                         ng-model="fields.workers">
                 </td>
             </tr>
@@ -37,4 +37,3 @@
         <button class="btn btn-primary" translatable="yes" ng-click="complete(newCluster())">Deploy</button>
     </div>
 </modal-dialog>
-
