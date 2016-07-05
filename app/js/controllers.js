@@ -7,7 +7,7 @@
 'use strict';
 
 var module = angular.module('Oshinko.controllers', [
-    'ngAnimate', 
+    'ngAnimate',
     'ui.bootstrap',
     'patternfly.notification',
     'ui.cockpit',
@@ -42,7 +42,9 @@ module.controller('ClusterCtrl', [
                     else
                         $scope.details = null;
                 }, function(error) {
-                    sendNotifications.notify("Error", "Unable to fetch data");
+                    sendNotifications.notify(
+                        "Error", "Unable to fetch data.  Error code: "
+                        + error.data.code);
                 });
         };
 
@@ -78,7 +80,7 @@ module.controller('NavCtrl', function($rootScope, $scope, $location, OshinkoAuth
     };
 });
 
-module.controller('ClusterDetailCtrl', function($scope, $interval, $route, clusterDataFactory) {
+module.controller('ClusterDetailCtrl', function($scope, $interval, $route, clusterDataFactory, sendNotifications) {
     $scope.cluster_details = {};
     $scope.cluster_id = $route.current.params.Id;
     $scope.reloadDetails = function() {
@@ -86,7 +88,9 @@ module.controller('ClusterDetailCtrl', function($scope, $interval, $route, clust
             .then(function(response) {
                 $scope.cluster_details = response.data.cluster;
             }, function(error) {
-                sendNotifications.notify("Error", "Unable to fetch cluster details");
+                sendNotifications.notify(
+                    "Error", "Unable to fetch cluster details.  Error code: "
+                    + error.data.code);
             });
     };
 
@@ -169,7 +173,7 @@ module.controller('ClusterDeleteCtrl', [
     "clusterData",
     "sendNotifications",
      function($q, $scope, dialogData, clusterData, sendNotifications) {
-    
+
         $scope.clusterName = dialogData.clusterName || "";
         $scope.workerCount = dialogData.workerCount || "";
 
@@ -180,8 +184,13 @@ module.controller('ClusterDeleteCtrl', [
                     sendNotifications.notify("Success", "Cluster " + $scope.clusterName + " deleted");
                     defer.resolve("Cluster " + $scope.clusterName + " deleted");
                 }, function(error) {
-                    sendNotifications.notify("Error", "Unable to delete cluster: " + $scope.clusterName);
-                    defer.reject("Unable to delete cluster: " + $scope.clusterName);
+                    sendNotifications.notify(
+                        "Error", "Unable to delete cluster: "
+                        + $scope.clusterName + ".  Error code: "
+                        + error.data.code);
+                    defer.reject(
+                        "Unable to delete cluster: " + $scope.clusterName
+                        + ".  Error code: " + error.data.code);
                 });
             return defer.promise;
         };
@@ -193,8 +202,13 @@ module.controller('ClusterDeleteCtrl', [
                     sendNotifications.notify("Success", "Cluster scaling initiated for: " + $scope.clusterName);
                     defer.resolve("Cluster scaling initiated for: " + $scope.clusterName);
                 }, function(error) {
-                    sendNotifications.notify("Error", "Unable to scale cluster " + $scope.clusterName);
-                    defer.reject("Unable to scale cluster " + $scope.clusterName);
+                    sendNotifications.notify(
+                        "Error", "Unable to scale cluster "
+                        + $scope.clusterName + ".  Error code: "
+                        + error.data.code);
+                    defer.reject(
+                        "Unable to scale cluster " + $scope.clusterName +
+                        ".  Error code: " + error.data.code);
                 });
             return defer.promise;
         };
@@ -261,8 +275,12 @@ module.controller('ClusterNewCtrl', [
                         sendNotifications.notify("Success", "New cluster " + name + " deployed.");
                         defer.resolve("New cluster " + name + " deployed.");
                     }, function(error) {
-                        sendNotifications.notify("Error", "Unable to deploy new cluster.");
-                        defer.reject("Unable to deploy new cluster.");
+                        sendNotifications.notify(
+                            "Error", "Unable to deploy new cluster."
+                             + "Error code: " + error.data.code);
+                        defer.reject(
+                            "Unable to deploy new cluster." + " Error code: "
+                            + error.data.code);
                     });
                 }, function(error) {
                     defer.reject(error);
@@ -300,7 +318,9 @@ module.controller('ScaleModalInstanceCtrl', function($scope, $uibModalInstance, 
         clusterDataFactory.updateCluster($scope.cluster_name, $scope.cluster_name, $scope.workerCount).then(function(response) {
           sendNotifications.notify("Success", "Cluster scaling initiated for: " + $scope.cluster_name);
         }, function(error) {
-          sendNotifications.notify("Error", "Unable to scale cluster " + $scope.cluster_name);
+          sendNotifications.notify(
+              "Error", "Unable to scale cluster "
+              + $scope.cluster_name + ".  Error code: " + error.data.code);
         });
         $uibModalInstance.close($scope.cluster);
     };
