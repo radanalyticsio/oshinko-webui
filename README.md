@@ -18,6 +18,7 @@ Set the following environment variables:
     OPENSHIFT_NODEJS_PORT=<Port to listen on>  Default:8080
 
 Optionally, you can set the following if you want more verbose logging:
+
     OPENSHIFT_OSHINKO_WEB_DEBUG=true
 
 You can pick one of these options:
