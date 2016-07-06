@@ -17,6 +17,9 @@ Set the following environment variables:
     OPENSHIFT_OSHINKO_REST_PORT=<Port for the oshinko rest server>
     OPENSHIFT_NODEJS_PORT=<Port to listen on>  Default:8080
 
+Optionally, you can set the following if you want more verbose logging:
+    OPENSHIFT_OSHINKO_WEB_DEBUG=true
+
 You can pick one of these options:
 
 * install node.js and run `node server.js`
@@ -47,7 +50,7 @@ To run the unit tests:
 You'll need protractor installed:
 
     npm install -g protractor
-    
+
 <optional> Then run:
 
     webdriver-manager update

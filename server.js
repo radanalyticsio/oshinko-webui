@@ -12,6 +12,7 @@ var app = express();
 
 var oshinko_rest_location = process.env.OPENSHIFT_OSHINKO_REST || '10.16.40.63';
 var oshinko_rest_port = process.env.OPENSHIFT_OSHINKO_REST_PORT || '80';
+var oshinko_web_debug = process.env.OPENSHIFT_OSHINKO_WEB_DEBUG || false;
 
 app.configure(function() {
     app.use(express.logger());
@@ -31,7 +32,7 @@ var fetchResponse = function(request, response, options, body) {
             content += chunk;
         });
         res.on('end', function() {
-            console.log(content);
+            oshinko_web_debug && console.log(content);
             response.send(content);
         });
     })
@@ -68,7 +69,7 @@ app.get('/api/clusters/:id', function(request, response) {
         path: '/clusters/' + request.params.id,
         method: 'GET'
     };
-    console.log("Fetching for id: " + request.params.id);
+    oshinko_web_debug && console.log("Fetching for id: " + request.params.id);
     fetchResponse(request, response, options, null);
 });
 
@@ -83,7 +84,7 @@ app.post('/api/clusters', function(request, response) {
         }
     };
     var jsonBody = JSON.stringify(request.body);
-    console.log("Request body: " + jsonBody);
+    oshinko_web_debug && console.log("Request body: " + jsonBody);
     fetchResponse(request, response, options, jsonBody);
 });
 
@@ -98,7 +99,7 @@ app.put('/api/clusters/:id', function(request, response) {
         }
     };
     var jsonBody = JSON.stringify(request.body);
-    console.log("Request body: " + jsonBody);
+    oshinko_web_debug && console.log("Request body: " + jsonBody);
     fetchResponse(request, response, options, jsonBody);
 });
 
@@ -112,7 +113,7 @@ app.delete('/api/clusters/:id', function(request, response) {
             'Content-Type': 'application/json'
         }
     };
-    console.log("Performing delete for id: " + request.params.id);
+    oshinko_web_debug && console.log("Performing delete for id: " + request.params.id);
     fetchResponse(request, response, options, null);
 });
 
