@@ -20,10 +20,10 @@
                     <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">Actions
                         <span class="caret"></span>
                     </button>
-                    <ul class="dropdown-menu" ng-controller="DetailsModalCtrl">
+                    <ul class="dropdown-menu">
                         <li>
-                            <a href="javascript:void(0);" ng-click="open('', 'stopform.html', 'StopModalInstanceCtrl')">Delete</a>
-                            <a href="javascript:void(0);" ng-click="open('', 'scaleform.html', 'ScaleModalInstanceCtrl')">Scale</a>
+                            <a href="javascript:void(0);" ng-click="deleteCluster(cluster_details.name)">Delete</a>
+                            <a href="javascript:void(0);" ng-click="scaleCluster(cluster_details)">Scale</a>
                         </li>
                     </ul>
                 </div>
