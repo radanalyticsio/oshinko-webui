@@ -69,7 +69,7 @@ module.controller('ClusterCtrl', [
         };
 
         var intervalPromise;
-        var REFRESH_SECONDS = 10;
+        var REFRESH_SECONDS = 200;
         intervalPromise = $interval(function() {
             $scope.reloadData();
         }.bind(this), REFRESH_SECONDS * 1000);
