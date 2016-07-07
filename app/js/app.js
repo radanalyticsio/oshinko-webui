@@ -22,15 +22,14 @@ app.run(['$rootScope', '$http', function ($rootScope, $http) {
 }]);
 
 app.config(['$routeProvider', function ($routeProvider) {
-    $routeProvider.when('/clusters/:Id',
+    $routeProvider.when('/clusters/:Id?',
         {
-            templateUrl: 'partials/cluster-detail.html',
-            controller: 'ClusterDetailCtrl',
-            activetab: 'clusters'
-        });
-    $routeProvider.when('/clusters',
-        {
-            templateUrl: 'partials/clusters.html',
+            templateUrl: function(params) {
+                if(!params['Id'])
+                    return 'partials/clusters.html';
+                else
+                    return 'partials/cluster-detail.html';
+            },
             controller: 'ClusterCtrl',
             activetab: 'clusters'
         });

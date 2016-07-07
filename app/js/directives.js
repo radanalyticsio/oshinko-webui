@@ -8,8 +8,8 @@
 
 
 var module = angular.module('Oshinko.directives', []);
-module.directive('appVersion', 
-		['version', 
+module.directive('appVersion',
+		['version',
 			function (version) {
 			    return function (scope, elm, attrs) {
 			        elm.text(version);
@@ -42,11 +42,11 @@ module.directive('clusterPanel', [
                 		var defer = $q.defer();
                 		appendSpinner();
 				        defer.resolve();
-				        return defer.promise; 
+				        return defer.promise;
     				}
 
     				function appendSpinner() {
-						wait.append(angular.element("<div class='spinner spinner-bg'>"));	        
+						wait.append(angular.element("<div class='spinner spinner-bg'>"));
 				        wait.append(notify);
 				        queryFirst(element, ".table-footer").prepend(wait);
     				}
@@ -78,10 +78,10 @@ module.directive('clusterPanel', [
 						            	REFRESH_SECONDS = 10;
 						            });
 				    		});
-				            
+
 				    };
 
-			    
+
 				    var intervalPromise = $interval(function() {
 				        scope.reloadDetails();
 				    }.bind(this), REFRESH_SECONDS * 1000);
