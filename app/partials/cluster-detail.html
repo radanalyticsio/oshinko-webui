@@ -6,18 +6,11 @@
  *
  */
 -->
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-8 col-md-12">
-            <div class="page-header page-header-bleed-right">
-                <div class="pull-right">
-                    <pf-notification-list></pf-notification-list>
-                </div>
-                <h1>Cluster Details</h1>
-            </div>
-            <div>
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">Actions
+<div class="container-cards-pf dashboard-cards">
+    <div class="card-pf card-pf-double" id="cluster-list">
+        <div class="card-pf-heading">
+            <div class="dropdown pull-right">
+                    <button class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">Actions
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
@@ -26,51 +19,19 @@
                             <a href="javascript:void(0);" ng-click="scaleCluster(cluster_details)">Scale</a>
                         </li>
                     </ul>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <ul>
-                            <li>Name:
-                                {{cluster_details.name}}</li>
-                            <li>Status:
-                                {{cluster_details.status}}</li>
-                            <li>Tags:
-                                <span ng-repeat="indtag in cluster_details.tags track by $index">{{indtag}}{{$last ? '' : ', '}}</span>
-                            </li>
-                            <li>Annotations:
-                                <span ng-repeat="annotation in cluster_details.annotations track by $index">{{annotation}}{{$last ? '' : ', '}}</span>
-                            </li>
-                            <li>Master address:
-                                {{cluster_details.masterUrl}}</li>
-                            <li>Workers count:
-                                {{cluster_details.workerCount}}
-                        </ul>
-                        <h2>Pods</h2>
-                            <div class="row">
-                                <div class="col-sm-8">
-                                    <table class="table">
-                                        <tr>
-                                            <th>Cluster IP</th>
-                                            <th>Status</th>
-                                            <th>Type</th>
-                                        </tr>
-                                        <tr ng-repeat="pod in cluster_details.pods">
-                                            <td>{{pod.ip}}</td>
-                                            <td class="capitalize">{{pod.type}}</td>
-                                            <td ng-switch="pod.status">
-                                                <span ng-switch-when="Running" class="label label-success">{{pod.status}}</span>
-                                                <span ng-switch-when="Error" class="label label-danger">{{pod.status}}</span>
-                                                <span ng-switch-when="Scaling" class="label label-default">{{pod.status}}</span>
-                                                <span ng-switch-default class="label label-default">{{pod.status}}</span>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                    </div>
-                </div>
             </div>
-            <hr/>
+            <h2 class="card-pf-title" translatable="yes">Cluster Details</h2>
+        </div>
+        <div class="card-pf-body">
+            <div class="well blank-slate-pf spacious" ng-if="!cluster_details" >
+                <div class="blank-slate-pf-icon">
+                    <i class="fa fa-hourglass-start"></i>
+                </div>
+                <h3 translatable="yes">Details are unavailable</h3>
+                <p translatable="yes">The cluster may have been deleted.</p>
+            </div>
+            <div ng-include="'forms/detail-body.html'"></div>
+            <div ng-include="'forms/cluster-body.html'"></div>
         </div>
     </div>
 </div>
