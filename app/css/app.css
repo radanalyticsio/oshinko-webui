@@ -248,3 +248,14 @@ table.cluster-listing {
         color: @metadata-color;
     }
 }
+
+.dl-horizontal dt{
+    text-align: left !important;
+    width: auto;
+    padding-right: 1em;
+}
+
+.dl-horizontal dd{
+    margin-left: 0;
+    margin-bottom: 0;
+}
