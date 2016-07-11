@@ -50,7 +50,7 @@
                             class="listing-ct-toggle">
                             <i class="fa fa-fw"></i>
                         </td>
-                        <td ng-click="gotoCluster(entry.name)">{{entry.name}}</td>
+                        <td id="clustername-{{entry.name}}" ng-click="gotoCluster(entry.name)">{{entry.name}}</td>
                         <td ng-switch="entry.status" ng-click="gotoCluster(entry.name)">
                             <span ng-switch-when="Running" class="label label-success">{{entry.status}}</span>
                             <span ng-switch-when="Error" class="label label-danger">{{entry.status}}</span>

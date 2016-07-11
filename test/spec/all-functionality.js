@@ -24,7 +24,7 @@ describe('Cluster page functionality', function() {
 
         // Create a cluster
         element(by.id('startbutton')).click();
-        element(by.id('clustername')).sendKeys('testcluster');
+        element(by.id('cluster-new-name')).sendKeys('testcluster');
         element(by.id('createbutton')).click();
         browser.wait(EC.visibilityOf(element(by.name('deletebutton-testcluster'))));
 
