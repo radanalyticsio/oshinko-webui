@@ -119,6 +119,17 @@
                         cancel.off("click", dismissDialog);
                         detach();
                     });
+
+                    /*
+                     * Allow us to submit via the enter button.
+                     * The subFunc argument is the name of a function
+                     * that exists in the scope of the modal controller.
+                     */
+                    scope.submitForm = function mySubmit(event, subFunc, arg) {
+                        if (event.keyCode == 13) {
+                           scope.complete(eval("scope." + subFunc)(arg));
+                        }
+                    };
                 },
             };
         }

@@ -10,7 +10,7 @@
     <div class="modal-header">
         <h4 class="modal-title" translatable="yes">Scale cluster {{clusterName}}</h4>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" ng-keyup="submitForm($event, 'scaleCluster', workerCount)">
         <form>
             <label for="numworkers" id="numworkers">Number of workers</label>
             <input name="numworkers" type="number" min="1" ng-model="workerCount" value="{{workerCount}}"/>
