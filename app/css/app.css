@@ -259,3 +259,7 @@ table.cluster-listing {
     margin-left: 0;
     margin-bottom: 0;
 }
+
+.close-icon {
+    color:#FF0000;
+}
