@@ -209,3 +209,37 @@ module.factory('OshinkoAuthService', ['$http', '$cookies', '$rootScope', '$timeo
         return service;
     }
 ]);
+
+/* Error handling factory.  Since our server will return
+ * a successful status code, even on things where an operation
+ * was not successful, we need to take a closer look at
+ * the response itself to determine if we should report an
+ * error to the user.  This factory is mean to be the one stop shop
+ * for error handling and can be extended to handle all sorts
+ * of things.
+ */
+module.factory('errorHandling', function(sendNotifications) {
+    var errorHandlingFactory= {};
+
+    errorHandlingFactory.handle = function(response, error, defer, successMsg) {
+        if (response && response.data && response.data.errors) {
+            response.data.errors.forEach(function (singleError) {
+                console.error(singleError['title'] + "\nStatus Code: " + singleError.status + "\n" + singleError.details);
+            });
+            if (defer) {
+                defer.reject(response.data.errors[0].details);
+            }
+        } else if (error) {
+            console.error("Problem communicating with server.  Error code:  " + error.data.code);
+            if (defer) {
+                defer.reject(error.details);
+            }
+        } else {
+            sendNotifications.notify("Success", successMsg);
+            if(defer) {
+                defer.resolve(successMsg);
+            }
+        };
+    };
+    return errorHandlingFactory;
+});

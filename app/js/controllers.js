@@ -24,6 +24,7 @@ module.controller('ClusterCtrl', [
     'sendNotifications',
     'clusterActions',
     "ListingState",
+    "errorHandling",
     function($scope, $interval, $location, $route, clusterDataFactory, sendNotifications, clusterActions, ListingState) {
         var cluster_id = $route.current.params.Id || '';
         $scope.predicate = 'name';
@@ -101,7 +102,8 @@ module.controller('ClusterDeleteCtrl', [
     "dialogData",
     "clusterData",
     "sendNotifications",
-     function($q, $scope, dialogData, clusterData, sendNotifications) {
+    "errorHandling",
+     function($q, $scope, dialogData, clusterData, sendNotifications, errorHandling) {
 
         $scope.clusterName = dialogData.clusterName || "";
         $scope.workerCount = dialogData.workerCount || "";
@@ -110,16 +112,10 @@ module.controller('ClusterDeleteCtrl', [
             var defer = $q.defer();
             clusterData.sendDeleteCluster($scope.clusterName)
                 .then(function(response) {
-                    sendNotifications.notify("Success", "Cluster " + $scope.clusterName + " deleted");
-                    defer.resolve("Cluster " + $scope.clusterName + " deleted");
+                    var successMsg = "Cluster " + $scope.clusterName + " deleted";
+                    errorHandling.handle(response, null, defer, successMsg);
                 }, function(error) {
-                    sendNotifications.notify(
-                        "Error", "Unable to delete cluster: "
-                        + $scope.clusterName + ".  Error code: "
-                        + error.data.code);
-                    defer.reject(
-                        "Unable to delete cluster: " + $scope.clusterName
-                        + ".  Error code: " + error.data.code);
+                    errorHandling.handle(null, error, defer, null);
                 });
             return defer.promise;
         };
@@ -128,16 +124,10 @@ module.controller('ClusterDeleteCtrl', [
             var defer = $q.defer();
             clusterData.sendScaleCluster($scope.clusterName, count)
                 .then(function(response) {
-                    sendNotifications.notify("Success", "Cluster scaling initiated for: " + $scope.clusterName);
-                    defer.resolve("Cluster scaling initiated for: " + $scope.clusterName);
+                    var successMsg = "Cluster scaling initiated for: " + $scope.clusterName;
+                    errorHandling.handle(response, null, defer, successMsg);
                 }, function(error) {
-                    sendNotifications.notify(
-                        "Error", "Unable to scale cluster "
-                        + $scope.clusterName + ".  Error code: "
-                        + error.data.code);
-                    defer.reject(
-                        "Unable to scale cluster " + $scope.clusterName +
-                        ".  Error code: " + error.data.code);
+                    errorHandling.handle(null, error, defer, null);
                 });
             return defer.promise;
         };
@@ -150,7 +140,8 @@ module.controller('ClusterNewCtrl', [
     "dialogData",
     "clusterData",
     "sendNotifications",
-     function($q, $scope, dialogData, clusterData, sendNotifications) {
+    "errorHandling",
+     function($q, $scope, dialogData, clusterData, sendNotifications, errorHandling) {
         var NAME_RE = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/;
         var NUMBER_RE = /^[0-9]*$/;
         var fields = {
@@ -201,15 +192,10 @@ module.controller('ClusterNewCtrl', [
             validate(name, workersInt)
                 .then(function() {
                     clusterData.sendCreateCluster(name, workersInt).then(function(response) {
-                        sendNotifications.notify("Success", "New cluster " + name + " deployed.");
-                        defer.resolve("New cluster " + name + " deployed.");
+                        var successMsg = "New cluster " + name + " deployed.";
+                        errorHandling.handle(response, null, defer, successMsg);
                     }, function(error) {
-                        sendNotifications.notify(
-                            "Error", "Unable to deploy new cluster."
-                             + "Error code: " + error.data.code);
-                        defer.reject(
-                            "Unable to deploy new cluster." + " Error code: "
-                            + error.data.code);
+                        errorHandling.handle(null, error, defer, null);
                     });
                 }, function(error) {
                     defer.reject(error);
