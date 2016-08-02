@@ -10,7 +10,7 @@
     <div class="modal-header">
         <h4 class="modal-title" translatable="yes">Deploy cluster</h4>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" ng-keyup="submitForm($event, 'newCluster')">
         <table class="form-table-ct">
             <tr>
                 <td class="top">

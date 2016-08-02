@@ -33,6 +33,18 @@ var fetchResponse = function(request, response, options, body) {
         });
         res.on('end', function() {
             oshinko_web_debug && console.log(content);
+            if (content.length > 0) {
+                try {
+                    responseJson = JSON.parse(content);
+                    if (responseJson['errors']) {
+                        responseJson['errors'].forEach(function (error) {
+                            console.log("Server responded with an error: " + error['details']);
+                        });
+                    }
+                } catch (err) {
+                    console.log("Failed parsing server response, content was: " + content);
+                }
+            }
             response.send(content);
         });
     })
