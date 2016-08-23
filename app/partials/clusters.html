@@ -16,14 +16,14 @@
             <h2 class="card-pf-title" translatable="yes">Spark Clusters</h2>
         </div>
         <div class="card-pf-body">
-            <div class="well blank-slate-pf spacious" ng-if="!details" >
+            <div class="well blank-slate-pf spacious" ng-if="!details || details.length == 0" >
                 <div class="blank-slate-pf-icon">
                     <i class="fa fa-hourglass-start"></i>
                 </div>
                 <h3>No Spark Clusters present</h3>
                 <p translatable="yes">You can deploy a new spark cluster.</p>
             </div>
-            <table listing-table  class="listing-ct dashboard-list" ng-if="details">
+            <table listing-table  class="listing-ct dashboard-list" ng-if="details.length > 0">
                 <thead>
                     <tr>
                         <th class="listing-ct-empty"></th>
