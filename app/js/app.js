@@ -44,14 +44,14 @@ app.config(['$routeProvider', function ($routeProvider) {
 
 app.run(['$rootScope', '$location', '$cookies', '$http',
     function ($rootScope, $location, $cookies, $http) {
-        $rootScope.globals = $cookies.getObject('daikoncookie') || {};
+        $rootScope.globals = $cookies.getObject('oshinkookie') || {};
         if ($rootScope.globals.currentUser) {
             $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata;
         }
 
         $rootScope.$on('$locationChangeStart', function (event, next, current) {
             // redirect to login page if not logged in
-            if ($location.path() !== '/login' && !$cookies.getObject('daikoncookie')) {
+            if ($location.path() !== '/login' && !$cookies.getObject('oshinkookie')) {
                 $location.path('/login');
             }
         });
