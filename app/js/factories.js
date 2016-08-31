@@ -195,14 +195,14 @@ module.factory('OshinkoAuthService', ['$http', '$cookies', '$rootScope', '$timeo
             var expireDate = new Date(now.setDate(now.getDate() + 1));
             // var expireDate = new Date(now.setTime(now.getTime() + (30 * 1000))); //expire cookie in 30 sec
             $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata;
-            $cookies.putObject('daikoncookie', $rootScope.globals, {
+            $cookies.putObject('oshinkookie', $rootScope.globals, {
                 'expires': expireDate
             });
         };
 
         service.ClearCredentials = function() {
             $rootScope.globals = {};
-            $cookies.remove('daikoncookie');
+            $cookies.remove('oshinkookie');
             $http.defaults.headers.common.Authorization = 'Basic ';
         };
 
