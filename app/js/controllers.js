@@ -87,7 +87,6 @@ module.controller('ClusterCtrl', [
 
 module.controller('NavCtrl', function($rootScope, $scope, $location, OshinkoAuthService) {
     $scope.isActive = function(route) {
-        $scope.path = $location.path();
         return $location.path() === route;
     };
     $scope.logout = function() {
