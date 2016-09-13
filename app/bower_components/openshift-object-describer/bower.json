@@ -1,0 +1,33 @@
+{
+  "name": "openshift-object-describer",
+  "version": "1.1.2",
+  "description": "Provides extensions to the kubernetes-object-describer for OpenShift's resources.",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "kubernetes",
+    "angularjs",
+    "openshift"
+  ],
+  "authors": [
+    "Jessica Forrester <jforrest@redhat.com>",
+    "Jordan Liggitt <jliggitt@redhat.com>"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "main": [
+    "dist/object-describer.js"
+  ],
+  "dependencies": {
+    "kubernetes-object-describer": "1.0.2"
+  },
+  "devDependencies": {
+    "bootstrap": "~3.3.4"
+  }
+}

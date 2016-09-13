@@ -1440,7 +1440,6 @@
 				"Europe/Moscow",
 				"Europe/Simferopol",
 				"Europe/Volgograd",
-				"Europe/Kirov",
 				"Europe/Astrakhan",
 				"Europe/Samara",
 				"Europe/Ulyanovsk",
@@ -1448,7 +1447,6 @@
 				"Asia/Omsk",
 				"Asia/Novosibirsk",
 				"Asia/Barnaul",
-				"Asia/Tomsk",
 				"Asia/Novokuznetsk",
 				"Asia/Krasnoyarsk",
 				"Asia/Irkutsk",
@@ -4251,16 +4249,7 @@
 			"countries": [
 				"RU"
 			],
-			"comments": "MSK+00 - Volgograd, Saratov"
-		},
-		"Europe/Kirov": {
-			"name": "Europe/Kirov",
-			"lat": 58.6,
-			"long": 49.65,
-			"countries": [
-				"RU"
-			],
-			"comments": "MSK+00 - Kirov"
+			"comments": "MSK+00 - Volgograd, Kirov, Saratov"
 		},
 		"Europe/Astrakhan": {
 			"name": "Europe/Astrakhan",
@@ -4314,7 +4303,7 @@
 			"countries": [
 				"RU"
 			],
-			"comments": "MSK+03 - Novosibirsk"
+			"comments": "MSK+03 - Novosibirsk, Tomsk"
 		},
 		"Asia/Barnaul": {
 			"name": "Asia/Barnaul",
@@ -4324,15 +4313,6 @@
 				"RU"
 			],
 			"comments": "MSK+04 - Altai"
-		},
-		"Asia/Tomsk": {
-			"name": "Asia/Tomsk",
-			"lat": 56.5,
-			"long": 84.9667,
-			"countries": [
-				"RU"
-			],
-			"comments": "MSK+04 - Tomsk"
 		},
 		"Asia/Novokuznetsk": {
 			"name": "Asia/Novokuznetsk",
@@ -4413,7 +4393,7 @@
 			"countries": [
 				"RU"
 			],
-			"comments": "MSK+08 - Magadan"
+			"comments": "MSK+07 - Magadan"
 		},
 		"Asia/Sakhalin": {
 			"name": "Asia/Sakhalin",

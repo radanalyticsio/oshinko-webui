@@ -1370,10 +1370,10 @@ select.mobile-device {
   border-top-left-radius: 0px;
 }
 .bootstrap-switch.bootstrap-switch-focused {
-  border-color: #66afe9;
+  border-color: #0088ce;
   outline: 0;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
-  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(0, 136, 206, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(0, 136, 206, 0.6);
 }
 .bootstrap-switch.bootstrap-switch-on .bootstrap-switch-label,
 .bootstrap-switch.bootstrap-switch-inverse.bootstrap-switch-off .bootstrap-switch-label {
@@ -2088,13 +2088,13 @@ fieldset[disabled] .combobox-container .input-group-addon.active {
   box-shadow: inset 0 1px 1px rgba(3, 3, 3, 0.075);
 }
 .bootstrap-datepicker.form-control[readonly]:focus {
-  border-color: #66afe9;
+  border-color: #0088ce;
   outline: 0;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
-  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(0, 136, 206, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(0, 136, 206, 0.6);
 }
 .bootstrap-datepicker.form-control[readonly]:focus {
-  border-color: #66afe9 !important;
+  border-color: #0088ce !important;
 }
 .has-error .bootstrap-datepicker.form-control[readonly]:focus {
   border-color: #990000;
@@ -2149,10 +2149,10 @@ fieldset[disabled] .combobox-container .input-group-addon.active {
 .datepicker table tr th {
   border-radius: 1px;
 }
-.datepicker table tr td.active.active,
-.datepicker table tr td.active.active:hover,
-.datepicker table tr td.active.active.disabled,
-.datepicker table tr td.active.active.disabled:hover {
+.datepicker table tr td.active,
+.datepicker table tr td.active:hover,
+.datepicker table tr td.active.disabled,
+.datepicker table tr td.active.disabled:hover {
   background: #0088ce !important;
   color: #fff !important;
   text-shadow: none;
@@ -2170,10 +2170,10 @@ fieldset[disabled] .combobox-container .input-group-addon.active {
 .datepicker table tr td span {
   border-radius: 1px;
 }
-.datepicker table tr td span.active.active,
-.datepicker table tr td span.active.active:hover,
-.datepicker table tr td span.active.active.disabled,
-.datepicker table tr td span.active.active.disabled:hover {
+.datepicker table tr td span.active,
+.datepicker table tr td span.active:hover,
+.datepicker table tr td span.active.disabled,
+.datepicker table tr td span.active.disabled:hover {
   background: #0088ce;
   text-shadow: none;
 }
@@ -2211,10 +2211,10 @@ fieldset[disabled] .combobox-container .input-group-addon.active {
   margin-top: -4px;
 }
 .bootstrap-select.btn-group .btn:focus {
-  border-color: #66afe9;
+  border-color: #0088ce;
   outline: 0 !important;
-  -webkit-box-shadow: inset 0 1px 1px rgba(3, 3, 3, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
-  box-shadow: inset 0 1px 1px rgba(3, 3, 3, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+  -webkit-box-shadow: inset 0 1px 1px rgba(3, 3, 3, 0.075), 0 0 8px rgba(0, 136, 206, 0.6);
+  box-shadow: inset 0 1px 1px rgba(3, 3, 3, 0.075), 0 0 8px rgba(0, 136, 206, 0.6);
 }
 .has-error .bootstrap-select.btn-group .btn {
   border-color: #cc0000;
@@ -3324,6 +3324,11 @@ table.datatable th:active {
 }
 .layout-pf-alt.layout-pf-alt-fixed-with-footer body {
   padding-bottom: 37px;
+}
+a.disabled {
+  color: #8b8d8f;
+  cursor: not-allowed;
+  text-decoration: none;
 }
 .list-view-pf .list-group-item {
   align-items: flex-start;
@@ -4619,6 +4624,7 @@ table.datatable th:active {
 }
 .drawer-pf .panel-group .panel-heading + .panel-collapse .panel-body {
   border-top: none;
+  border-bottom: 1px solid #d1d1d1;
   padding: 0;
 }
 .drawer-pf .panel-counter {
@@ -4632,28 +4638,18 @@ table.datatable th:active {
   border-bottom: 1px solid #d1d1d1;
 }
 .drawer-pf .panel-group {
-  bottom: 52px;
+  bottom: 0;
   margin-bottom: 0;
   position: absolute;
   top: 25px;
   width: 100%;
 }
 .drawer-pf .panel-title a {
+  cursor: pointer;
   display: block;
 }
-.drawer-pf-action {
-  border-top: 1px solid #d1d1d1;
-  bottom: 21px;
-  background-image: -webkit-linear-gradient(top, #fafafa 0%, #ededed 100%);
-  background-image: -o-linear-gradient(top, #fafafa 0%, #ededed 100%);
-  background-image: linear-gradient(to bottom, #fafafa 0%, #ededed 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fffafafa', endColorstr='#ffededed', GradientType=0);
-  position: fixed;
-}
 .drawer-pf-action .btn {
-  padding: 15px 0;
-  width: 318px;
+  padding: 10px 0;
 }
 .drawer-pf-loading {
   color: #4d5258;
@@ -4674,6 +4670,9 @@ table.datatable th:active {
 .drawer-pf-notification .pficon {
   font-size: 14px;
   margin-top: 3px;
+}
+.drawer-pf-notification:last-of-type {
+  border-bottom: none;
 }
 .drawer-pf-notification:hover {
   background-color: #def3ff;

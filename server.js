@@ -10,8 +10,8 @@ var express = require("express");
 var http = require("http");
 var app = express();
 
-var oshinko_rest_location = process.env.OPENSHIFT_OSHINKO_REST || '10.16.40.63';
-var oshinko_rest_port = process.env.OPENSHIFT_OSHINKO_REST_PORT || '80';
+var oshinko_rest_location = process.env.OPENSHIFT_OSHINKO_REST || '127.0.0.1';
+var oshinko_rest_port = process.env.OPENSHIFT_OSHINKO_REST_PORT || '42000';
 var oshinko_web_debug = process.env.OPENSHIFT_OSHINKO_WEB_DEBUG || false;
 
 app.configure(function() {

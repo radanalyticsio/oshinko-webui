@@ -1,0 +1,5 @@
+<span ng-hide="enableCollapse && value.length > 120">{{value}}</span>
+<span ng-show="enableCollapse && value.length > 120">
+  <span class="reveal-contents-link" style="cursor: pointer;" title="Expand">{{value.substring(0, 120)}}<a href="javascript:;">...</a></span>
+  <span style="display: none;" class="reveal-contents">{{value}}</span>
+</span>

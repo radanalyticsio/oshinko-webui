@@ -1,0 +1,46 @@
+{
+  "name": "kubernetes-label-selector",
+  "version": "1.0.2",
+  "description": "Provides a LabelSelector object that understand kubernetes labels and label selector syntax, and works directly with JSON API objects from kubernetes.  Also provides a label filtering widget.",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "kubernetes",
+    "angularjs",
+    "labels"
+  ],
+  "authors": [
+    "Jessica Forrester <jforrest@redhat.com>"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "main": [
+    "labelSelector.js",
+    "labelFilter.js",
+    "labelFilter.css"
+  ],
+  "dependencies": {
+    "angular": "~1.3.8",
+    "selectize": "~0.12.1",
+    "fontawesome": "~4.3.0"
+  },
+  "devDependencies": {
+    "bootstrap": "~3.3.4"
+  },
+  "homepage": "https://github.com/kubernetes-ui/label-selector",
+  "_release": "1.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.2",
+    "commit": "5d5a87e37357bc0fd7c5fa86794d6c2ad950f657"
+  },
+  "_source": "https://github.com/kubernetes-ui/label-selector.git",
+  "_target": "1.0.2",
+  "_originalSource": "kubernetes-label-selector"
+}

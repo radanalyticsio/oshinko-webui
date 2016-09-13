@@ -1,0 +1,35 @@
+{
+  "name": "hawtio-extension-service",
+  "version": "2.0.2",
+  "main": [
+    "dist/hawtio-extension-service.js"
+  ],
+  "ignore": [
+    ".bowerrc",
+    ".jshintrc",
+    "node_modules",
+    "libs",
+    "gulpfile.js",
+    "karma.conf.js",
+    "index.html",
+    "package.json",
+    "templates",
+    "hawtio-extension-service.js",
+    "!dist/hawtio-extension-service.js",
+    "test"
+  ],
+  "dependencies": {
+    "hawtio-core": "~2.0.0"
+  },
+  "devDependencies": {},
+  "homepage": "https://github.com/hawtio/hawtio-extension-service",
+  "_release": "2.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.2",
+    "commit": "a9b30519c113d04accfdb25eec32ecaff94fbc51"
+  },
+  "_source": "https://github.com/hawtio/hawtio-extension-service.git",
+  "_target": "2.0.2",
+  "_originalSource": "hawtio-extension-service"
+}

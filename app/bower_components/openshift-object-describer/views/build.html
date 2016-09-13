@@ -1,0 +1,74 @@
+<div>
+  <kubernetes-object-describe-header resource="resource" kind="kind"></kubernetes-object-describe-header>
+  <dl class="dl-horizontal">
+    <dt>Name</dt>
+    <dd>{{resource.metadata.name}}</dd>
+    <dt>Namespace</dt>
+    <dd>{{resource.metadata.namespace}}</dd>
+    <dt>Created</dt>
+    <dd>{{resource.metadata.creationTimestamp | date:'medium'}}</dd>
+  </dl>
+  <h3>Build Configuration</h3>
+  <dl class="dl-horizontal" style="margin-bottom: 0;">
+    <dt>Strategy</dt>
+    <dd>{{resource.spec.strategy.type}}</dd>
+  </dl>
+  <div ng-switch="resource.spec.strategy.type">
+    <div ng-switch-when="Source">
+      <div ng-if="resource.spec.strategy.sourceStrategy.from">
+        <dl class="dl-horizontal" style="margin-bottom: 0;">
+          <dt>Kind</dt>
+          <dd>{{resource.spec.strategy.sourceStrategy.from.kind}}</dd>
+          <dt>Builder image</dt>
+          <dd>{{resource.spec.strategy.sourceStrategy.from | imageObjectRef : resource.metadata.namespace}}</dd>
+        </dl>
+      </div>
+    </div>
+    <div ng-switch-when="Docker">
+      <div ng-if="resource.spec.strategy.dockerStrategy.from">
+        <dl class="dl-horizontal" style="margin-bottom: 0;">
+          <dt>Kind</dt>
+          <dd>{{resource.spec.strategy.dockerStrategy.from.kind}}</dd>
+          <dt>Builder image</dt>
+          <dd>{{resource.spec.strategy.dockerStrategy.from | imageObjectRef : resource.metadata.namespace}}</dd>
+        </dl>
+      </div>
+    </div>
+    <div ng-switch-when="Custom">
+      <dl class="dl-horizontal" style="margin-bottom: 0;">
+        <dt>Kind</dt>
+        <dd>{{resource.spec.strategy.customStrategy.from.kind}}</dd>
+        <dt>Builder image</dt>
+        <dd>{{resource.spec.strategy.customStrategy.from | imageObjectRef : resource.metadata.namespace}}</dd>
+      </dl>
+    </div>
+  </div>
+  <div ng-if="resource.spec.source">
+    <div ng-if="resource.spec.source.type == 'Git'">
+      <dl class="dl-horizontal" style="margin-bottom: 0;">
+        <dt>Source repo</dt>
+        <dd>{{resource.spec.source.git.uri}}</dd>
+        <dt>Source branch/tag/ref</dt>
+        <dd>{{resource.spec.source.git.ref || 'master'}}</dd>
+      </dl>
+    </div>
+  </div>
+  <h3>Status</h3>
+  <dl class="dl-horizontal">
+    <dt>Phase</dt>
+    <dd>{{resource.status.phase}}</dd>
+    <dt>Started</dt>
+    <dd>
+      <span ng-if="resource.status.startTimestamp">{{resource.status.startTimestamp | date:'medium'}}</span>
+      <span ng-if="!resource.status.startTimestamp"><em>not started</em></span>
+    </dd>
+    <dt>Completed</dt>
+    <dd>
+      <span ng-if="resource.status.completionTimestamp">{{resource.status.completionTimestamp | date:'medium'}}</span>
+      <span ng-if="!resource.status.completionTimestamp"><em>not complete</em></span>
+    </dd>
+  </dl>
+  <kubernetes-object-describe-labels resource="resource"></kubernetes-object-describe-labels>
+  <kubernetes-object-describe-annotations resource="resource"></kubernetes-object-describe-annotations>
+  <kubernetes-object-describe-footer resource="resource"></kubernetes-object-describe-footer>
+</div>

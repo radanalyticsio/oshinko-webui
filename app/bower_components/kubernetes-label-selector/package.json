@@ -1,0 +1,25 @@
+{
+  "name": "label-selector",
+  "version": "1.0.0",
+  "description": "Provides a LabelSelector object that understand kubernetes labels and label selector syntax, and works directly with JSON API objects from kubernetes.  Also provides a label filtering widget.",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kubernetes-ui/label-selector.git"
+  },
+  "main": "labelFilter.js",
+  "dependencies": {},
+  "devDependencies": {
+    "autoprefixer": "^6.3.5",
+    "grunt": "~0.4.5",
+    "grunt-contrib-connect": "~0.9.0",
+    "grunt-contrib-jshint": "~0.11.1",
+    "grunt-contrib-less": "^1.2.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-wiredep": "~2.0.0",
+    "less-plugin-autoprefix": "^1.5.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jessica Forrester <jforrest@redhat.com>"
+}

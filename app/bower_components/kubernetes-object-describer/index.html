@@ -1,0 +1,72 @@
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <base href="/">
+    <title>Kubernetes Describer Example</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+  
+    <!-- example theme uses bootstrap -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <!-- endbuild -->
+     <style type="text/css">
+        /* Included directly in here since this is only an extension of the example theme that uses bootstrap */
+        .dl-horizontal dt {text-align: left;}
+    </style>
+  </head>
+<body ng-app="exampleApp" style="margin-left: 10px;">
+    <h1>Default generic describer</h1>
+    <kubernetes-object-describer resource="kubernetesExamplePod" more-details-link="example/path/to/more/details.htm"></kubernetes-object-describer>
+    <hr>
+    <h1>Pod describer</h1>
+    <kubernetes-object-describer resource="kubernetesExamplePod" more-details-link="example/path/to/more/details.htm" kind="Pod"></kubernetes-object-describer>
+    <hr>
+    <h1>Service describer</h1>
+    <kubernetes-object-describer resource="kubernetesExampleService" more-details-link="example/path/to/more/details.htm" kind="Service"></kubernetes-object-describer>
+    <hr>
+    <h1>Service describer (headless)</h1>
+    <kubernetes-object-describer resource="kubernetesExampleHeadlessService" more-details-link="example/path/to/more/details.htm" kind="Service"></kubernetes-object-describer>
+    <hr>
+    <h1>Service describer (node port)</h1>
+    <kubernetes-object-describer resource="kubernetesExampleNodePortService" more-details-link="example/path/to/more/details.htm" kind="Service"></kubernetes-object-describer>
+    <hr>
+    <h1>Service describer (load balanced)</h1>
+    <kubernetes-object-describer resource="kubernetesExampleLoadBalancedService" more-details-link="example/path/to/more/details.htm" kind="Service"></kubernetes-object-describer>
+    <hr>
+    <h1>Replication Controller describer</h1>
+    <kubernetes-object-describer resource="kubernetesExampleRC" more-details-link="example/path/to/more/details.htm" kind="ReplicationController"></kubernetes-object-describer>    
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/angular/angular.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="fixtures/pod.js"></script>
+        <script src="fixtures/service.js"></script>
+        <script src="fixtures/replicationController.js"></script>
+        <script src="dist/object-describer.js"></script>
+        <!-- endbuild -->
+
+    <script src="bower_components/jQuery/dist/jquery.js"></script>
+    <script type="text/javascript">
+        angular.module('exampleApp', ['kubernetesUI'])
+            .run(function($rootScope) {
+                // TODO any example JS will go here
+                $rootScope.kubernetesExamplePod = window.EXAMPLE_POD;
+                $rootScope.kubernetesExampleService = window.EXAMPLE_SERVICE;
+                $rootScope.kubernetesExampleHeadlessService = window.EXAMPLE_HEADLESS_SERVICE;
+                $rootScope.kubernetesExampleNodePortService = window.EXAMPLE_NODE_PORT_SERVICE;
+                $rootScope.kubernetesExampleLoadBalancedService = window.EXAMPLE_LOAD_BALANCED_SERVICE;
+                $rootScope.kubernetesExampleRC = window.EXAMPLE_RC;
+            });
+    </script>
+</body>
+</html>
