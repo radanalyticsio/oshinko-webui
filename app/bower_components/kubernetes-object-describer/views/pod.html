@@ -1,0 +1,37 @@
+<div>
+  <kubernetes-object-describe-header resource="resource" kind="kind"></kubernetes-object-describe-header>
+  <dl class="dl-horizontal">
+    <dt>Name</dt>
+    <dd>{{resource.metadata.name}}</dd>
+    <dt>Namespace</dt>
+    <dd>{{resource.metadata.namespace}}</dd>
+    <dt>Created</dt>
+    <dd>{{resource.metadata.creationTimestamp | date:'medium'}}</dd>
+    <dt>Restart policy</dt>
+    <dd>{{resource.spec.restartPolicy || 'Always'}}</dd>
+    <dt ng-if="resource.spec.serviceAccountName">Service account</dt>
+    <dd ng-if="resource.spec.serviceAccountName">{{resource.spec.serviceAccountName}}</dd>
+  </dl>
+  <h3>Status</h3>
+  <dl class="dl-horizontal">
+    <dt>Phase</dt>
+    <dd>{{resource.status.phase}}</dd>
+    <dt>Node</dt>
+    <dd>{{resource.spec.nodeName || 'unknown'}}
+      <span ng-if="resource.status.hostIP && resource.spec.nodeName != resource.status.hostIP">({{resource.status.hostIP}})</span></dd>
+    <dt>IP on node</dt>
+    <dd>
+      {{resource.status.podIP}}
+      <span ng-if="!resource.status.podIP"><em>none</em></span>
+    </dd>
+  </dl>
+  <h3>Container Statuses</h3>
+  <kubernetes-object-describe-container-statuses container-statuses="resource.status.containerStatuses"></kubernetes-object-describe-container-statuses>
+  <h3>Containers</h3>
+  <kubernetes-object-describe-containers containers="resource.spec.containers"></kubernetes-object-describe-containers>
+  <h3>Volumes</h3>
+  <kubernetes-object-describe-volumes volumes="resource.spec.volumes"></kubernetes-object-describe-volumes>
+  <kubernetes-object-describe-labels resource="resource"></kubernetes-object-describe-labels>
+  <kubernetes-object-describe-annotations resource="resource"></kubernetes-object-describe-annotations>
+  <kubernetes-object-describe-footer resource="resource"></kubernetes-object-describe-footer>
+</div>

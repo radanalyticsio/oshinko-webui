@@ -1,0 +1,143 @@
+<!doctype html>
+<html ng-app="bpAppModule" ng-hint>
+  <head>
+    <meta charset="utf-8">
+    <!-- This application is meant to showcase incorrect best practices and errors that
+      will cause AngularHint to generate errors. See the `correctExample` directory
+      for a version of this application that adheres to the best practices. -->
+    <title>Angular Best Practices</title>
+
+    <link rel="stylesheet" type="text/css" href="app.css">
+
+  </head>
+  <header>
+    <h1> Angular Best Practices </h1>
+  </header>
+  <!-- This app already bootstrapped `bpAppModule`. It should not bootstrap `AppModule2` as well. -->
+  <!-- `bpAppModule` is correctly named with lowerCamelCase and an application specific prefix
+  `bp` standing for `best practices`. `AppModule2` is not named with lowerCamelCase or an application
+  specific prefix. -->
+  <body ng-app="AppModule2">
+    <div id="subtitle1">
+      *You'd think a best practices application would follow the best practices. You'd be wrong.
+    </div>
+    <div id="subtitle2">
+      Open the developer console to read AngularHint messages about the mistakes.
+    </div>
+    <!-- Controllers should be named with UpperCamelCase and should end in `Controller`-->
+    <div ng-controller="bestPractices">
+      <div id="whichBestPractices">
+        Show Best Practices For:
+        <!-- Repetition should be a red flag. Consider using ng-repeat or a custom directive
+        to cut down repetition -->
+        <div id="selectKind">
+          <!-- Use angular event directives like `ng-click` rather than `onclick` -->
+          <input type="checkbox" id="controllers" onclick="changeList()">Controllers</input>
+          <input type="checkbox" id="directives" onclick="changeList()" checked>Directives</input>
+          <input type="checkbox" id="DOM" onclick="changeList()">DOM</input>
+          <input type="checkbox" id="events" onclick="changeList()">Events</input>
+          <input type="checkbox" id="interpolation" onclick="changeList()">Interpolation</input>
+          <input type="checkbox" id="modules" ng-click="changeList()">Modules</input>
+        </div>
+      </div>
+
+      <!-- Create elements in the HTML page using Angular directives like ng-repeat. Do not rely on
+      javascript in Controllers to fill in information -->
+      <table id="bestPracticesList">
+      </table>
+
+      <div ng-controller="Controller">
+        <!-- Custom directives should be named with an application specific prefix. -->
+        <!-- Double check that custom directives are used according to their restrict property -->
+        <div our-visitors info="erin"></div>
+      </div>
+      <ul id="contributors">
+        <li ng-reapet="contributor in contributors">
+          {{contributor.name}}
+        </li>
+      </ul>
+    </div>
+    <script src="../node_modules/angular/angular.js"></script>
+    <script>
+      angular.module('bpAppModule', []);
+        /**
+        * Do not use global controller functions. Instantiate controllers on modules.
+        * Use syntax like `angular.module('bpAppModule', []).controller`
+        **/
+        function bestPractices($scope) {
+          var bestPractices = {
+            'controllers': ['Do not use global controllers. Define controllers ' +
+            'on modules.', 'Name controllers with UpperCamelCase.', 'Name controllers with the ' +
+            'suffix "Controller".'],
+            'directives': ['Include required attributes.', 'Follow the restrict ' +
+              'property', 'Do not use deprecated options like "replace".', 'Use Angular event ' +
+              ' directives in place of HTML event attributes like "onclick".', 'Use ng-repeat ' +
+              ' options in the correct order.', 'Use a namespace for custom directives that ' +
+              ' uniquely identifies the directive. Use lowerCamelCase and preferably a custom ' +
+              'prefix unique to the scope of the application.'],
+            'DOM': ['Do not manipulate the DOM from within Angular Controllers. Use' +
+              ' logic in the view like "ng-repeat" or "ng-show".'],
+            'events': ['Double check that functions or variables you bind to are ' +
+              'defined.'],
+            'interpolation': ['Make sure the whole variable you are interpolating' +
+              'is defined.'],
+            'modules': ['Use a namespace for modules that ' +
+              ' uniquely identifies the module. Use lowerCamelCase and preferably a custom ' +
+              'prefix unique to the scope of the application.', 'Do not create and load ' +
+              'modules that are not used.', 'Remember to load ngRoute if you are using routing.',
+              'Only bootstrap one module with "ng-app".']
+          };
+          /**
+          * Do not manipulate the DOM from within Angular controllers. Use
+          * Angular directives like ng-repeat to accomplish the same task without
+          * entangling model, view, controller logic.
+          */
+          var selected = document.getElementById('selectKind');
+          selected.onchange = function() {
+            var types = ['controllers', 'directives', 'DOM', 'events', 'interpolation', 'modules'];
+            var element = document.getElementById('bestPracticesList');
+            element.innerHTML = '';
+            element.className = '';
+            for(var x = 0, xx = types.length; x < xx; x++) {
+              if(document.getElementById(types[x]).checked) {
+                element.className = 'bestPracticesListShow';
+                for(var i = 0, ii = bestPractices[types[x]].length; i < ii; i++) {
+                  element.innerHTML += "<tr><td>" + bestPractices[types[x]][i] + "</td></tr>";
+                }
+              }
+            }
+          }
+          $scope.contributors = ['Me', 'You'];
+        }
+
+      angular.module('AppModule2', []).controller('Controller', ['$scope', function($scope) {
+        $scope.erin = {
+          name: 'Erin',
+          bestPractice: 'Do not manipulate the DOM from within Angular Controllers.'
+        };
+      }]);
+
+      /**
+      * Do not accidentally overwrite Angular modules. Passing the `[]` parameter
+      * re-instantiates this module and the previous controller is not saved.
+      * Chain together the .controller and .directive calls or access the already created
+      * module with syntax like `angular.module('AppModule2')`
+      **/
+      angular.module('AppModule2', []).directive('OurVisitors', function() {
+        return {
+          restrict: 'A',
+          template: '<br>Site Visitors:<br>Name: {{visitor.name}}. Favorite Best Practice: {{visitor.bestPractice}}',
+          scope: {
+            visitor: '=info'
+          },
+          /**
+          * Do not use deprecated options.
+          */
+          replace: true
+        };
+      });
+      angular.version.minor = 1;
+    </script>
+  </body>
+
+</html>

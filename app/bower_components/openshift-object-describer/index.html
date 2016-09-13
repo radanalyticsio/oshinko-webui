@@ -1,0 +1,55 @@
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <base href="/">
+    <title>Kubernetes Describer Example</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+  
+    <!-- example theme uses bootstrap -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <!-- endbuild -->
+     <style type="text/css">
+        /* Included directly in here since this is only an extension of the example theme that uses bootstrap */
+        .dl-horizontal dt {text-align: left;}
+    </style>
+  </head>
+<body ng-app="exampleApp" style="margin-left: 10px;">
+    <h1>Build describer</h1>
+    <kubernetes-object-describer resource="openshiftExampleBuild" more-details-link="example/path/to/more/details.htm" kind="Build"></kubernetes-object-describer>
+    <hr />
+    <h1>Deployment Config describer</h1>
+    <kubernetes-object-describer resource="openshiftExampleDeploymentConfig" more-details-link="example/path/to/more/details.htm" kind="DeploymentConfig"></kubernetes-object-describer>    
+    <h1>Route describer</h1>
+    <kubernetes-object-describer resource="openshiftExampleRoute" more-details-link="example/path/to/more/details.htm" kind="Route"></kubernetes-object-describer>
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/kubernetes-object-describer/dist/object-describer.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="fixtures/build.js"></script>
+        <script src="fixtures/deploymentConfig.js"></script>
+        <script src="fixtures/route.js"></script>
+        <script src="dist/object-describer.js"></script>
+        <!-- endbuild -->
+
+    <script type="text/javascript">
+        angular.module('exampleApp', ['openshiftUI'])
+            .run(function($rootScope) {
+                $rootScope.openshiftExampleBuild = window.EXAMPLE_BUILD;
+                $rootScope.openshiftExampleDeploymentConfig = window.EXAMPLE_DEP_CONFIG;
+                $rootScope.openshiftExampleRoute = window.EXAMPLE_ROUTE;
+            });
+    </script>
+</body>
+</html>

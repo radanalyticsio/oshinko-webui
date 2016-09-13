@@ -1,0 +1,38 @@
+{
+  "name": "hawtio-core",
+  "version": "2.0.11",
+  "keywords": [
+    "hawtio"
+  ],
+  "main": [
+    "hawtio-core.js"
+  ],
+  "ignore": [
+    ".bowerrc",
+    ".jshintrc",
+    "node_modules",
+    "libs",
+    "gulpfile.js",
+    "karma.conf.js",
+    "index.html",
+    "package.json",
+    "tests"
+  ],
+  "dependencies": {
+    "es5-dom-shim": "*",
+    "jquery": "~2.1.1",
+    "angular": "~1.3.5",
+    "angular-sanitize": "~1.3.5",
+    "js-logger": "~0.9.14"
+  },
+  "homepage": "https://github.com/hawtio/hawtio-core",
+  "_release": "2.0.11",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.11",
+    "commit": "423a78be2755718a8af0735a819660fde617575a"
+  },
+  "_source": "https://github.com/hawtio/hawtio-core.git",
+  "_target": "2.0.11",
+  "_originalSource": "hawtio-core"
+}

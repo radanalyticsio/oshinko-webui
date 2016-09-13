@@ -6,7 +6,7 @@
  */
 'use strict';
 
-var module = angular.module('Oshinko.factories', ['ui.bootstrap', 'patternfly.notification']);
+var module = angular.module('Oshinko.factories', ['ui.bootstrap', 'patternfly.notification','ipCookie']);
 
 module.factory('clusterActions', [
         '$uibModal',
@@ -156,8 +156,8 @@ module.factory('sendNotifications', function(Notifications) {
     return notificationFactory;
 });
 
-module.factory('OshinkoAuthService', ['$http', '$cookies', '$rootScope', '$timeout',
-    function($http, $cookies, $rootScope, $timeout) {
+module.factory('OshinkoAuthService', ['$http', 'ipCookie', '$rootScope', '$timeout',
+    function($http, ipCookie, $rootScope, $timeout) {
         var service = {};
 
         service.Login = function(username, password, callback) {
@@ -194,14 +194,16 @@ module.factory('OshinkoAuthService', ['$http', '$cookies', '$rootScope', '$timeo
             var expireDate = new Date(now.setDate(now.getDate() + 1));
             // var expireDate = new Date(now.setTime(now.getTime() + (30 * 1000))); //expire cookie in 30 sec
             $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata;
-            $cookies.putObject('oshinkookie', $rootScope.globals, {
+            //$cookies.putObject('oshinkookie', $rootScope.globals, {
+            ipCookie('oshinkookie', $rootScope.globals, {
                 'expires': expireDate
             });
         };
 
         service.ClearCredentials = function() {
             $rootScope.globals = {};
-            $cookies.remove('oshinkookie');
+            //$cookies.remove('oshinkookie');
+            ipCookie.remove('oshinkookie');
             $http.defaults.headers.common.Authorization = 'Basic ';
         };
 

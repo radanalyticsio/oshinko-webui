@@ -1,0 +1,14 @@
+{
+  "name": "angular-hint",
+  "homepage": "https://github.com/angular/angular-hint",
+  "version": "0.3.8",
+  "_release": "0.3.8",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.3.8",
+    "commit": "d2bbe6dd10e609110202f766246c3eb7466cdcc3"
+  },
+  "_source": "https://github.com/angular/angular-hint.git",
+  "_target": "^0.3.8",
+  "_originalSource": "angular-hint"
+}

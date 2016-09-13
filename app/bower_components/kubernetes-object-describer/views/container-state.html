@@ -1,0 +1,20 @@
+<p ng-if="containerState | isEmptyObj"><em>none</em></p>
+<span ng-repeat="(state, stateDescription) in containerState | limitTo: 1">
+  <span ng-switch="state">
+    <span ng-switch-when="waiting">
+      Waiting
+      <span ng-if="stateDescription.reason">({{stateDescription.reason}})</span>
+    </span>
+    <span ng-switch-when="running">
+      Running
+      <span ng-if="stateDescription.startedAt">since {{stateDescription.startedAt | date:'medium'}}</span>
+    </span>
+    <span ng-switch-when="terminated">
+      Terminated
+      <span ng-if="stateDescription.finishedAt">at {{stateDescription.finishedAt | date:'medium'}}</span>
+      <span ng-if="stateDescription.exitCode">with exit code {{stateDescription.exitCode}}</span>
+      <span ng-if="stateDescription.reason">({{stateDescription.reason}})</span>
+    </span>
+    <span ng-switch-default>{{state}}</span>
+  </span>
+</span>
