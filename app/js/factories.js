@@ -58,8 +58,7 @@ module.factory('clusterActions', [
 
 module.factory('clusterData', [
         '$http',
-        '$q',
-        function($http, $q) {
+        function($http) {
              var urlBase = 'api';
             function sendDeleteCluster(clusterName) {
                 return $http({
