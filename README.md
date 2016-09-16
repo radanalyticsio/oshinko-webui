@@ -12,7 +12,7 @@ Once that is set up, you can run the following:
 
 You need to edit the config.js to point to appropriate Opesnhift and Oshinko-webui IPs
 
-    vim app/scripts/config.js
+    vim app/config.js
     # replace ORIGIN and OSHINKOHOST value
 
 You also need a oauthclient resource in openshift
@@ -20,6 +20,7 @@ You also need a oauthclient resource in openshift
     vim example/oauthclient.js
     # replace redirectURIs value with correct OSHINKOHOST value
 
+    oc login -u system:admin
     oc create -f  example/oauthclient.js
 
 You also need a edit master-config.yaml of openshift to avoid CORS issue 
@@ -37,7 +38,7 @@ Now you're ready to run the oshinko-webui server.
     grunt serve
 
 
-Then navigate your browser to `https://127.0.0.1:9000` to see the app running in
+Then navigate your browser to `https://OSHINKOHOST:9000` to see the app running in
 your browser.
 
 
