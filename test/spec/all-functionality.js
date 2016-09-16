@@ -1,3 +1,5 @@
+"use strict";
+
 describe('Login page functionality', function() {
 
     it('should login and display the clusters page', function() {

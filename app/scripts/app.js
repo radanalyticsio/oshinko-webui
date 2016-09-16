@@ -60,7 +60,7 @@ angular.module('Oshinko', [
             enabled: true,
         });
         $routeProvider
-            .when('/:Id?',
+            .when('/clusters/:Id?',
             {
                 templateUrl: function(params) {
                     if(!params['Id'])
@@ -95,7 +95,9 @@ angular.module('Oshinko', [
             //   controllerAs: 'vm'
             // })
             .when('/logout', {
-                templateUrl: 'views/logout.html',
+                templateUrl: function(params) {
+                    return 'views/logout.html';
+                },
                 controller: 'LogoutController'
             })
             .when('/oauth', {
@@ -105,10 +107,32 @@ angular.module('Oshinko', [
                 controller: 'OAuthController'
             })
             .otherwise({
-                redirectTo: '/'
+                redirectTo: '/clusters'
             });
 
     }])
+    // .provider("EnvConfig", function() {
+    //     var envConfig = {};
+    //
+    //     this.loadConfig = function($http) {
+    //         return $http.get('/Users/subin/development/origin/subin/config.json')
+    //             .success(function (data) {
+    //                 angular.extend(envConfig, data);
+    //             })
+    //             .error(function (data, status, header, config) {
+    //                 angular.extend(envConfig, data);
+    //             });
+    //         // var q = jQuery.ajax({
+    //         //     type: 'GET', url: '/Users/subin/development/origin/subin/config.json', cache: false, async: false,
+    //         //     contentType: 'application/json', dataType: 'json'
+    //         // });
+    //         // if (q.status === 200) {
+    //         //     angular.extend(envConfig, angular.fromJson(q.responseText));
+    //         // }
+    //         // return envConfig;
+    //     };
+    //     this.$get = [ this.loadConfig ];
+    // })
     .config(function($httpProvider, AuthServiceProvider, RedirectLoginServiceProvider, AUTH_CFG, API_CFG) {
         $httpProvider.interceptors.push('AuthInterceptor');
 
@@ -116,7 +140,7 @@ angular.module('Oshinko', [
         AuthServiceProvider.LogoutService('DeleteTokenLogoutService');
         // TODO: fall back to cookie store when localStorage is unavailable (see known issues at http://caniuse.com/#feat=namevalue-storage)
         AuthServiceProvider.UserStore('LocalStorageUserStore');
-
+        //console.log(EnvConfigProvider.loadConfig());
         RedirectLoginServiceProvider.OAuthClientID(AUTH_CFG.oauth_client_id);
         RedirectLoginServiceProvider.OAuthAuthorizeURI(AUTH_CFG.oauth_authorize_uri);
         console.log(AUTH_CFG.oauth_redirect_base);

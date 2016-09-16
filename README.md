@@ -5,27 +5,39 @@ You might prefer to use nvm (https://github.com/creationix/nvm)
 to manage my node environment.
 Once that is set up, you can run the following:
 
-    npm install
+    sudo npm install -g grunt-cli
+    sudo npm install
     npm install -g bower
     bower install
 
+You need to edit the config.js to point to appropriate Opesnhift and Oshinko-webui IPs
+
+    vim app/scripts/config.js
+    # replace ORIGIN and OSHINKOHOST value
+
+You also need a oauthclient resource in openshift
+
+    vim example/oauthclient.js
+    # replace redirectURIs value
+
+    oc create -f  example/oauthclient.js
+
+You also need a edit master-config.yaml of openshift to avoid CORS issue 
+``
+corsAllowedOrigins:
+- 127.0.0.1
+- 192.168.122.1:8443
+- localhost
+- 172.17.0.2:9000
+``
+
 Now you're ready to run the oshinko-webui server.
 
-Set the following environment variables:
 
-    OPENSHIFT_OSHINKO_REST=<IP or dns entry of the oshinko rest server>
-    OPENSHIFT_OSHINKO_REST_PORT=<Port for the oshinko rest server>
-    OPENSHIFT_NODEJS_PORT=<Port to listen on>  Default:8080
+    grunt serve
 
-Optionally, you can set the following if you want more verbose logging:
 
-    OPENSHIFT_OSHINKO_WEB_DEBUG=true
-
-You can pick one of these options:
-
-* install node.js and run `node server.js`
-
-Then navigate your browser to `http://localhost:<port>` to see the app running in
+Then navigate your browser to `https://127.0.0.1:9000` to see the app running in
 your browser.
 
 

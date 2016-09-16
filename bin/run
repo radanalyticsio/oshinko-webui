@@ -1,0 +1,23 @@
+#!/bin/bash
+
+
+#cd /usr/src/app/
+echo $ORIGIN
+
+
+
+
+
+host="$(awk 'NR==1 {print $1}' /etc/hosts)"
+
+
+echo $host
+
+cd /usr/src/app
+sed -i "s/OSHINKOHOST/$host/g" config.js
+sed -i "s/ORIGIN/$ORIGIN/g" config.js
+
+cp config.js /usr/src/app/config.js 
+
+
+grunt serve

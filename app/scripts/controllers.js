@@ -22,7 +22,8 @@ angular.module('Oshinko')
         "AuthService",*/
         function($scope, $interval, $location, $route, clusterDataFactory,
                  sendNotifications, clusterActions, ListingState,
-                 DataService, AuthService) {
+                 DataService, AuthService, ProjectsService, $routeParams,
+                 $rootScope) {
 
             var watches = [];
             $scope.projects = {};
@@ -30,19 +31,9 @@ angular.module('Oshinko')
             $scope.showGetStarted = false;
             $scope.myname ="";
             $scope.mytoken = "";
+            $scope.projectName = $routeParams.project;
 
-            AuthService.withUser().then(function() {
-                console.log(" AuthService.withUser()......");
-                console.log(AuthService.UserStore().getUser());
-                $scope.myname = AuthService.UserStore().getUser().metadata.name;
-                $scope.mytoken = AuthService.UserStore().getToken();
-                watches.push(DataService.watch("projects", $scope, function(projects) {
-                    $scope.projects = projects.by("metadata.name");
-                    console.log(" AuthService.withUser()......projects")
-                    //$scope.showGetStarted = hashSizeFilter($scope.projects) === 0;
-                }));
-            });
-            
+
             var cluster_id = $route.current.params.Id || '';
             $scope.predicate = 'name';
             $scope.reverse = false;
@@ -52,6 +43,51 @@ angular.module('Oshinko')
                 $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
                 $scope.predicate = predicate;
             };
+
+            AuthService.withUser().then(function() {
+                console.log(" AuthService.withUser()......");
+                console.log(AuthService.UserStore().getUser());
+                $scope.myname = AuthService.UserStore().getUser().metadata.name;
+                $scope.mytoken = AuthService.UserStore().getToken();
+
+                $rootScope.globals = {
+                            currentUser: {
+                                username: $scope.myname
+                            }
+                        };
+                // watches.push(DataService.watch("projects", $scope, function(projects) {
+                //     $scope.projects = projects.by("metadata.name");
+                //     console.log(" AuthService.withUser()......projects")
+                //     //$scope.showGetStarted = hashSizeFilter($scope.projects) === 0;
+                // }));
+
+
+            // ProjectsService
+            //     .get($routeParams.project)
+            //     .then(_.spread(function(project, context) {
+            //             $scope.project = project;
+            //             // FIXME: DataService.createStream() requires a scope with a
+            //             // projectPromise rather than just a namespace, so we have to pass the
+            //             // context into the log-viewer directive.
+            //             $scope.projectContext = context;
+            //             DataService.get("projects", "myproject", context).then(
+            //                 function(p) {
+            //                 // success
+            //                 console.log("found ", p);
+            //                 },
+            //                 // failure
+            //                 function(e) {
+            //                     $scope.loaded = true;
+            //                     $scope.alerts["load"] = {
+            //                         type: "error",
+            //                         message: "The pod details could not be loaded.",
+            //                         details: "Reason: " +(e)
+            //                     };
+            //                 }
+            //             );
+            // }));
+            
+
 
             if (!cluster_id) {
                 $scope.reloadData = function() {
@@ -92,13 +128,16 @@ angular.module('Oshinko')
                 $scope.reloadData();
             }.bind(this), REFRESH_SECONDS * 1000);
 
-            // no update when this page isn't displayed
+            //no update when this page isn't displayed
             $scope.$on('$destroy', function() {
                 if (intervalPromise)
                     $interval.cancel(intervalPromise);
             });
 
             $scope.reloadData();
+
+
+            });
         }
     //]
     )

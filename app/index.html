@@ -9,136 +9,152 @@
 <!doctype html>
 <!-- ng-app="Oshinko" -->
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Spark Cluster Management</title>
-        <base href="/">
-        <link rel="stylesheet" href="/styles/app.css"/>
-        <link rel="stylesheet" href="/styles/cockpit.css"/>
-        <link rel="stylesheet" href="/bower_components/patternfly/dist/css/patternfly.min.css">
-        <link rel="stylesheet" href="/bower_components/patternfly/dist/css/patternfly-additions.min.css">
-        <link rel="stylesheet" href="/bower_components/angular-patternfly/dist/styles/angular-patternfly.min.css">
+<head>
+    <meta charset="utf-8">
+    <title>Spark Cluster Management</title>
+    <base href="/clusters">
 
-        <script src="config.js"></script>
-
-
-        <!-- build:js(.) scripts/oldieshim.js -->
-        <!--[if lt IE 9]>
-        <script src="bower_components/es5-shim/es5-shim.js"></script>
-        <script src="bower_components/json3/lib/json3.js"></script>
-
-        <![endif]-->
-        <!-- endbuild -->
-
-        <!-- build:js(.) scripts/vendor.js -->
-        <script src="bower_components/es5-dom-shim/__COMPILE/a.js"></script>
-        <!-- bower:js -->
-        <script src="bower_components/jquery/dist/jquery.js"></script>
-        <script src="bower_components/angular/angular.js"></script>
-        <script src="bower_components/angular-resource/angular-resource.js"></script>
-        <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-        <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-        <script src="bower_components/angular-animate/angular-animate.js"></script>
-        <script src="bower_components/angular-touch/angular-touch.js"></script>
-        <script src="bower_components/angular-route/angular-route.js"></script>
-        <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-        <script src="bower_components/lodash/lodash.js"></script>
-        <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="bower_components/bootstrap-combobox/js/bootstrap-combobox.js"></script>
-        <script src="bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
-        <script src="bower_components/bootstrap-select/dist/js/bootstrap-select.js"></script>
-        <script src="bower_components/bootstrap-switch/dist/js/bootstrap-switch.js"></script>
-        <script src="bower_components/bootstrap-treeview/dist/bootstrap-treeview.min.js"></script>
-        <script src="bower_components/d3/d3.js"></script>
-        <script src="bower_components/c3/c3.js"></script>
-        <script src="bower_components/datatables/media/js/jquery.dataTables.js"></script>
-        <script src="bower_components/datatables-colreorder/js/dataTables.colReorder.js"></script>
-        <script src="bower_components/datatables-colvis/js/dataTables.colVis.js"></script>
-        <script src="bower_components/matchHeight/dist/jquery.matchHeight.js"></script>
-        <script src="bower_components/moment/moment.js"></script>
-        <script src="bower_components/patternfly/dist/js/patternfly.js"></script>
-        <script src="bower_components/angular-patternfly/dist/angular-patternfly.js"></script>
-        <script src="bower_components/uri.js/src/URI.js"></script>
-        <script src="bower_components/uri.js/src/URITemplate.js"></script>
-        <script src="bower_components/uri.js/src/jquery.URI.js"></script>
-        <script src="bower_components/uri.js/src/URI.fragmentURI.js"></script>
-        <script src="bower_components/js-logger/src/logger.js"></script>
-        <script src="bower_components/hawtio-core/hawtio-core.js"></script>
-        <script src="bower_components/hawtio-extension-service/dist/hawtio-extension-service.js"></script>
-        <script src="bower_components/sifter/sifter.js"></script>
-        <script src="bower_components/messenger/build/js/messenger.js"></script>
-        <script src="bower_components/messenger/build/js/messenger-theme-flat.js"></script>
-        <script src="bower_components/microplugin/src/microplugin.js"></script>
-        <script src="bower_components/selectize/dist/js/selectize.js"></script>
-        <script src="bower_components/kubernetes-label-selector/labelSelector.js"></script>
-        <script src="bower_components/kubernetes-label-selector/labelFilter.js"></script>
-        <script src="bower_components/kubernetes-object-describer/dist/object-describer.js"></script>
-        <script src="bower_components/openshift-object-describer/dist/object-describer.js"></script>
-        <script src="bower_components/angular-notification-icons/dist/angular-notification-icons.js"></script>
-        <script src="bower_components/angular-cookie/angular-cookie.js"></script>
+        <link rel="stylesheet" href="styles/app.css"/>
+		<link rel="stylesheet" href="styles/cockpit.css"/>
+		<!-- build:css(.) styles/vendor.css -->
+        <!-- bower:css -->
+        <link rel="stylesheet" href="bower_components/patternfly/dist/css/patternfly.css" />
+        <link rel="stylesheet" href="bower_components/patternfly/dist/css/patternfly-additions.css" />
+        <link rel="stylesheet" href="bower_components/angular-patternfly/dist/styles/angular-patternfly.css" />
         <!-- endbower -->
         <!-- endbuild -->
 
 
 
+    <script src="config.js"></script>
 
-        <!-- build:js({.tmp,app}) scripts/scripts.js -->
-        <script src="/scripts/app.js"></script>
-        <!-- oauth -->
-        <script src="/scripts/oauth/constants.js"></script>
-        <script src="/scripts/oauth/logger.js"></script>
-        <script src="/scripts/oauth/ws.js"></script>
-        <script src="/scripts/oauth/userstore.js"></script>
-        <script src="/scripts/oauth/auth.js"></script>
-        <script src="/scripts/oauth/login.js"></script>
-        <script src="/scripts/oauth/logout.js"></script>
-        <script src="/scripts/oauth/api.js"></script>
-        <script src="/scripts/oauth/notification.js"></script>
-        <script src="/scripts/oauth/data.js"></script>
-        <script src="/scripts/oauth/oauth.js"></script>
-        <script src="/scripts/oauth/date.js"></script>
-        <!-- oauth -->
-        <script src="/scripts/listing.js"></script>
-        <script src="/scripts/dialog.js"></script>
-        <script src="/scripts/controllers.js"></script>
-        <script src="/scripts/directives.js"></script>
-        <script src="/scripts/factories.js"></script>
-    </head>
-    <!-- ng-app="Oshinko" -->
-    <body  ng-controller="NavCtrl">
-        <nav class="navbar navbar-default navbar-pf" role="navigation">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/">Oshinko Spark Cluster Management</a>
-            </div>
-            <div class="collapse navbar-collapse navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-utility">
-                    <li class="dropdown">
-                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
-                            <span class="pficon pficon-user"></span>
-                            {{globals.currentUser.username || 'Not logged in'}}
-                            <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
+
+    <!-- build:js(.) scripts/oldieshim.js -->
+    <!--[if lt IE 9]>
+    <script src="bower_components/es5-shim/es5-shim.js"></script>
+    <script src="bower_components/json3/lib/json3.js"></script>
+
+    <![endif]-->
+    <!-- endbuild -->
+
+    <!-- build:js(.) scripts/vendor.js -->
+    <script src="bower_components/es5-dom-shim/__COMPILE/a.js"></script>
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/json3/lib/json3.js"></script>
+    <script src="bower_components/es5-shim/es5-shim.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-touch/angular-touch.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/lodash/lodash.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="bower_components/bootstrap-combobox/js/bootstrap-combobox.js"></script>
+    <script src="bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script src="bower_components/bootstrap-select/dist/js/bootstrap-select.js"></script>
+    <script src="bower_components/bootstrap-switch/dist/js/bootstrap-switch.js"></script>
+    <script src="bower_components/bootstrap-treeview/dist/bootstrap-treeview.min.js"></script>
+    <script src="bower_components/d3/d3.js"></script>
+    <script src="bower_components/c3/c3.js"></script>
+    <script src="bower_components/datatables/media/js/jquery.dataTables.js"></script>
+    <script src="bower_components/datatables-colreorder/js/dataTables.colReorder.js"></script>
+    <script src="bower_components/datatables-colvis/js/dataTables.colVis.js"></script>
+    <script src="bower_components/matchHeight/dist/jquery.matchHeight.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/patternfly/dist/js/patternfly.js"></script>
+    <script src="bower_components/angular-patternfly/dist/angular-patternfly.js"></script>
+    <script src="bower_components/uri.js/src/URI.js"></script>
+    <script src="bower_components/uri.js/src/URITemplate.js"></script>
+    <script src="bower_components/uri.js/src/jquery.URI.js"></script>
+    <script src="bower_components/uri.js/src/URI.fragmentURI.js"></script>
+    <script src="bower_components/js-logger/src/logger.js"></script>
+    <script src="bower_components/hawtio-core/hawtio-core.js"></script>
+    <script src="bower_components/hawtio-extension-service/dist/hawtio-extension-service.js"></script>
+    <script src="bower_components/sifter/sifter.js"></script>
+    <script src="bower_components/messenger/build/js/messenger.js"></script>
+    <script src="bower_components/messenger/build/js/messenger-theme-flat.js"></script>
+    <script src="bower_components/microplugin/src/microplugin.js"></script>
+    <script src="bower_components/selectize/dist/js/selectize.js"></script>
+    <script src="bower_components/kubernetes-label-selector/labelSelector.js"></script>
+    <script src="bower_components/kubernetes-label-selector/labelFilter.js"></script>
+    <script src="bower_components/kubernetes-object-describer/dist/object-describer.js"></script>
+    <script src="bower_components/openshift-object-describer/dist/object-describer.js"></script>
+    <script src="bower_components/angular-notification-icons/dist/angular-notification-icons.js"></script>
+    <script src="bower_components/angular-cookie/angular-cookie.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+
+	<!-- This needs to be loaded before scripts.js -->
+    <script src="scripts/templates.js"></script>
+
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="/scripts/app.js"></script>
+    <!-- oauth -->
+    <script src="/scripts/oauth/services/constants.js"></script>
+    <script src="/scripts/oauth/services/logger.js"></script>
+    <script src="/scripts/oauth/services/ws.js"></script>
+    <script src="/scripts/oauth/services/userstore.js"></script>
+    <script src="/scripts/oauth/services/auth.js"></script>
+    <script src="/scripts/oauth/services/login.js"></script>
+    <script src="/scripts/oauth/controllers/logout.js"></script>
+    <script src="/scripts/oauth/services/api.js"></script>
+    <script src="/scripts/oauth/services/notification.js"></script>
+    <script src="/scripts/oauth/services/data.js"></script>
+    <script src="/scripts/oauth/controllers/oauth.js"></script>
+    <script src="/scripts/oauth/filters/date.js"></script>
+    <script src="/scripts/oauth/filters/resources.js"></script>
+    <script src="/scripts/oauth/services/logout.js"></script>
+    <script src="/scripts/oauth/services/authorization.js"></script>
+    <script src="/scripts/oauth/services/projects.js"></script>
+
+    <script src="/scripts/listing.js"></script>
+    <script src="/scripts/dialog.js"></script>
+    <script src="/scripts/controllers.js"></script>
+    <script src="/scripts/directives.js"></script>
+    <script src="/scripts/factories.js"></script>
+<!-- endbuild -->
+</head>
+<!-- ng-app="Oshinko" -->
+<body  ng-controller="NavCtrl">
+<nav class="navbar navbar-default navbar-pf" role="navigation">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Oshinko Spark Cluster Management</a>
+    </div>
+    <div class="collapse navbar-collapse navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-utility">
+            <li class="dropdown">
+                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+                    <span class="pficon pficon-user"></span>
+                    {{globals.currentUser.username || 'Not logged in'}}
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                            <li><a href="logout">Log out</a></li>
+                            <!--<li>
                                 <a ng-click="logout()">Log out</a>
-                            </li>
+                            </li>-->
                         </ul>
-                    </li>
-                </ul>
-                <ul class="nav navbar-nav navbar-primary">
-                    <li ng-class="{active: isActive('/clusters')}">
-                        <a href="#/clusters">Clusters</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-primary">
+            <li ng-class="{active: isActive('/clusters')}">
+                <a href="#/clusters">Clusters</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
-        <div ng-view></div>
-    </body>
+<div ng-view></div>
+</body>
 </html>
