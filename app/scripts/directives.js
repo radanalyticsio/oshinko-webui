@@ -7,8 +7,8 @@
 'use strict';
 
 
-var module = angular.module('Oshinko.directives', []);
-module.directive('appVersion',
+angular.module('Oshinko')
+	.directive('appVersion',
 		['version',
 			function (version) {
 			    return function (scope, elm, attrs) {
@@ -16,8 +16,8 @@ module.directive('appVersion',
 			    };
 			}
 		]
-	);
-module.directive('clusterPanel', [
+	)
+	.directive('clusterPanel', [
 		'$q',
 		'clusterDataFactory',
 		'sendNotifications',
@@ -94,15 +94,15 @@ module.directive('clusterPanel', [
 
 				    scope.reloadDetails();
                 },
-                templateUrl: "forms/cluster-panel.html"
+                templateUrl: "views/cluster-panel.html"
             };
         }
-    ]);
-module.directive('clusterBody', [
+    ])
+	.directive('clusterBody', [
         function() {
             return {
                 restrict: 'A',
-                templateUrl: 'forms/cluster-body.html',
+                templateUrl: 'views/cluster-body.html',
                 link: function(scope, element, attrs) {
                 },
             };
