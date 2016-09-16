@@ -60,7 +60,7 @@ angular.module('Oshinko', [
             enabled: true,
         });
         $routeProvider
-            .when('/:Id?',
+            .when('/clusters/:Id?',
             {
                 templateUrl: function(params) {
                     if(!params['Id'])
@@ -95,7 +95,9 @@ angular.module('Oshinko', [
             //   controllerAs: 'vm'
             // })
             .when('/logout', {
-                templateUrl: 'views/logout.html',
+                templateUrl: function(params) {
+                    return 'views/logout.html';
+                },
                 controller: 'LogoutController'
             })
             .when('/oauth', {
@@ -105,7 +107,7 @@ angular.module('Oshinko', [
                 controller: 'OAuthController'
             })
             .otherwise({
-                redirectTo: '/'
+                redirectTo: '/clusters'
             });
 
     }])

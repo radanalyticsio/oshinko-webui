@@ -12,7 +12,7 @@
     <head>
         <meta charset="utf-8">
         <title>Spark Cluster Management</title>
-        <base href="/">
+        <base href="/clusters">
         <link rel="stylesheet" href="/styles/app.css"/>
         <link rel="stylesheet" href="/styles/cockpit.css"/>
         <link rel="stylesheet" href="/bower_components/patternfly/dist/css/patternfly.min.css">
@@ -89,14 +89,18 @@
         <script src="/scripts/oauth/logger.js"></script>
         <script src="/scripts/oauth/ws.js"></script>
         <script src="/scripts/oauth/userstore.js"></script>
-        <script src="/scripts/oauth/auth.js"></script>
+        <script src="/scripts/oauth/services/auth.js"></script>
         <script src="/scripts/oauth/login.js"></script>
-        <script src="/scripts/oauth/logout.js"></script>
-        <script src="/scripts/oauth/api.js"></script>
+        <script src="/scripts/oauth/controllers/logout.js"></script>
+        <script src="/scripts/oauth/services/api.js"></script>
         <script src="/scripts/oauth/notification.js"></script>
-        <script src="/scripts/oauth/data.js"></script>
-        <script src="/scripts/oauth/oauth.js"></script>
-        <script src="/scripts/oauth/date.js"></script>
+        <script src="/scripts/oauth/services/data.js"></script>
+        <script src="/scripts/oauth/controllers/oauth.js"></script>
+        <script src="/scripts/oauth/filters/date.js"></script>
+        <script src="/scripts/oauth/filters/resources.js"></script>
+        <script src="/scripts/oauth/services/logout.js"></script>
+        <script src="/scripts/oauth/services/authorization.js"></script>
+        <script src="/scripts/oauth/services/projects.js"></script>
         <!-- oauth -->
         <script src="/scripts/listing.js"></script>
         <script src="/scripts/dialog.js"></script>
@@ -125,9 +129,10 @@
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
-                            <li>
+                            <li><a href="logout">Log out</a></li>
+                            <!--<li>
                                 <a ng-click="logout()">Log out</a>
-                            </li>
+                            </li>-->
                         </ul>
                     </li>
                 </ul>

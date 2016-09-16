@@ -1,0 +1,13 @@
+{
+	"kind":"OAuthClient",
+	"apiVersion":"v1",
+	"metadata":{
+		"name":"oshinko-oauth-client"
+	},
+	"respondWithChallenges":false,
+	"secret":"45e27750-a8aa-11e4-b2ea",
+	"allowAnyScope":true,
+	"redirectURIs":[
+		"https://192.168.0.103:9000"
+	]
+}
