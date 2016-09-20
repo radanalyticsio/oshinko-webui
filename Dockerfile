@@ -13,6 +13,8 @@ RUN bower install
 
 COPY . /usr/src/app
 
+RUN chmod a+rwX -R .
+
 EXPOSE 8080
 
 CMD [ "npm", "start" ]
