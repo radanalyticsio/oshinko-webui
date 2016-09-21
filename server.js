@@ -52,10 +52,12 @@ var fetchResponse = function(request, response, options, body) {
         req.write(body);
     }
     req.on('error', function(error) {
-        console.log(error);
-        console.log("Request status code is: " + request.statusCode);
-        response.status(400); // this might be a lie
-        response.send(error);
+        // if this event handler is called, it means that the transport layer
+        // between the node server and the oshinko-rest server is having
+        // issues.
+        console.log(error.message);
+        response.status(500);
+        response.send(error.message);
     });
     req.end();
 };
