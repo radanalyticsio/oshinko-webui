@@ -1,0 +1,104 @@
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <base href="/">
+    <title>Label Selector and Filter example</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+  
+    <!-- example theme uses bootstrap -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/selectize/dist/css/selectize.css" />
+    <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" type="text/css" href="labelFilter.css">
+    <!-- endbuild -->
+     <style type="text/css">
+
+    </style>
+  </head>
+<body ng-app="exampleApp">
+  <div style="margin: 10px 10px 0; position:relative">
+    <div class="filter">
+        <div class="navbar-filter-widget"></div>
+    </div>
+    <div class="active-filters"></div>
+  </div>
+
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/sifter/sifter.js"></script>
+    <script src="bower_components/microplugin/src/microplugin.js"></script>
+    <script src="bower_components/selectize/dist/js/selectize.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="labelSelector.js"></script>
+        <script src="labelFilter.js"></script>
+        <!-- endbuild -->
+
+    <script type="text/javascript">
+        angular.module('exampleApp', ['kubernetesUI'])
+            .run(function(LabelFilter) {
+                // Render the filter widget
+                LabelFilter.setupFilterWidget($(".navbar-filter-widget"), $(".active-filters"));
+
+                // If you have loaded k8s API resources, you can pass those to
+                //   LabelFilter.addLabelSuggestionsFromResources(resources, map);
+                // where map will get the new suggestions added to it
+                //
+                // Or you can just create some suggestions yourself (setting suggestions is not required, users have the option to 
+                // type in their own labels/values)
+                LabelFilter.setLabelSuggestions({
+                    label_1: [
+                        {value: "value-1-1"},
+                        {value: "value-1-2"},
+                        {value: "value-1-3"},
+                        {value: "value-1-4"},
+                        {value: "value-1-5"},
+                        {value: "value-1-6"},
+                        {value: "value-1-7"},
+                        {value: "value-1-8"},
+                        {value: "value-1-9"},
+                        {value: "value-1-10"}
+                    ],
+                    label_2: [
+                        {value: "value-2-1"},
+                        {value: "value-2-2"},
+                        {value: "nonbreaking1212121212121212121212121212121212121212121212"}
+                    ],
+                    label_3333333333333333333333333333333333333333333333: [
+                        {value: "value-3-1"},
+                        {value: "value-3-2"},
+                        {value: "value31212121212121212121212121212121212121212121212"}
+                    ] ,
+                    label_4444444444_4444444444_4444444444_4444444444: [
+                        {value: "value-4-1"},
+                        {value: "value-4-2"},
+                        {value: "value-41212121212121-212121212121-21212121212-1212121212"}
+                    ]                  
+                });
+
+                // Do something when the active filters change
+                LabelFilter.onActiveFiltersChanged(function(labelSelector) {
+                    console.log("label selector changed...", labelSelector.isEmpty() ? "no active filters" : "there are active filters");
+                    // If you have a set of k8s resources, you can filter them by running
+                    //   labelSelector.select(resources);
+                    // which will return a map of resource name to resource for all resources selected by the label selector
+                    // if you want to check specific resources yourself you can use 
+                    //   labelSelector.match(resource);
+                    // to return a boolean if that resource is matched by the selector
+                });                 
+            });
+    </script>
+</body>
+</html>

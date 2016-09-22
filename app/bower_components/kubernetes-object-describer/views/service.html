@@ -1,0 +1,37 @@
+<div>
+  <kubernetes-object-describe-header resource="resource" kind="kind"></kubernetes-object-describe-header>
+  <dl class="dl-horizontal">
+    <dt>Name</dt>
+    <dd>{{resource.metadata.name}}</dd>
+    <dt>Namespace</dt>
+    <dd>{{resource.metadata.namespace}}</dd>
+    <dt>Created</dt>
+    <dd>{{resource.metadata.creationTimestamp | date:'medium'}}</dd>
+    <dt>Type</dt>
+    <dd>{{resource.spec.type}}</dd>
+    <dt>IP</dt>
+    <dd>{{resource.spec.clusterIP}}</dd>
+    <dt>Ports</dt>
+    <dd>
+      <div ng-if="!resource.spec.ports.length">None</div>
+      <div ng-repeat="portMapping in resource.spec.ports | orderBy:'port'">
+        {{portMapping.port}}/{{portMapping.protocol}} &#8594; {{portMapping.targetPort}}
+      </div>
+    </dd>
+    <dt>Session affinity</dt>
+    <dd>{{resource.spec.sessionAffinity}}</dd>    
+    <dt ng-if="resource.status.loadBalancer.ingress.length">Ingress points</dt>
+    <dd ng-if="resource.status.loadBalancer.ingress.length">
+      <span ng-repeat="ingress in resource.status.loadBalancer.ingress"
+        >{{ingress.ip}}<span ng-if="!$last">, </span></span>
+    </dd>
+  </dl>
+  <h3>Selector</h3>
+  <dl class="dl-horizontal">
+    <dt ng-repeat-start="(selectorKey, selectorValue) in resource.spec.selector">{{selectorKey}}</dt>
+    <dd ng-repeat-end>{{selectorValue}}</dd>
+  </dl>
+  <kubernetes-object-describe-labels resource="resource"></kubernetes-object-describe-labels>
+  <kubernetes-object-describe-annotations resource="resource"></kubernetes-object-describe-annotations>
+  <kubernetes-object-describe-footer resource="resource"></kubernetes-object-describe-footer>
+</div>

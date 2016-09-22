@@ -1,0 +1,25 @@
+{
+  "name": "hawtio-extension-service",
+  "version": "2.0.2",
+  "main": [
+    "dist/hawtio-extension-service.js"
+  ],
+  "ignore": [
+    ".bowerrc",
+    ".jshintrc",
+    "node_modules",
+    "libs",
+    "gulpfile.js",
+    "karma.conf.js",
+    "index.html",
+    "package.json",
+    "templates",
+    "hawtio-extension-service.js",
+    "!dist/hawtio-extension-service.js",
+    "test"
+  ],
+  "dependencies": {
+    "hawtio-core": "~2.0.0"
+  },
+  "devDependencies": {}
+}

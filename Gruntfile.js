@@ -6,8 +6,15 @@
 // 'test/spec/{,*/}*.js'
 // use this if you want to recursively match all subfolders:
 // 'test/spec/**/*.js'
+var modRewrite = require('connect-modrewrite');
+var serveStatic = require('serve-static');
 
 module.exports = function (grunt) {
+
+  // Load grunt tasks automatically
+  require('load-grunt-tasks')(grunt, {
+    pattern: ['grunt-*', '!grunt-template-jasmine-istanbul']
+  });
 
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
@@ -41,7 +48,10 @@ module.exports = function (grunt) {
         files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
         tasks: ['newer:jshint:all', 'newer:jscs:all'],
         options: {
-          livereload: '<%= connect.options.livereload %>'
+          livereload: {
+            key: grunt.file.read('server.key'),
+            cert: grunt.file.read('server.crt')
+          }
         }
       },
       jsTest: {
@@ -51,6 +61,27 @@ module.exports = function (grunt) {
       styles: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
         tasks: ['newer:copy:styles', 'postcss']
+      },
+      css: {
+        files: '<%= yeoman.app %>/styles/*.less',
+        tasks: ['less:development']
+      },
+      html: {
+        files: '<%= yeoman.app %>/views/{,*/}*.html',
+        options: {
+          livereload: {
+            key: grunt.file.read('server.key'),
+            cert: grunt.file.read('server.crt')
+          }
+        }
+      },
+      extensions: {
+        files: ['extensions/extensions.js', 'extensions/extensions.css'],
+        tasks: ['copy:extensions']
+      },
+      localConfig: {
+        files: ['<%= yeoman.app %>/config.local.js'],
+        tasks: ['copy:localConfig']
       },
       gruntfile: {
         files: ['Gruntfile.js']
@@ -62,6 +93,8 @@ module.exports = function (grunt) {
         files: [
           '<%= yeoman.app %>/{,*/}*.html',
           '.tmp/styles/{,*/}*.css',
+          '.tmp/config.js',
+          '.tmp/scripts/extensions.js',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
       }
@@ -70,9 +103,12 @@ module.exports = function (grunt) {
     // The actual grunt server settings
     connect: {
       options: {
-        port: 9000,
+        protocol: grunt.option('scheme') || 'https',
+        port: grunt.option('port') || 9000,
         // Change this to '0.0.0.0' to access the server from outside.
-        hostname: 'localhost',
+        hostname: grunt.option('hostname') || '192.168.0.103',
+        key: grunt.file.read('server.key'),
+        cert: grunt.file.read('server.crt'),
         livereload: 35729
       },
       livereload: {
@@ -80,7 +116,8 @@ module.exports = function (grunt) {
           open: true,
           middleware: function (connect) {
             return [
-              connect.static('.tmp'),
+              modRewrite(['!^/(config.js|(java|bower_components|scripts|images|styles|views)(/.*)?)$ /index.html [L]']),
+              serveStatic('.tmp'),
               connect().use(
                 '/bower_components',
                 connect.static('./bower_components')
@@ -171,6 +208,19 @@ module.exports = function (grunt) {
     },
 
     // Add vendor prefixed styles
+    autoprefixer: {
+      options: {
+        browsers: ['last 1 version']
+      },
+      dist: {
+        files: [{
+          expand: true,
+          cwd: '.tmp/styles/',
+          src: '{,*/}*.css',
+          dest: '.tmp/styles/'
+        }]
+      }
+    },
     postcss: {
       options: {
         processors: [
@@ -202,7 +252,44 @@ module.exports = function (grunt) {
     wiredep: {
       app: {
         src: ['<%= yeoman.app %>/index.html'],
-        ignorePath:  /\.\.\//
+        ignorePath:  /\.\.\//,
+	exclude: [
+          // choosing uri.js over urijs
+          'bower_components/uri.js/src/IPv6.js',
+          'bower_components/uri.js/src/SecondLevelDomains.js',
+          'bower_components/uri.js/src/punycode.js',
+          'bower_components/uri.js/src/URI.min.js',
+          'bower_components/uri.js/src/jquery.URI.min.js',
+          'bower_components/uri.js/src/URI.fragmentQuery.js',
+          // bower registration error? we get 2x versions of uri.js/urijs
+          'bower_components/urijs/',
+          'bower_components/messenger/build/css/messenger.css',
+          'bower_components/messenger/build/css/messenger-theme-future.css',
+          'bower_components/messenger/build/css/messenger-theme-block.css',
+          'bower_components/messenger/build/css/messenger-theme-air.css',
+          'bower_components/messenger/build/css/messenger-theme-ice.css',
+          'bower_components/messenger/build/js/messenger-theme-future.js',
+          'bower_components/moment-timezone/builds/moment-timezone-with-data-2010-2020.js',
+          'bower_components/fontawesome/css/font-awesome.css',
+          'bower_components/bootstrap-combobox/css/bootstrap-combobox.css',
+          'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.css',
+          'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css',
+          'bower_components/bootstrap-select/dist/css/bootstrap-select.css',
+          'bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css',
+          'bower_components/bootstrap-treeview/dist/bootstrap-treeview.min.css',
+          'bower_components/c3/c3.css',
+          'bower_components/datatables/media/css/jquery.dataTables.css',
+          'bower_components/datatables-colreorder/css/dataTables.colReorder.css',
+          'bower_components/datatables-colvis/css/dataTables.colVis.css',
+          'bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+          'bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
+          'bower_components/font-awesome/css/font-awesome.css',
+          'bower_components/google-code-prettify/bin/prettify.min.js',
+          'bower_components/google-code-prettify/bin/prettify.min.css',
+          'bower_components/patternfly/dist/css/patternfly.css',
+          'bower_components/patternfly/dist/css/patternfly-additions.css',
+          'bower_components/angular-key-value-editor/dist/angular-key-value-editor.css'
+        ]
       },
       test: {
         devDependencies: true,
@@ -324,12 +411,13 @@ module.exports = function (grunt) {
           collapseWhitespace: true,
           conservativeCollapse: true,
           collapseBooleanAttributes: true,
-          removeCommentsFromCDATA: true
+          removeCommentsFromCDATA: true,
+	  removeOptionalTags: true
         },
         files: [{
           expand: true,
           cwd: '<%= yeoman.dist %>',
-          src: ['*.html'],
+          src: ['*.html', 'views/{,*/}*.html'],
           dest: '<%= yeoman.dist %>'
         }]
       }
@@ -355,7 +443,7 @@ module.exports = function (grunt) {
         files: [{
           expand: true,
           cwd: '.tmp/concat/scripts',
-          src: '*.js',
+          src: ['*.js', '!oldieshim.js'],
           dest: '.tmp/concat/scripts'
         }]
       }
@@ -378,9 +466,12 @@ module.exports = function (grunt) {
           dest: '<%= yeoman.dist %>',
           src: [
             '*.{ico,png,txt}',
+            '.htaccess',
             '*.html',
+            'views/{,*/}*.html',
             'images/{,*/}*.{webp}',
-            'styles/fonts/{,*/}*.*'
+            'styles/fonts/{,*/}*.*',
+	    'fonts/*'
           ]
         }, {
           expand: true,
@@ -436,6 +527,7 @@ module.exports = function (grunt) {
       'clean:server',
       'wiredep',
       'concurrent:server',
+      'autoprefixer',
       'postcss:server',
       'connect:livereload',
       'watch'
@@ -447,22 +539,33 @@ module.exports = function (grunt) {
     grunt.task.run(['serve:' + target]);
   });
 
+  // Loads the coverage task which enforces the minimum coverage thresholds
+  grunt.loadNpmTasks('grunt-istanbul-coverage');
+
+  grunt.loadNpmTasks('grunt-htmlhint');
+
+  grunt.loadNpmTasks('grunt-angular-templates');
   grunt.registerTask('test', [
     'clean:server',
     'wiredep',
     'concurrent:test',
     'postcss',
+    'autoprefixer',
     'connect:test',
     'karma'
   ]);
 
   grunt.registerTask('build', [
     'clean:dist',
+    'newer:jshint',
+    'htmlhint',
     'wiredep',
     'useminPrepare',
-    'concurrent:dist',
-    'postcss',
     'ngtemplates',
+    'concurrent:dist',
+    'autoprefixer',
+    'postcss',
+    
     'concat',
     'ngAnnotate',
     'copy:dist',

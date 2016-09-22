@@ -1,0 +1,37 @@
+<!--
+/*
+ * This file is part of Oshinko.
+ *
+ * Copyright (C) 2016 Red Hat, Inc.
+ *
+ */
+-->
+<div class="container-cards-pf dashboard-cards">
+    <div class="card-pf card-pf-double" id="cluster-list">
+        <div class="card-pf-heading">
+            <div class="dropdown pull-right">
+                    <button class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">Actions
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="javascript:void(0);" ng-click="deleteCluster(cluster_details.name)">Delete</a>
+                            <a href="javascript:void(0);" ng-click="scaleCluster(cluster_details)">Scale</a>
+                        </li>
+                    </ul>
+            </div>
+            <h2 class="card-pf-title" translatable="yes">Cluster Details</h2>
+        </div>
+        <div class="card-pf-body">
+            <div class="well blank-slate-pf spacious" ng-if="!cluster_details" >
+                <div class="blank-slate-pf-icon">
+                    <i class="fa fa-hourglass-start"></i>
+                </div>
+                <h3 translatable="yes">Details are unavailable</h3>
+                <p translatable="yes">The cluster may have been deleted.</p>
+            </div>
+            <div ng-include="'forms/detail-body.html'"></div>
+            <div ng-include="'forms/cluster-body.html'"></div>
+        </div>
+    </div>
+</div>

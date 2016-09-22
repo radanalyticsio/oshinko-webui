@@ -1,0 +1,49 @@
+{
+  "name": "angular-hint",
+  "version": "0.3.8",
+  "description": "run-time hinting for AngularJS applications",
+  "main": "hint.js",
+  "scripts": {
+    "test": "gulp",
+    "build": "gulp build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular/angular-hint.git"
+  },
+  "keywords": [
+    "angular",
+    "hint",
+    "lint",
+    "tool",
+    "quality"
+  ],
+  "author": "Brian Ford <btford@umich.edu>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/angular/angular-hint/issues"
+  },
+  "homepage": "https://github.com/angular/angular-hint",
+  "dependencies": {
+    "debounce-on": "0.0.0",
+    "eventemitter2": "^0.4.14",
+    "suggest-it": "0.0.1"
+  },
+  "devDependencies": {
+    "angular": "^1.3.14",
+    "angular-mocks": "^1.3.14",
+    "browserify": "^6.1.0",
+    "gulp": "^3.8.9",
+    "http-server": "^0.7.2",
+    "jasmine-core": "^2.1.3",
+    "karma": "^0.12.31",
+    "karma-browserify": "^1.0.1",
+    "karma-chrome-launcher": "^0.1.7",
+    "karma-jasmine": "^0.3.2",
+    "karma-sauce-launcher": "^0.2.10",
+    "protractor": "^1.5.0",
+    "routes-router": "^4.1.1",
+    "st": "^0.5.2",
+    "vinyl-source-stream": "^1.0.0"
+  }
+}

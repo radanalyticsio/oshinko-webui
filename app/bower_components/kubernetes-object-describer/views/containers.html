@@ -1,0 +1,21 @@
+<p ng-if="!containers.length"><em>none</em></p>
+<dl class="dl-horizontal" ng-repeat="container in containers">
+<dt>Name</dt>
+<dd>{{container.name}}</dd>
+<dt>Image</dt>
+<dd ng-if="container.image">{{container.image}}</dd>
+<dd ng-if="!container.image"><em>none</em></dd>
+<dt>Ports</dt>
+<dd>
+  <div ng-if="!container.ports.length"><em>none</em></div>
+  <div ng-repeat="port in container.ports | orderBy:'containerPort'">
+    {{port.containerPort}}/{{port.protocol}}<span ng-if="port.hostPort"> to host port {{port.hostPort}}</span>
+  </div>
+</dd>
+<dt>Env vars</dt>
+<dd>
+  <div ng-if="!container.env.length"><em>none</em></div>
+  <div ng-repeat="env in container.env | orderBy:'name'" collapse-long-text value="{{env.name}}={{env.value}}"></div>
+</dd>
+</dl>
+<div ng-if="$index != 0" style="margin-bottom: 10px;"></div>
