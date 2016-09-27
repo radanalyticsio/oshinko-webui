@@ -20,7 +20,6 @@ You also need an oauthclient resource in openshift
     vim example/oauthclient.js
     # replace redirectURIs value with correct OSHINKOHOST value (likely your IP address)   
 
-<<<<<<< HEAD
 The following must be done by the system:admin user
     
     oc login -u system:admin

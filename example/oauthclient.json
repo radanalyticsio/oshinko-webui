@@ -8,6 +8,6 @@
 	"secret":"45e27750-a8aa-11e4-b2ea",
 	"allowAnyScope":true,
 	"redirectURIs":[
-		"https://192.168.1.108:9000"
+		"https://172.17.0.2:9000"
 	]
 }
