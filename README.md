@@ -12,17 +12,21 @@ Once that is set up, you can run the following:
 
 You need to edit the config.js to point to appropriate Opesnhift and Oshinko-webui IPs
 
-    vim app/scripts/config.js
-    # replace ORIGIN and OSHINKOHOST value
+    vim app/config.js
+    # replace ORIGIN and OSHINKOHOST value (both will likely be the IP address of your host)
 
-You also need a oauthclient resource in openshift
+You also need an oauthclient resource in openshift
 
     vim example/oauthclient.js
-    # replace redirectURIs value with correct OSHINKOHOST value
+    # replace redirectURIs value with correct OSHINKOHOST value (likely your IP address)   
 
+The following must be done by the system:admin user
+    
+    oc login -u system:admin
     oc create -f  example/oauthclient.js
 
-You also need a edit master-config.yaml of openshift to avoid CORS issue 
+You also need a edit master-config.yaml of openshift to avoid CORS issue.  Again, <OSHINKOHOST>
+is most likely replaced with the IP address of your host.
 ```
     corsAllowedOrigins:
     - 127.0.0.1
