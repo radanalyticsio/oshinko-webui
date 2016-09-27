@@ -20,6 +20,7 @@ You also need an oauthclient resource in openshift
     vim example/oauthclient.js
     # replace redirectURIs value with correct OSHINKOHOST value (likely your IP address)   
 
+<<<<<<< HEAD
 The following must be done by the system:admin user
     
     oc login -u system:admin
@@ -41,7 +42,7 @@ Now you're ready to run the oshinko-webui server.
     grunt serve
 
 
-Then navigate your browser to `https://127.0.0.1:9000` to see the app running in
+Then navigate your browser to `https://OSHINKOHOST:9000` to see the app running in
 your browser.
 
 
