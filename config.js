@@ -28,7 +28,11 @@ window.OPENSHIFT_CONFIG = {
     loggingURL: "",
     metricsURL: ""
 };
-
+window.OSHINKO_CONFIG = {
+    oshinko: {
+        restPort: "OSHINKOREST"
+    }
+};
 window.OPENSHIFT_VERSION = {
     openshift: "dev-mode",
     kubernetes: "dev-mode"

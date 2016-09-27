@@ -30,6 +30,7 @@ angular.module('Oshinko', [
     .constant("API_CFG", _.get(window.OPENSHIFT_CONFIG, "api", {}))
     .constant("APIS_CFG", _.get(window.OPENSHIFT_CONFIG, "apis", {}))
     .constant("AUTH_CFG", _.get(window.OPENSHIFT_CONFIG, "auth", {}))
+    .constant("OSHINKO_CFG", _.get(window.OSHINKO_CONFIG, "oshinko", {}))
     .config(['$locationProvider', function($locationProvider) {
 
         $locationProvider.html5Mode(true);

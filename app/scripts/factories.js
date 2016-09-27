@@ -57,7 +57,9 @@ angular.module('Oshinko')
     .factory('clusterData', [
         '$http',
         '$q',
-        function($http, $q) {
+        "OSHINKO_CFG",
+        function($http, $q, OSHINKO_CFG) {
+            console.log(OSHINKO_CFG.restPort);
              var urlBase = 'api';
             function sendDeleteCluster(clusterName) {
                 return $http({
@@ -93,7 +95,13 @@ angular.module('Oshinko')
             };
         }
     ])
-    .factory('clusterDataFactory', function($rootScope, $http, sendNotifications) {
+    .factory('clusterDataFactory', [
+        '$rootScope',
+        '$http',
+        'sendNotifications',
+        "OSHINKO_CFG",
+        function($rootScope, $http, sendNotifications, OSHINKO_CFG) {
+        console.log(OSHINKO_CFG.restPort);
         var urlBase = 'api';
         var dataFactory = {};
 
@@ -137,7 +145,7 @@ angular.module('Oshinko')
             return result;
         };
         return dataFactory;
-    })
+    }])
     .factory('sendNotifications', function(Notifications) {
         var notificationFactory = {};
         var typeMap = {
