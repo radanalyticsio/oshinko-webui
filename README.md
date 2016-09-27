@@ -18,18 +18,18 @@ You need to edit the config.js to point to appropriate Opesnhift and Oshinko-web
 You also need a oauthclient resource in openshift
 
     vim example/oauthclient.js
-    # replace redirectURIs value
+    # replace redirectURIs value with correct OSHINKOHOST value
 
     oc create -f  example/oauthclient.js
 
 You also need a edit master-config.yaml of openshift to avoid CORS issue 
-``
-corsAllowedOrigins:
-- 127.0.0.1
-- 192.168.122.1:8443
-- localhost
-- 172.17.0.2:9000
-``
+```
+    corsAllowedOrigins:
+    - 127.0.0.1
+    - 192.168.122.1:8443
+    - localhost
+    - <OSHINKOHOST>:9000
+```
 
 Now you're ready to run the oshinko-webui server.
 
