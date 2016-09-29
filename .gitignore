@@ -48,3 +48,4 @@ target/
 node_modules/
 debug
 test/localconf.js
+app/bower_components/
