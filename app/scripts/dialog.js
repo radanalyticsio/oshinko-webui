@@ -84,6 +84,15 @@
                         state = new DialogState(element, thing, scope);
                     };
 
+                    scope.cancelfn = function() {
+                        if (state)
+                            state.detach();
+                        state = null;
+                        scope.$dismiss();
+                        scope.$close();
+                        cancel.off("click", dismissDialog);
+                    };
+
                     scope.failure = function(/* ... */) {
                         var errors;
                         var n = arguments.length;
@@ -109,6 +118,9 @@
                     /* Dialog cancellation before promises kick in */
                     function dismissDialog() {
                         scope.$dismiss();
+                        scope.$close();
+                        cancel.off("click", dismissDialog);
+                        detach();
                     }
 
                     var cancel = queryFirst(element, ".btn-cancel");
