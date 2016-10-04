@@ -47,7 +47,7 @@ angular.module('Oshinko')
                     },
                 }).result;
             }
-        return {
+            return {
                 deleteCluster: deleteCluster,
                 newCluster: newCluster,
                 scaleCluster: scaleCluster,
@@ -60,7 +60,7 @@ angular.module('Oshinko')
         "OSHINKO_CFG",
         function($http, $q, OSHINKO_CFG) {
             console.log(OSHINKO_CFG.restPort);
-             var urlBase = 'api';
+            var urlBase = OSHINKO_CFG.restPort;
             function sendDeleteCluster(clusterName) {
                 return $http({
                     method: "DELETE",
@@ -68,7 +68,6 @@ angular.module('Oshinko')
                     data: '',
                     headers: {
                         'Content-Type': 'application/json',
-                        'allow-access-control-origin': "*"
                     }
                 });
             }
@@ -76,8 +75,8 @@ angular.module('Oshinko')
                 var jsonData = {
                     "masterCount": 1,
                     "workerCount": workerCount,
-                     "name": clusterName
-                }
+                    "name": clusterName
+                };
                 return $http.post(urlBase + "/clusters", jsonData);
             }
             function sendScaleCluster(clusterName, workerCount) {
@@ -85,10 +84,10 @@ angular.module('Oshinko')
                     "masterCount": 1,
                     "workerCount": workerCount,
                     "name": clusterName
-                }
+                };
                 return $http.put(urlBase + '/clusters/' + clusterName, jsonData);
             }
-        return {
+            return {
                 sendDeleteCluster: sendDeleteCluster,
                 sendCreateCluster: sendCreateCluster,
                 sendScaleCluster: sendScaleCluster,
@@ -101,51 +100,50 @@ angular.module('Oshinko')
         'sendNotifications',
         "OSHINKO_CFG",
         function($rootScope, $http, sendNotifications, OSHINKO_CFG) {
-        console.log(OSHINKO_CFG.restPort);
-        var urlBase = 'api';
-        var dataFactory = {};
+            console.log(OSHINKO_CFG.restPort);
+            var urlBase = OSHINKO_CFG.restPort;
+            var dataFactory = {};
 
-        dataFactory.getClusters = function() {
-            return $http.get(urlBase + "/clusters");
-        };
+            dataFactory.getClusters = function() {
+                return $http.get(urlBase + "/clusters");
+            };
 
-        dataFactory.getCluster = function(id) {
-            return $http.get(urlBase + '/clusters/' + id);
-        };
+            dataFactory.getCluster = function(id) {
+                return $http.get(urlBase + '/clusters/' + id);
+            };
 
-        dataFactory.deleteCluster = function(id) {
-            var result = $http({
-                method: "DELETE",
-                url: urlBase + '/clusters/' + id,
-                data: '',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'allow-access-control-origin': "*"
-                }
-            });
-            return result;
-        };
+            dataFactory.deleteCluster = function(id) {
+                var result = $http({
+                    method: "DELETE",
+                    url: urlBase + '/clusters/' + id,
+                    data: '',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                return result;
+            };
 
-        dataFactory.createCluster = function(name, workerCount) {
-            var jsonData = {
-                "masterCount": 1,
-                "workerCount": workerCount,
-                "name": name
-            }
-            return $http.post(urlBase + "/clusters", jsonData);
-        };
+            dataFactory.createCluster = function(name, workerCount) {
+                var jsonData = {
+                    "masterCount": 1,
+                    "workerCount": workerCount,
+                    "name": name
+                };
+                return $http.post(urlBase + "/clusters", jsonData);
+            };
 
-        dataFactory.updateCluster = function(id, name, workerCount) {
-            var jsonData = {
-                "masterCount": 1,
-                "workerCount": workerCount,
-                "name": name
-            }
-            var result = $http.put(urlBase + '/clusters/' + id, jsonData);
-            return result;
-        };
-        return dataFactory;
-    }])
+            dataFactory.updateCluster = function(id, name, workerCount) {
+                var jsonData = {
+                    "masterCount": 1,
+                    "workerCount": workerCount,
+                    "name": name
+                };
+                var result = $http.put(urlBase + '/clusters/' + id, jsonData);
+                return result;
+            };
+            return dataFactory;
+        }])
     .factory('sendNotifications', function(Notifications) {
         var notificationFactory = {};
         var typeMap = {
@@ -166,23 +164,23 @@ angular.module('Oshinko')
 
             /*service.Login = function(username, password, callback) {
 
-                $timeout(function() {
-                    var response = {
-                        success: username != '' && password != ''
-                    };
-                    if (!response.success) {
-                        response.message = 'Username or password is incorrect';
-                    }
-                    callback(response);
-                }, 1000);
+             $timeout(function() {
+             var response = {
+             success: username != '' && password != ''
+             };
+             if (!response.success) {
+             response.message = 'Username or password is incorrect';
+             }
+             callback(response);
+             }, 1000);
 
 
-                //$http.post('/actualauth endpoint', { login data })
-                //    .success(function (response) {
-                //        callback(response);
-                //    });
+             //$http.post('/actualauth endpoint', { login data })
+             //    .success(function (response) {
+             //        callback(response);
+             //    });
 
-            };*/
+             };*/
 
             // service.SetCredentials = function(username, password) {
             //     var authdata = btoa(username + ':' + password);
@@ -215,14 +213,14 @@ angular.module('Oshinko')
         }
     ])
 
-/* Error handling factory.  Since our server will return
- * a successful status code, even on things where an operation
- * was not successful, we need to take a closer look at
- * the response itself to determine if we should report an
- * error to the user.  This factory is mean to be the one stop shop
- * for error handling and can be extended to handle all sorts
- * of things.
- */
+    /* Error handling factory.  Since our server will return
+     * a successful status code, even on things where an operation
+     * was not successful, we need to take a closer look at
+     * the response itself to determine if we should report an
+     * error to the user.  This factory is mean to be the one stop shop
+     * for error handling and can be extended to handle all sorts
+     * of things.
+     */
     .factory('errorHandling', function(sendNotifications) {
         var errorHandlingFactory= {};
 

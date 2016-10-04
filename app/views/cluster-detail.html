@@ -1,11 +1,3 @@
-<!--
-/*
- * This file is part of Oshinko.
- *
- * Copyright (C) 2016 Red Hat, Inc.
- *
- */
--->
 <div class="container-cards-pf dashboard-cards">
     <div class="card-pf card-pf-double" id="cluster-list">
         <div class="card-pf-heading">
@@ -23,15 +15,16 @@
             <h2 class="card-pf-title" translatable="yes">Cluster Details</h2>
         </div>
         <div class="card-pf-body">
-            <div class="well blank-slate-pf spacious" ng-if="!cluster_details" >
+            <div class="well blank-slate-pf spacious" ng-if="!oshinkoClusters" >
                 <div class="blank-slate-pf-icon">
                     <i class="fa fa-hourglass-start"></i>
                 </div>
                 <h3 translatable="yes">Details are unavailable</h3>
                 <p translatable="yes">The cluster may have been deleted.</p>
             </div>
-            <div ng-include="'forms/detail-body.html'"></div>
-            <div ng-include="'forms/cluster-body.html'"></div>
+            <div> {{ cluster_id }} </div>
+            <div ng-include="'views/detail-body.html'"></div>
+            <div ng-include="'views/cluster-body.html'"></div>
         </div>
     </div>
 </div>

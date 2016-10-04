@@ -36,42 +36,23 @@ angular.module('Oshinko', [
         $locationProvider.html5Mode(true);
 
     }])
-/*    .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/clusters/:Id?',
-            {
-                templateUrl: function(params) {
-                    if(!params['Id'])
-                        return 'partials/clusters.html';
-                    else
-                        return 'partials/cluster-detail.html';
-                },
-                controller: 'ClusterCtrl',
-                activetab: 'clusters'
-            });
-        $routeProvider.when('/login',
-            {
-                templateUrl: 'partials/bkp_login.html',
-                controller: 'LoginController',
-                activetab: ''
-            });
-        $routeProvider.otherwise({redirectTo: '/clusters'});
-    }])*/
     .config(['$routeProvider', '$locationProvider',function ($routeProvider, $locationProvider) {
         $locationProvider.html5Mode({
             enabled: true,
         });
         $routeProvider
-            .when('/clusters/:Id?',
+            .when('/clusters/',
             {
-                templateUrl: function(params) {
-                    if(!params['Id'])
-                        return 'views/clusters.html';
-                    else
-                        return 'views/cluster-detail.html';
-                },
-                controller: 'ClusterCtrl',
+                templateUrl: 'views/clusters.html',
+                controller: 'ClustersCtrl',
                 activetab: 'clusters'
             })
+            .when('/clusters/:Id',
+                {
+                    templateUrl: 'views/cluster.html',
+                    controller: 'ClusterCtrl',
+                    activetab: 'clusters'
+                })
             // .when('/login',
             // {
             //     templateUrl: 'partials/bkp_login.html',
@@ -177,27 +158,27 @@ angular.module('Oshinko', [
     })
     .run(function(dateRelativeFilter, durationFilter, timeOnlyDurationFromTimestampsFilter) {
         // Use setInterval instead of $interval because we're directly manipulating the DOM and don't want scope.$apply overhead
-        setInterval(function() {
-            // Set by relative-timestamp directive.
-            $('.timestamp[data-timestamp]').text(function(i, existing) {
-                return dateRelativeFilter($(this).attr("data-timestamp"), $(this).attr("data-drop-suffix")) || existing;
-            });
-        }, 30 * 1000);
-        setInterval(function() {
-            // Set by duration-until-now directive.
-            $('.duration[data-timestamp]').text(function(i, existing) {
-                var timestamp = $(this).data("timestamp");
-                var omitSingle = $(this).data("omit-single");
-                var precision = $(this).data("precision");
-                var timeOnly  = $(this).data("time-only");
-                if (timeOnly) {
-                    return timeOnlyDurationFromTimestampsFilter(timestamp, null) || existing;
-                }
-                else {
-                    return durationFilter(timestamp, null, omitSingle, precision) || existing;
-                }
-            });
-        }, 1000);
+        // setInterval(function() {
+        //     // Set by relative-timestamp directive.
+        //     $('.timestamp[data-timestamp]').text(function(i, existing) {
+        //         return dateRelativeFilter($(this).attr("data-timestamp"), $(this).attr("data-drop-suffix")) || existing;
+        //     });
+        // }, 30 * 1000);
+        // setInterval(function() {
+        //     // Set by duration-until-now directive.
+        //     $('.duration[data-timestamp]').text(function(i, existing) {
+        //         var timestamp = $(this).data("timestamp");
+        //         var omitSingle = $(this).data("omit-single");
+        //         var precision = $(this).data("precision");
+        //         var timeOnly  = $(this).data("time-only");
+        //         if (timeOnly) {
+        //             return timeOnlyDurationFromTimestampsFilter(timestamp, null) || existing;
+        //         }
+        //         else {
+        //             return durationFilter(timestamp, null, omitSingle, precision) || existing;
+        //         }
+        //     });
+        // }, 1000);
     })
     .run(['$rootScope', '$http', function ($rootScope, $http) {
         // $http.get('/oshinko-rest-location').success(function(response) {

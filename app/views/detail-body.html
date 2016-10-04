@@ -1,13 +1,13 @@
 <div>
     <dl class="dl-horizontal">
         <dt translatable="yes">Name</dt>
-        <dd>{{cluster_details.name}}</dd>
+        <dd>{{ cluster }}</dd>
         <dt translatable="yes">Status</dt>
-        <dd>{{cluster_details.status}}</dd>
+        <dd>{{ oshinkoClusters[cluster] }}</dd>
         <dt translatable="yes">Master</dt>
-        <dd>{{cluster_details.masterUrl}}</dd>
+        <dd>{{ oshinkoClusters[cluster] }}</dd>
         <dt translatable="yes">Worker count</dt>
-        <dd>{{cluster_details.workerCount}}</dd>
+        <dd>{{ oshinkoClusters[cluster] }}</dd>
         <dt translatable="yes">Tags</dt>
         <dd><span ng-repeat="indtag in cluster_details.tags track by $index">{{indtag}}{{$last ? '' : ', '}}</span></dd>
         <dt translatable="yes">Annotations</dt>

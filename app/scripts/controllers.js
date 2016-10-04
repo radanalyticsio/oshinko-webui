@@ -1,5 +1,5 @@
 /*
- * This file is part of Oshinko.
+ * This file is part of Oshinko WebUI.
  *
  * Copyright (C) 2016 Red Hat, Inc.
  *
@@ -7,34 +7,220 @@
 'use strict';
 
 angular.module('Oshinko')
+    .filter('label', function() {
+        return function(resource, key) {
+            if (resource && resource.metadata && resource.metadata.labels) {
+                return resource.metadata.labels[key];
+            }
+            return null;
+        };
+    })
     .controller('ClusterCtrl',
-/*        [
-        '$scope',
-        '$interval',
-        '$location',
-        '$route',
-        'clusterDataFactory',
-        'sendNotifications',
-        'clusterActions',
-        "ListingState",
-        "errorHandling",
-        "DataService",
-        "AuthService",*/
         function($scope, $interval, $location, $route, clusterDataFactory,
                  sendNotifications, clusterActions, ListingState,
                  DataService, AuthService, ProjectsService, $routeParams,
-                 $rootScope) {
+                 $rootScope, $filter) {
 
             var watches = [];
+            var services, pods;
             $scope.projects = {};
+            $scope.oshinkoClusters;
+            $scope.oshinkoClusterNames = [];
+            $scope.alerts = $scope.alerts || {};
+            $scope.showGetStarted = false;
+            $scope.myname = "";
+            $scope.mytoken = "";
+            var label = $filter('label');
+            $scope.clusterId = $route.current.params.Id || '';
+            $scope.predicate = 'name';
+            $scope.reverse = false;
+            angular.extend($scope, clusterActions);
+            $scope.listing = new ListingState($scope);
+            $scope.order = function (predicate) {
+                $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+                $scope.predicate = predicate;
+            };
+            //TODO move this to a factory
+            function oshinkoCluster(resource) {
+                if(label(resource, "oshinko-cluster")) {
+                    return true;
+                }
+                return false;
+            }
+            function groupByCluster(pods, services, clusterId) {
+                var clusters = {};
+                var clusterName;
+                var type;
+                var podName;
+                var svcName;
+                var svc;
+                _.each(pods, function(pod) {
+                    if (!oshinkoCluster(pod)) {
+                        return;
+                    }
+                    clusterName = label(pod, "oshinko-cluster");
+                    if(clusterName != clusterId) {
+                        return;
+                    }
+
+                    podName = _.get(pod, 'metadata.name', '');
+                    type = label(pod, "oshinko-type");
+                    //find matching services
+                    svc = _.find(services, function(service) {
+                        var svcSelector = new LabelSelector(service.spec.selector);
+                        return svcSelector.matches(pod);
+                    });
+
+                    if(svc) {
+                        svcName = _.get(svc, 'metadata.name', '');
+                        _.set(clusters, [clusterName, type, 'svc', svcName], svc);
+                    }
+                    _.set(clusters, [clusterName, type, 'pod', podName], pod);
+                });
+                //find webui services
+                _.each(services, function(service) {
+                    if (!oshinkoCluster(service)) {
+                        return;
+                    }
+                    clusterName = label(service, "oshinko-cluster");
+                    if(clusterName != clusterId) {
+                        return;
+                    }
+                    type = label(service, "oshinko-type");
+                    if(type === "webui") {
+                        svcName = _.get(service, 'metadata.name', '');
+                        _.set(clusters, [clusterName, type, 'svc', svcName], service);
+                    }
+                });
+
+                return clusters;
+            }
+            var groupByClusterId = function(clusterId) {
+                if (!pods || !services) {
+                    return;
+                }
+                $scope.oshinkoClusters = groupByCluster(pods, services, clusterId);
+                $scope.oshinkoClusterNames = Object.keys($scope.oshinkoClusters);
+            };
+            $scope.countWorkers = function(cluster) {
+                if (!cluster || !cluster.worker || !cluster.worker.pod)
+                    return 0;
+                var pods =  cluster.worker.pod;
+                var length = Object.keys(pods).length;
+                return length;
+            };
+            $scope.getClusterName = function(cluster) {
+                var name = Object.keys(cluster);
+                return name[0];
+            };
+            $scope.getClusterStatus = function(cluster) {
+                var status = "Starting...";
+                var podStatus;
+                var isPod = false;
+                if (!cluster || !cluster.worker || !cluster.worker.pod
+                    || !cluster.master || !cluster.master.pod) {
+                    return "Error";
+                }
+                //TODO look at more states
+                _.each(cluster.worker.pod, function(worker) {
+                    isPod = true;
+                    if(worker.status.phase !== "Running") {
+                        podStatus = worker.status.phase;
+                        return;
+                    }
+                });
+
+                _.each(cluster.master.pod, function(master) {
+                    isPod = true;
+                    if(master.status.phase !== "Running") {
+                        podStatus = master.status.phase;
+                        return;
+                    }
+                });
+                //return pod status
+                if(isPod && podStatus)
+                    return podStatus;
+                else if (isPod)
+                    return "Running";
+
+                //return starting...
+                return status;
+            };
+            $scope.getSparkMasterUrl = function(cluster) {
+                if (!cluster || !cluster.master || !cluster.master.svc) {
+                    return "";
+                }
+                var masterSvc = Object.keys(cluster.master.svc);
+                if (masterSvc.length == 0) {
+                    return "";
+                }
+                var svcName = masterSvc[0];
+                var port = cluster.master.svc[svcName].spec.ports[0].port;
+                return "spark://" + svcName + ":" + port;
+            };
+            $scope.getCluster = function() {
+                if(!$scope.oshinkoClusters || !$scope.cluster)
+                    return;
+
+                var cluster = $scope.oshinkoClusters[$scope.cluster];
+                return cluster;
+            };
+
+            AuthService.withUser().then(function() {
+                console.log(" AuthService.withUser()......");
+                $scope.myname = AuthService.UserStore().getUser().metadata.name;
+                console.log("Logged in as :" + $scope.myname);
+                //$scope.mytoken = AuthService.UserStore().getToken();
+                $rootScope.globals = {
+                    currentUser: {
+                        username: $scope.myname
+                    }
+                };
+            });
+
+            ProjectsService
+                .get("oshinko")
+                .then(_.spread(function(project, context) {
+                    $scope.project = project;
+                    $scope.projectContext = context;
+                    console.log("In Project : " +project);
+                    watches.push(DataService.watch("pods", context, function(podsData) {
+                        $scope.pods =pods = podsData.by("metadata.name");
+                        groupByClusterId($scope.clusterId);
+                    }));
+
+                    watches.push(DataService.watch("services", context, function(serviceData) {
+                        $scope.services = services = serviceData.by("metadata.name");
+                        groupByClusterId($scope.clusterId);
+                    }));
+
+                    $scope.$on('$destroy', function(){
+                        DataService.unwatchAll(watches);
+                    });
+
+                }));
+
+            $scope.$on('$destroy', function(){
+                DataService.unwatchAll(watches);
+            });
+        })
+    .controller('ClustersCtrl',
+        function($scope, $interval, $location, $route, clusterDataFactory,
+                 sendNotifications, clusterActions, ListingState,
+                 DataService, AuthService, ProjectsService, $routeParams,
+                 $rootScope, $filter) {
+
+            var watches = [];
+            var services, pods;
+            $scope.projects = {};
+            $scope.oshinkoClusters;
+            $scope.oshinkoClusterNames = [];
             $scope.alerts = $scope.alerts || {};
             $scope.showGetStarted = false;
             $scope.myname ="";
             $scope.mytoken = "";
-            $scope.projectName = $routeParams.project;
-
-
-            var cluster_id = $route.current.params.Id || '';
+            var label = $filter('label');
+            $scope.cluster_id = $route.current.params.Id || '';
             $scope.predicate = 'name';
             $scope.reverse = false;
             angular.extend($scope, clusterActions);
@@ -43,112 +229,169 @@ angular.module('Oshinko')
                 $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
                 $scope.predicate = predicate;
             };
-
-            AuthService.withUser().then(function() {
-                console.log(" AuthService.withUser()......");
-                console.log(AuthService.UserStore().getUser());
-                $scope.myname = AuthService.UserStore().getUser().metadata.name;
-                $scope.mytoken = AuthService.UserStore().getToken();
-
-                $rootScope.globals = {
-                            currentUser: {
-                                username: $scope.myname
-                            }
-                        };
-                // watches.push(DataService.watch("projects", $scope, function(projects) {
-                //     $scope.projects = projects.by("metadata.name");
-                //     console.log(" AuthService.withUser()......projects")
-                //     //$scope.showGetStarted = hashSizeFilter($scope.projects) === 0;
-                // }));
-
-
-            // ProjectsService
-            //     .get($routeParams.project)
-            //     .then(_.spread(function(project, context) {
-            //             $scope.project = project;
-            //             // FIXME: DataService.createStream() requires a scope with a
-            //             // projectPromise rather than just a namespace, so we have to pass the
-            //             // context into the log-viewer directive.
-            //             $scope.projectContext = context;
-            //             DataService.get("projects", "myproject", context).then(
-            //                 function(p) {
-            //                 // success
-            //                 console.log("found ", p);
-            //                 },
-            //                 // failure
-            //                 function(e) {
-            //                     $scope.loaded = true;
-            //                     $scope.alerts["load"] = {
-            //                         type: "error",
-            //                         message: "The pod details could not be loaded.",
-            //                         details: "Reason: " +(e)
-            //                     };
-            //                 }
-            //             );
-            // }));
-            
-
-
-            if (!cluster_id) {
-                $scope.reloadData = function() {
-                    clusterDataFactory.getClusters()
-                        .then(function(response) {
-                            console.log(response);
-                            if(response.data.clusters)
-                                $scope.details = response.data.clusters;
-                            else
-                                $scope.details = null;
-                        }, function(error) {
-                            sendNotifications.notify(
-                                "Error", "Unable to fetch data.  Error code: "
-                                + error.data.code);
-                        });
-                };
-            } else {
-                $scope.reloadData = function() {
-                    clusterDataFactory.getCluster(cluster_id)
-                        .then(function(response) {
-                            $scope.cluster_details = response.data.cluster;
-                        }, function(error) {
-                            sendNotifications.notify(
-                                "Error", "Unable to fetch cluster details.  Error code: "
-                                + error.data.code);
-                        });
-                };
+            //TODO move this to a factory
+            function oshinkoCluster(resource) {
+                if(label(resource, "oshinko-cluster")) {
+                    return true;
+                }
+                return false;
             }
+            function groupByClusters(pods, services) {
+                var clusters = {};
+                var clusterName;
+                var type;
+                var podName;
+                var svcName;
+                var svc;
+                _.each(pods, function(pod) {
+                    if (!oshinkoCluster(pod)) {
+                        return;
+                    }
+                    clusterName = label(pod, "oshinko-cluster");
+                    podName = _.get(pod, 'metadata.name', '');
+                    type = label(pod, "oshinko-type");
+                    //find matching services
+                    svc = _.find(services, function(service) {
+                        var svcSelector = new LabelSelector(service.spec.selector);
+                        return svcSelector.matches(pod);
+                    });
 
-            $scope.gotoCluster = function gotoCluster(clusterName) {
+                    if(svc) {
+                        svcName = _.get(svc, 'metadata.name', '');
+                        _.set(clusters, [clusterName, type, 'svc', svcName], svc);
+                    }
+                    _.set(clusters, [clusterName, type, 'pod', podName], pod);
+                });
+                //find webui services
+                _.each(services, function(service) {
+                    type = label(service, "oshinko-type");
+                    if(type === "webui") {
+                        clusterName = label(service, "oshinko-cluster");
+                        svcName = _.get(service, 'metadata.name', '');
+                        _.set(clusters, [clusterName, type, 'svc', svcName], service);
+                    }
+                });
+
+                return clusters;
+            }
+            var groupClusters = function() {
+                if (!pods || !services) {
+                    return;
+                }
+                $scope.oshinkoClusters = groupByClusters(pods, services);
+                $scope.oshinkoClusterNames = Object.keys($scope.oshinkoClusters);
+            };
+            $scope.countWorkers = function(cluster) {
+                if (!cluster || !cluster.worker || !cluster.worker.pod)
+                    return 0;
+                var pods =  cluster.worker.pod;
+                var length = Object.keys(pods).length;
+                return length;
+            };
+            $scope.getClusterName = function(cluster) {
+                var name = Object.keys(cluster);
+                return name[0];
+            };
+            $scope.getClusterStatus = function(cluster) {
+                var status = "Starting...";
+                var podStatus;
+                var isPod = false;
+                if (!cluster || !cluster.worker || !cluster.worker.pod
+                    || !cluster.master || !cluster.master.pod) {
+                    return "Error";
+                }
+                //TODO look at more states
+                _.each(cluster.worker.pod, function(worker) {
+                    isPod = true;
+                    if(worker.status.phase !== "Running") {
+                        podStatus = worker.status.phase;
+                        return;
+                    }
+                });
+
+                _.each(cluster.master.pod, function(master) {
+                    isPod = true;
+                    if(master.status.phase !== "Running") {
+                        podStatus = master.status.phase;
+                        return;
+                    }
+                });
+                //return pod status
+                if(isPod && podStatus)
+                    return podStatus;
+                else if (isPod)
+                    return "Running";
+
+                //return starting...
+                return status;
+            };
+            $scope.getSparkMasterUrl = function(cluster) {
+                if (!cluster || !cluster.master || !cluster.master.svc) {
+                    return "";
+                }
+                var masterSvc = Object.keys(cluster.master.svc);
+                if (masterSvc.length == 0) {
+                    return "";
+                }
+                var svcName = masterSvc[0];
+                var port = cluster.master.svc[svcName].spec.ports[0].port;
+                return "spark://" + svcName + ":" + port;
+            };
+            $scope.getCluster = function() {
+                if(!$scope.oshinkoClusters || !$scope.cluster)
+                    return;
+
+                var cluster = $scope.oshinkoClusters[$scope.cluster];
+                return cluster;
+            };
+            $scope.gotoCluster = function(clusterName) {
                 var path = '/clusters/' + encodeURIComponent(clusterName);
                 $location.path(path);
             };
 
-            var intervalPromise;
-            var REFRESH_SECONDS = 10;
-            intervalPromise = $interval(function() {
-                $scope.reloadData();
-            }.bind(this), REFRESH_SECONDS * 1000);
-
-            //no update when this page isn't displayed
-            $scope.$on('$destroy', function() {
-                if (intervalPromise)
-                    $interval.cancel(intervalPromise);
+            AuthService.withUser().then(function() {
+                console.log(" AuthService.withUser()......");
+                $scope.myname = AuthService.UserStore().getUser().metadata.name;
+                console.log("Logged in as :" + $scope.myname);
+                //$scope.mytoken = AuthService.UserStore().getToken();
+                $rootScope.globals = {
+                    currentUser: {
+                        username: $scope.myname
+                    }
+                };
             });
 
-            $scope.reloadData();
+            ProjectsService
+                .get("oshinko")
+                .then(_.spread(function(project, context) {
+                    $scope.project = project;
+                    $scope.projectContext = context;
+                    console.log("In Project : " +project);
+                    watches.push(DataService.watch("pods", context, function(podsData) {
+                        $scope.pods =pods = podsData.by("metadata.name");
+                        groupClusters();
+                    }));
 
+                    watches.push(DataService.watch("services", context, function(serviceData) {
+                        $scope.services = services = serviceData.by("metadata.name");
+                        groupClusters();
+                    }));
 
+                    $scope.$on('$destroy', function(){
+                        DataService.unwatchAll(watches);
+                    });
+
+                }));
+
+            $scope.$on('$destroy', function(){
+                DataService.unwatchAll(watches);
             });
         }
-    //]
     )
     .controller('NavCtrl', function($rootScope, $scope, $location, OshinkoAuthService) {
         $scope.isActive = function(route) {
             return $location.path() === route;
         };
-        // $scope.logout = function() {
-        //     OshinkoAuthService.ClearCredentials();
-        //     $location.path('/login');
-        // };
     })
     .controller('ClusterDeleteCtrl', [
         '$q',
@@ -249,6 +492,7 @@ angular.module('Oshinko')
                             errorHandling.handle(response, null, defer, successMsg);
                         }, function(error) {
                             errorHandling.handle(null, error, defer, null);
+                            console.log(error);
                         });
                     }, function(error) {
                         defer.reject(error);
@@ -256,24 +500,5 @@ angular.module('Oshinko')
                 return defer.promise;
             };
         }
-    ])
-    .controller('LoginController', ['$scope', '$rootScope', '$location', 'OshinkoAuthService',
-        function($scope, $rootScope, $location, OshinkoAuthService) {
-            $scope.username = '';
-            $scope.password = '';
-            // OshinkoAuthService.ClearCredentials();
-            // $scope.login = function() {
-            //     $scope.dataLoading = true;
-            //     OshinkoAuthService.Login($scope.username, $scope.password, function(response) {
-            //         OshinkoAuthService.ClearCredentials();
-            //         if (response.success) {
-            //             OshinkoAuthService.SetCredentials($scope.username, $scope.password);
-            //             $location.path('/clusters');
-            //         } else {
-            //             $scope.error = response.message;
-            //             $scope.dataLoading = false;
-            //         }
-            //     });
-            // };
-        }
     ]);
+
