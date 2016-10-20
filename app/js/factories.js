@@ -73,16 +73,20 @@ module.factory('clusterData', [
             }
             function sendCreateCluster(clusterName, workerCount) {
                 var jsonData = {
-                    "masterCount": 1,
-                    "workerCount": workerCount,
+                    "config": {
+                        "masterCount": 1,
+                        "workerCount": workerCount
+                     },
                      "name": clusterName
                 }
                 return $http.post(urlBase + "/clusters", jsonData);
             }
             function sendScaleCluster(clusterName, workerCount) {
                 var jsonData = {
-                    "masterCount": 1,
-                    "workerCount": workerCount,
+                    "config": {
+                        "masterCount": 1,
+                        "workerCount": workerCount
+                    },
                     "name": clusterName
                 }
                 return $http.put(urlBase + '/clusters/' + clusterName, jsonData);
@@ -122,8 +126,10 @@ module.factory('clusterDataFactory', function($rootScope, $http, sendNotificatio
 
     dataFactory.createCluster = function(name, workerCount) {
         var jsonData = {
-            "masterCount": 1,
-            "workerCount": workerCount,
+            "config": {
+                "masterCount": 1,
+                "workerCount": workerCount
+            },
             "name": name
         }
         return $http.post(urlBase + "/clusters", jsonData);
@@ -131,8 +137,10 @@ module.factory('clusterDataFactory', function($rootScope, $http, sendNotificatio
 
     dataFactory.updateCluster = function(id, name, workerCount) {
         var jsonData = {
-            "masterCount": 1,
-            "workerCount": workerCount,
+            "config": {
+                "masterCount": 1,
+                "workerCount": workerCount
+            },
             "name": name
         }
         var result = $http.put(urlBase + '/clusters/' + id, jsonData);
