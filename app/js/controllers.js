@@ -90,8 +90,8 @@ module.controller('NavCtrl', function($rootScope, $scope, $location, OshinkoAuth
         return $location.path() === route;
     };
     $scope.logout = function() {
-        OshinkoAuthService.ClearCredentials();
-        $location.path('/login');
+//        OshinkoAuthService.ClearCredentials();
+//        $location.path('/login');
     };
 });
 

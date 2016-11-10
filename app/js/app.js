@@ -51,8 +51,8 @@ app.run(['$rootScope', '$location', '$cookies', '$http',
 
         $rootScope.$on('$locationChangeStart', function (event, next, current) {
             // redirect to login page if not logged in
-            if ($location.path() !== '/login' && !$cookies.getObject('oshinkookie')) {
-                $location.path('/login');
-            }
+//            if ($location.path() !== '/login' && !$cookies.getObject('oshinkookie')) {
+//                $location.path('/login');
+//            }
         });
     }]);
