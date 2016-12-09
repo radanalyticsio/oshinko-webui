@@ -24,8 +24,8 @@ angular.module('Oshinko', [
         'ui.bootstrap',
         'patternfly.notification',
         'ipCookie',
-        'ui.cockpit',
-        'ui.listing',
+        //'ui.cockpit',
+        //'ui.listing',
     ])
     .constant("API_CFG", _.get(window.OPENSHIFT_CONFIG, "api", {}))
     .constant("APIS_CFG", _.get(window.OPENSHIFT_CONFIG, "apis", {}))
@@ -44,13 +44,13 @@ angular.module('Oshinko', [
             .when('/clusters/',
             {
                 templateUrl: 'views/clusters.html',
-                controller: 'ClustersCtrl',
+                controller: 'OshinkoClustersCtrl',
                 activetab: 'clusters'
             })
             .when('/clusters/:Id',
                 {
                     templateUrl: 'views/cluster.html',
-                    controller: 'ClusterCtrl',
+                    controller: 'OshinkoClustersCtrl',
                     activetab: 'clusters'
                 })
             // .when('/login',
@@ -77,13 +77,13 @@ angular.module('Oshinko', [
             //   controllerAs: 'vm'
             // })
             .when('/logout', {
-                templateUrl: function(params) {
+                templateUrl: function() {
                     return 'views/logout.html';
                 },
                 controller: 'LogoutController'
             })
             .when('/oauth', {
-                templateUrl: function(params) {
+                templateUrl: function() {
                     return 'views/oauth.html';
                 },
                 controller: 'OAuthController'
@@ -115,7 +115,7 @@ angular.module('Oshinko', [
     //     };
     //     this.$get = [ this.loadConfig ];
     // })
-    .config(function($httpProvider, AuthServiceProvider, RedirectLoginServiceProvider, AUTH_CFG, API_CFG) {
+    .config(function($httpProvider, AuthServiceProvider, RedirectLoginServiceProvider, AUTH_CFG) {
         $httpProvider.interceptors.push('AuthInterceptor');
 
         AuthServiceProvider.LoginService('RedirectLoginService');
@@ -135,72 +135,67 @@ angular.module('Oshinko', [
     .config(function($compileProvider){
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|mailto|git):/i);
     })
-    // .run(function run($rootScope, $location, $cookieStore, $http) {
-    //   // keep user logged in after page refresh
-    //   $rootScope.globals = $cookieStore.get('globals') || {};
-    //   if ($rootScope.globals.currentUser) {
-    //     $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
-    //   }
-    //
-    //   $rootScope.$on('$locationChangeStart', function (event, next, current) {
-    //     // redirect to login page if not logged in and trying to access a restricted page
-    //     var restrictedPage = $.inArray($location.path(), ['/login', '/register']) === -1;
-    //     var loggedIn = $rootScope.globals.currentUser;
-    //     if (restrictedPage && !loggedIn) {
-    //       $location.path('/login');
-    //     }
-    //   });
-    // });
+    .run(function run($rootScope, $location, $cookieStore, $http) {
+      // keep user logged in after page refresh
+      $rootScope.globals = $cookieStore.get('globals') || {};
+      if ($rootScope.globals.currentUser) {
+        $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
+      }
+
+      $rootScope.$on('$locationChangeStart', function () {
+        // redirect to login page if not logged in and trying to access a restricted page
+        var restrictedPage = $.inArray($location.path(), ['/login']) === -1;
+        var loggedIn = $rootScope.globals.currentUser;
+        if (restrictedPage && !loggedIn) {
+          $location.path('/login');
+        }
+      });
+    })
     .run(function($rootScope, LabelFilter){
-        $rootScope.$on('$locationChangeSuccess', function(event) {
+        $rootScope.$on('$locationChangeSuccess', function() {
             LabelFilter.setLabelSelector(new LabelSelector({}, true), true);
         });
     })
     .run(function(dateRelativeFilter, durationFilter, timeOnlyDurationFromTimestampsFilter) {
-        // Use setInterval instead of $interval because we're directly manipulating the DOM and don't want scope.$apply overhead
-        // setInterval(function() {
-        //     // Set by relative-timestamp directive.
-        //     $('.timestamp[data-timestamp]').text(function(i, existing) {
-        //         return dateRelativeFilter($(this).attr("data-timestamp"), $(this).attr("data-drop-suffix")) || existing;
-        //     });
-        // }, 30 * 1000);
-        // setInterval(function() {
-        //     // Set by duration-until-now directive.
-        //     $('.duration[data-timestamp]').text(function(i, existing) {
-        //         var timestamp = $(this).data("timestamp");
-        //         var omitSingle = $(this).data("omit-single");
-        //         var precision = $(this).data("precision");
-        //         var timeOnly  = $(this).data("time-only");
-        //         if (timeOnly) {
-        //             return timeOnlyDurationFromTimestampsFilter(timestamp, null) || existing;
-        //         }
-        //         else {
-        //             return durationFilter(timestamp, null, omitSingle, precision) || existing;
-        //         }
-        //     });
-        // }, 1000);
+        //Use setInterval instead of $interval because we're directly manipulating the DOM and don't want scope.$apply overhead
+        setInterval(function() {
+            // Set by relative-timestamp directive.
+            $('.timestamp[data-timestamp]').text(function(i, existing) {
+                return dateRelativeFilter($(this).attr("data-timestamp"), $(this).attr("data-drop-suffix")) || existing;
+            });
+        }, 30 * 1000);
+        setInterval(function() {
+            // Set by duration-until-now directive.
+            $('.duration[data-timestamp]').text(function(i, existing) {
+                var timestamp = $(this).data("timestamp");
+                var omitSingle = $(this).data("omit-single");
+                var precision = $(this).data("precision");
+                var timeOnly  = $(this).data("time-only");
+                if (timeOnly) {
+                    return timeOnlyDurationFromTimestampsFilter(timestamp, null) || existing;
+                }
+                else {
+                    return durationFilter(timestamp, null, omitSingle, precision) || existing;
+                }
+            });
+        }, 1000);
     })
-    .run(['$rootScope', '$http', function ($rootScope, $http) {
-        // $http.get('/oshinko-rest-location').success(function(response) {
-        //     $rootScope.oshinko_rest_location = response;
-        // });
-    }]);
-    //.run(['$rootScope', '$location', 'ipCookie', '$http',
-        // function ($rootScope, $location, ipCookie, $http) {
-        //     //$rootScope.globals = $cookies.getObject('oshinkookie') || {};
-        //     $rootScope.globals = ipCookie('oshinkookie') || {};
-        //     if ($rootScope.globals.currentUser) {
-        //         $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata;
-        //     }
-        //
-        //     $rootScope.$on('$locationChangeStart', function (event, next, current) {
-        //         // // redirect to login page if not logged in
-        //         // // if ($location.path() !== '/login' && !$cookies.getObject('oshinkookie')) {
-        //         if ($location.path() !== '/login' && !ipCookie('oshinkookie')) {
-        //             $location.path('/login');
-        //         }
-        //     });
-    //    }]);
+    .run(['$rootScope', '$location', 'ipCookie', '$http',
+        function ($rootScope, $location, ipCookie, $http) {
+            //$rootScope.globals = $cookies.getObject('oshinkookie') || {};
+            $rootScope.globals = ipCookie('oshinkookie') || {};
+            if ($rootScope.globals.currentUser) {
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata;
+            }
+
+            $rootScope.$on('$locationChangeStart', function () {
+                // // redirect to login page if not logged in
+                // // if ($location.path() !== '/login' && !$cookies.getObject('oshinkookie')) {
+                if ($location.path() !== '/login' && !ipCookie('oshinkookie')) {
+                    $location.path('/login');
+                }
+            });
+       }]);
 
 
 hawtioPluginLoader.addModule('Oshinko');
