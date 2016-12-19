@@ -70,7 +70,7 @@ module.controller('ClusterCtrl', [
         };
 
         var intervalPromise;
-        var REFRESH_SECONDS = 10;
+        var REFRESH_SECONDS = 5;
         intervalPromise = $interval(function() {
             $scope.reloadData();
         }.bind(this), REFRESH_SECONDS * 1000);
@@ -85,13 +85,9 @@ module.controller('ClusterCtrl', [
     }
 ]);
 
-module.controller('NavCtrl', function($rootScope, $scope, $location, OshinkoAuthService) {
+module.controller('NavCtrl', function($rootScope, $scope, $location) {
     $scope.isActive = function(route) {
         return $location.path() === route;
-    };
-    $scope.logout = function() {
-//        OshinkoAuthService.ClearCredentials();
-//        $location.path('/login');
     };
 });
 
@@ -200,27 +196,6 @@ module.controller('ClusterNewCtrl', [
                     defer.reject(error);
                 });
             return defer.promise;
-        };
-    }
-]);
-
-module.controller('LoginController', ['$scope', '$rootScope', '$location', 'OshinkoAuthService',
-    function($scope, $rootScope, $location, OshinkoAuthService) {
-        $scope.username = '';
-        $scope.password = '';
-        OshinkoAuthService.ClearCredentials();
-        $scope.login = function() {
-            $scope.dataLoading = true;
-            OshinkoAuthService.Login($scope.username, $scope.password, function(response) {
-                OshinkoAuthService.ClearCredentials();
-                if (response.success) {
-                    OshinkoAuthService.SetCredentials($scope.username, $scope.password);
-                    $location.path('/clusters');
-                } else {
-                    $scope.error = response.message;
-                    $scope.dataLoading = false;
-                }
-            });
         };
     }
 ]);
