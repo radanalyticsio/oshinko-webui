@@ -10,8 +10,9 @@ var express = require("express");
 var http = require("http");
 var app = express();
 
-var oshinko_web_debug = process.env.OPENSHIFT_OSHINKO_WEB_DEBUG || false;
-var oshinko_sa_token = process.env.SA_TOKEN || '';
+var oshinko_web_debug = process.env.OSHINKO_WEB_DEBUG || false;
+var oshinko_cli_location = process.env.OSHINKO_CLI_LOCATION || "/usr/src/app/oshinko-cli";
+var oshinko_sa_token = process.env.OSHINKO_SA_TOKEN || '';
 var oshinko_cert = process.env.KUBERNETES_CERT || "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt";
 var kubernetes_host = process.env.KUBERNETES_SERVICE_HOST || "kubernetes.default";
 var kubernetes_port = process.env.KUBERNETES_SERVICE_PORT || "443";
@@ -57,7 +58,7 @@ var formatGetResponse = function (resultText) {
 
 app.get('/api/clusters', function (request, response) {
   var child_process = require('child_process');
-  var command = "/usr/src/app/oshinko-cli get" + server_token_cert;
+  var command = oshinko_cli_location + " get" + server_token_cert;
   oshinko_web_debug && console.log("List command is: " + command);
   var output = child_process.execSync(command);
   var response_text = formatGetResponse(output);
@@ -66,7 +67,7 @@ app.get('/api/clusters', function (request, response) {
 
 app.get('/api/clusters/:id', function (request, response) {
   var child_process = require('child_process');
-  var command = "/usr/src/app/oshinko-cli get " + request.param.id + server_token_cert;
+  var command = oshinko_cli_location + " get " + request.param.id + server_token_cert;
   oshinko_web_debug && console.log("Get command is: " + command);
   var output = child_process.execSync(command);
   var response_text = formatGetResponse(output);
@@ -78,7 +79,7 @@ app.post('/api/clusters', function (request, response) {
   var workerCount = request.body.config.workerCount;
   var clusterName = request.body.name;
   var child_process = require('child_process');
-  var command = "/usr/src/app/oshinko-cli create " + clusterName + " --workers=" + workerCount + " --masters=" + masterCount + server_token_cert;
+  var command = oshinko_cli_location + " create " + clusterName + " --workers=" + workerCount + " --masters=" + masterCount + server_token_cert;
   oshinko_web_debug && console.log("Create command is: " + command);
   var output = child_process.execSync(command);
   response.send(output);
@@ -89,7 +90,7 @@ app.put('/api/clusters/:id', function (request, response) {
   var workerCount = request.body.config.workerCount;
   var clusterName = request.body.name;
   var child_process = require('child_process');
-  var command = "/usr/src/app/oshinko-cli scale " + clusterName + " --workers=" + workerCount + " --masters=" + masterCount + server_token_cert;
+  var command = oshinko_cli_location + " scale " + clusterName + " --workers=" + workerCount + " --masters=" + masterCount + server_token_cert;
   oshinko_web_debug && console.log("Scale command is: " + command);
   var output = child_process.execSync(command);
   response.send(output);
@@ -97,7 +98,7 @@ app.put('/api/clusters/:id', function (request, response) {
 
 app.delete('/api/clusters/:id', function (request, response) {
   var child_process = require('child_process');
-  var command = "/usr/src/app/oshinko-cli delete " + request.params.id + server_token_cert;
+  var command = oshinko_cli_location + " delete " + request.params.id + server_token_cert;
   oshinko_web_debug && console.log("Delete command is: " + command);
   var output = child_process.execSync(command);
   response.send(output);
@@ -107,6 +108,7 @@ var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 app.listen(port, function () {
   console.log("Listening on " + port);
   console.log("Kubernetes server is: " + kubernetes_host + ":" + kubernetes_port);
+  console.log("CLI executable location is: " + oshinko_cli_location);
   console.log("Oshinko sa token is: " + oshinko_sa_token);
   console.log("Cert location is: " + oshinko_cert);
   console.log("Insecure mode is: " + use_insecure_cli);
