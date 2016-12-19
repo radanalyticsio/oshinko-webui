@@ -1,6 +1,12 @@
 sudo: required
 services:
   - docker
+language: node_js
+node_js:
+  - "6.1"
 before_install:
   - docker build -t radanalyticsio/oshinko-webui .
-
+install:
+  - npm install -g bower
+  - npm install
+  - bower install
