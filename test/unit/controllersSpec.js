@@ -1,7 +1,5 @@
 'use strict';
 
-/* jasmine specs for controllers go here */
-
 describe('controllers', function(){
   beforeEach(module('Oshinko'));
 
@@ -11,16 +9,8 @@ describe('controllers', function(){
     $controller = _$controller_;
   }));
 
-  it('should process a login', inject(function() {
-    var $scope = {}
-    var controller = $controller('LoginController', {$scope: $scope});
-    $scope.username = 'testing';
-    $scope.password = 'testing';
-    $scope.login();
-    console.log($scope);
+  it('should pass', inject(function() {
+    expect(1).toBeGreaterThanOrEqual(1);
   }));
 
-  it('should ....', inject(function() {
-    //spec body
-  }));
 });
