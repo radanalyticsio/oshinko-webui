@@ -102,6 +102,7 @@ module.controller('ClusterDeleteCtrl', [
 
         $scope.clusterName = dialogData.clusterName || "";
         $scope.workerCount = dialogData.workerCount || "";
+        $scope.workerCount = parseInt($scope.workerCount);
 
         $scope.deleteCluster = function deleteCluster() {
             var defer = $q.defer();
