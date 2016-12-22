@@ -67,7 +67,7 @@ app.get('/api/clusters', function (request, response) {
 
 app.get('/api/clusters/:id', function (request, response) {
   var child_process = require('child_process');
-  var command = oshinko_cli_location + " get " + request.param.id + server_token_cert;
+  var command = oshinko_cli_location + " get " + request.params.id + server_token_cert;
   oshinko_web_debug && console.log("Get command is: " + command);
   var output = child_process.execSync(command);
   var response_text = formatGetResponse(output);
