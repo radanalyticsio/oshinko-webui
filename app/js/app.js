@@ -14,12 +14,6 @@ var app = angular.module('Oshinko', [
     'Oshinko.factories'
 ]);
 
-app.run(['$rootScope', '$http', function ($rootScope, $http) {
-    $http.get('/oshinko-rest-location').success(function(response) {
-        $rootScope.oshinko_rest_location = response;
-    });
-}]);
-
 app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/clusters/:Id?',
         {

@@ -1,7 +1,7 @@
 /*
  * This file is part of Oshinko.
  *
- * Copyright (C) 2016 Red Hat, Inc.
+ * Copyright (C) 2017 Red Hat, Inc.
  *
  */
 'use strict';
@@ -42,24 +42,24 @@ module.controller('ClusterCtrl', [
                     .then(function(response) {
                         console.log(response);
                         if(response.data.clusters)
-                            $scope.details = response.data.clusters;
+                            $scope.details = JSON.parse(response.data.clusters);
                         else
                             $scope.details = null;
                     }, function(error) {
                         sendNotifications.notify(
                             "Error", "Unable to fetch data.  Error code: "
-                            + error.data.code);
+                            + error.status);
                     });
             };
         } else {
             $scope.reloadData = function() {
                 clusterDataFactory.getCluster(cluster_id)
                     .then(function(response) {
-                        $scope.cluster_details = response.data.clusters[0];
+                        $scope.cluster_details = JSON.parse(response.data.clusters)[0];
                     }, function(error) {
                         sendNotifications.notify(
                             "Error", "Unable to fetch cluster details.  Error code: "
-                            + error.data.code);
+                            + error.status);
                     });
             };
         }
@@ -70,7 +70,7 @@ module.controller('ClusterCtrl', [
         };
 
         var intervalPromise;
-        var REFRESH_SECONDS = 5;
+        var REFRESH_SECONDS = 10;
         intervalPromise = $interval(function() {
             $scope.reloadData();
         }.bind(this), REFRESH_SECONDS * 1000);

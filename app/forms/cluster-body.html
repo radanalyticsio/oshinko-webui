@@ -7,20 +7,20 @@
                 <th translatable="yes">Status</th>
             </tr>
         </thead>
-        <tbody colspan="3" ng-repeat="pod in cluster_details.pods" >
+        <tbody colspan="3" ng-repeat="pod in cluster_details.Pods" >
             <tr class="listing-ct-item inner-project-listing">
                 <td>
                     <div>
                         <i class="fa fa-cubes"></i>
-                        {{pod.ip}}
+                        {{pod.IP}}
                     </div>
                 </td>
                 <td>
                     <div>
-                        {{pod.type}}
+                        {{pod.Type}}
                     </div>
                 </td>
-                <td ng-switch="pod.status">
+                <td ng-switch="pod.Status">
                     <span ng-switch-when="Running" class="label label-success">{{pod.status}}</span>
                     <span ng-switch-when="Error" class="label label-danger">{{pod.status}}</span>
                     <span ng-switch-when="Scaling" class="label label-default">{{pod.status}}</span>

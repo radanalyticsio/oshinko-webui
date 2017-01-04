@@ -2,7 +2,7 @@
 /*
  * This file is part of Oshinko.
  *
- * Copyright (C) 2016 Red Hat, Inc.
+ * Copyright (C) 2017 Red Hat, Inc.
  *
  */
 -->
@@ -21,6 +21,7 @@ var server_token_cert = " --server=https://" + kubernetes_host + ":" + kubernete
 if (use_insecure_cli) {
   server_token_cert = " --server=https://" + kubernetes_host + ":" + kubernetes_port + " --token=" + oshinko_sa_token + " --insecure-skip-tls-verify=true";
 }
+var output_format = " -o json";
 
 
 app.configure(function () {
@@ -39,39 +40,30 @@ app.get('/', function (request, response) {
 });
 
 var formatGetResponse = function (resultText) {
-  var response = {clusters: []};
-  var lines = resultText.toString().split("\n");
-  for (i=0; i < lines.length; i++) {
-    if (lines[i].indexOf("\t") >= 0) {
-      var cluster_properties = lines[i].split("\t");
-      response.clusters.push({
-        name: cluster_properties[0],
-        masterUrl: cluster_properties[2],
-        masterWebUrl: cluster_properties[3],
-        workerCount: cluster_properties[1],
-        status: "Running"
-      });
-    }
-  }
+  var jsonText = String.fromCharCode.apply(null, resultText);
+  var response = {clusters: jsonText};
+  oshinko_web_debug && console.log("Response is: " + JSON.stringify(response));
   return response;
 };
 
 app.get('/api/clusters', function (request, response) {
   var child_process = require('child_process');
-  var command = oshinko_cli_location + " get" + server_token_cert;
+  var command = oshinko_cli_location + " get" + server_token_cert + output_format;
   oshinko_web_debug && console.log("List command is: " + command);
   var output = child_process.execSync(command);
   var response_text = formatGetResponse(output);
-  response.send(response_text);
+  response.setHeader('Content-Type', 'application/json');
+  response.send(JSON.stringify(response_text));
 });
 
 app.get('/api/clusters/:id', function (request, response) {
   var child_process = require('child_process');
-  var command = oshinko_cli_location + " get " + request.params.id + server_token_cert;
+  var command = oshinko_cli_location + " get " + request.params.id + server_token_cert + output_format;
   oshinko_web_debug && console.log("Get command is: " + command);
   var output = child_process.execSync(command);
   var response_text = formatGetResponse(output);
-  response.send(response_text);
+  response.setHeader('Content-Type', 'application/json');
+  response.send(JSON.stringify(response_text));
 });
 
 app.post('/api/clusters', function (request, response) {
@@ -90,7 +82,7 @@ app.put('/api/clusters/:id', function (request, response) {
   var workerCount = request.body.config.workerCount;
   var clusterName = request.body.name;
   var child_process = require('child_process');
-  var command = oshinko_cli_location + " scale " + clusterName + " --workers=" + workerCount + " --masters=" + masterCount + server_token_cert;
+  var command = oshinko_cli_location + " scale " + clusterName + " --workers=" + workerCount + " --masters=" + masterCount + server_token_cert + output_format;
   oshinko_web_debug && console.log("Scale command is: " + command);
   var output = child_process.execSync(command);
   response.send(output);
