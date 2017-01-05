@@ -79,8 +79,8 @@ fi
 ########### this part can be replaced with some other openshift install recipe
 
 cd $CURRDIR
-ORIGIN_VERSION=v1.3.0-alpha.3
-ORIGIN_TARBALL=openshift-origin-server-v1.3.0-alpha.3-7998ae4-linux-64bit.tar.gz
+ORIGIN_VERSION=v1.3.2
+ORIGIN_TARBALL=openshift-origin-server-v1.3.2-ac1d579-linux-64bit.tar.gz
 ORIGIN_DIR=${ORIGIN_TARBALL%.tar.gz}
 
 if [ ! -d "$ORIGIN_DIR" ]; then
