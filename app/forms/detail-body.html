@@ -8,11 +8,5 @@
         <dd>{{cluster_details.masterUrl}}</dd>
         <dt translatable="yes">Worker count</dt>
         <dd>{{cluster_details.workerCount}}</dd>
-        <dt translatable="yes">Tags</dt>
-        <dd><span ng-repeat="indtag in cluster_details.tags track by $index">{{indtag}}{{$last ? '' : ', '}}</span></dd>
-        <dt translatable="yes">Annotations</dt>
-        <dd>
-            <span ng-repeat="annotation in cluster_details.annotations track by $index">{{annotation}}{{$last ? '' : ', '}}</span>
-        </dd>
     </dl>
 </div>

@@ -1,7 +1,7 @@
 /*
  * This file is part of Oshinko.
  *
- * Copyright (C) 2016 Red Hat, Inc.
+ * Copyright (C) 2017 Red Hat, Inc.
  *
  */
 'use strict';
@@ -42,24 +42,24 @@ module.controller('ClusterCtrl', [
                     .then(function(response) {
                         console.log(response);
                         if(response.data.clusters)
-                            $scope.details = response.data.clusters;
+                            $scope.details = JSON.parse(response.data.clusters);
                         else
                             $scope.details = null;
                     }, function(error) {
                         sendNotifications.notify(
                             "Error", "Unable to fetch data.  Error code: "
-                            + error.data.code);
+                            + error.status);
                     });
             };
         } else {
             $scope.reloadData = function() {
                 clusterDataFactory.getCluster(cluster_id)
                     .then(function(response) {
-                        $scope.cluster_details = response.data.cluster;
+                        $scope.cluster_details = JSON.parse(response.data.clusters)[0];
                     }, function(error) {
                         sendNotifications.notify(
                             "Error", "Unable to fetch cluster details.  Error code: "
-                            + error.data.code);
+                            + error.status);
                     });
             };
         }
@@ -85,13 +85,9 @@ module.controller('ClusterCtrl', [
     }
 ]);
 
-module.controller('NavCtrl', function($rootScope, $scope, $location, OshinkoAuthService) {
+module.controller('NavCtrl', function($rootScope, $scope, $location) {
     $scope.isActive = function(route) {
         return $location.path() === route;
-    };
-    $scope.logout = function() {
-//        OshinkoAuthService.ClearCredentials();
-//        $location.path('/login');
     };
 });
 
@@ -106,6 +102,7 @@ module.controller('ClusterDeleteCtrl', [
 
         $scope.clusterName = dialogData.clusterName || "";
         $scope.workerCount = dialogData.workerCount || "";
+        $scope.workerCount = parseInt($scope.workerCount);
 
         $scope.deleteCluster = function deleteCluster() {
             var defer = $q.defer();
@@ -200,27 +197,6 @@ module.controller('ClusterNewCtrl', [
                     defer.reject(error);
                 });
             return defer.promise;
-        };
-    }
-]);
-
-module.controller('LoginController', ['$scope', '$rootScope', '$location', 'OshinkoAuthService',
-    function($scope, $rootScope, $location, OshinkoAuthService) {
-        $scope.username = '';
-        $scope.password = '';
-        OshinkoAuthService.ClearCredentials();
-        $scope.login = function() {
-            $scope.dataLoading = true;
-            OshinkoAuthService.Login($scope.username, $scope.password, function(response) {
-                OshinkoAuthService.ClearCredentials();
-                if (response.success) {
-                    OshinkoAuthService.SetCredentials($scope.username, $scope.password);
-                    $location.path('/clusters');
-                } else {
-                    $scope.error = response.message;
-                    $scope.dataLoading = false;
-                }
-            });
         };
     }
 ]);

@@ -6,4 +6,4 @@ exports.config = {
   jasmineNodeOpts: {
     defaultTimeoutInterval: 90000
   }
-},
+}

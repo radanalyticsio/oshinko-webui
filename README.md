@@ -1,8 +1,8 @@
 ### Running the app during development
 
-You'll need to have a node environment installed.
+You'll need to have a node environment installed (developed using NodeJS v6.3.1).
 You might prefer to use nvm (https://github.com/creationix/nvm)
-to manage my node environment.
+to manage your node environment.
 Once that is set up, you can run the following:
 
     npm install
@@ -13,14 +13,15 @@ Now you're ready to run the oshinko-webui server.
 
 Set the following environment variables:
 
-    OPENSHIFT_OSHINKO_REST=<IP or dns entry of the oshinko rest server>
-    OPENSHIFT_OSHINKO_REST_PORT=<Port for the oshinko rest server>
-    OPENSHIFT_NODEJS_PORT=<Port to listen on>  Default:8080
-
-Optionally, you can set the following if you want more verbose logging:
-
-    OPENSHIFT_OSHINKO_WEB_DEBUG=true
-
+    OPENSHIFT_NODEJS_PORT=<port for the webui server to listen on, default is 8080>    
+    OSHINKO_WEB_DEBUG=<true to get extra log entries, false by default> 
+    OSHINKO_CLI_LOCATION=<path to oshinko-cli, default is /usr/src/app/oshinko-cli>
+    OSHINKO_SA_TOKEN=<token for oshinko serviceaccount, enpty by default>
+    KUBERNETES_CERT=<path to ca.crt file, /var/run/secrets/kubernetes.io/serviceaccount/ca.crt by default>
+    KUBERNETES_SERVICE_HOST=<hostname of kubernetes service, default is kubernetes.default>
+    KUBERNETES_SERVICE_PORT=<port where the kubernetes service is listening, default is 443>
+    USE_INSECURE_CLI=<true if you don't want to use tls validation and don't require ca.crt, false by default>
+    
 You can pick one of these options:
 
 * install node.js and run `node server.js`
@@ -32,13 +33,8 @@ your browser.
 ### Running the app in production
 The oshinko-webui is meant to run inside Openshift.  You can build the image
 from the Dockerfile.  The resultant image can be run standalone or inside
-Openshift.
-
-You will need to set the following environment variables:
-
-    OPENSHIFT_OSHINKO_REST=<IP or dns entry of the oshinko rest server>
-    OPENSHIFT_OSHINKO_REST_PORT=<Port for the oshinko rest server>
-    OPENSHIFT_NODEJS_PORT=<Port that the oshinko-webui will listen on>  Default:8080
+Openshift.  If you are running in standalone mode, you may need to manually
+set some of the environment variables listed in the previous section.
 
 
 ### Running unit tests

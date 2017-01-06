@@ -1,7 +1,7 @@
 /*
  * This file is part of Oshinko.
  *
- * Copyright (C) 2016 Red Hat, Inc.
+ * Copyright (C) 2017 Red Hat, Inc.
  *
  */
 'use strict';
@@ -69,7 +69,7 @@ module.directive('clusterPanel', [
 				    		then(function(){
 				    			clusterDataFactory.getCluster(clusterId)
 						            .then(function(response) {
-						                scope.cluster_details = response.data.cluster;
+						                scope.cluster_details = JSON.parse(response.data.clusters)[0];
 						            }, function(error) {
 						                sendNotifications.notify("Error", "Unable to fetch cluster details");
 						            })

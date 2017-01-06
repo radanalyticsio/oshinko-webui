@@ -164,59 +164,6 @@ module.factory('sendNotifications', function(Notifications) {
     return notificationFactory;
 });
 
-module.factory('OshinkoAuthService', ['$http', '$cookies', '$rootScope', '$timeout',
-    function($http, $cookies, $rootScope, $timeout) {
-        var service = {};
-
-        service.Login = function(username, password, callback) {
-
-            $timeout(function() {
-                var response = {
-                    success: username != '' && password != ''
-                };
-                if (!response.success) {
-                    response.message = 'Username or password is incorrect';
-                }
-                callback(response);
-            }, 1000);
-
-
-            //$http.post('/actualauth endpoint', { login data })
-            //    .success(function (response) {
-            //        callback(response);
-            //    });
-
-        };
-
-        service.SetCredentials = function(username, password) {
-            var authdata = btoa(username + ':' + password);
-
-            $rootScope.globals = {
-                currentUser: {
-                    username: username,
-                    authdata: authdata
-                }
-            };
-
-            var now = new Date();
-            var expireDate = new Date(now.setDate(now.getDate() + 1));
-            // var expireDate = new Date(now.setTime(now.getTime() + (30 * 1000))); //expire cookie in 30 sec
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata;
-            $cookies.putObject('oshinkookie', $rootScope.globals, {
-                'expires': expireDate
-            });
-        };
-
-        service.ClearCredentials = function() {
-            $rootScope.globals = {};
-            $cookies.remove('oshinkookie');
-            $http.defaults.headers.common.Authorization = 'Basic ';
-        };
-
-        return service;
-    }
-]);
-
 /* Error handling factory.  Since our server will return
  * a successful status code, even on things where an operation
  * was not successful, we need to take a closer look at
