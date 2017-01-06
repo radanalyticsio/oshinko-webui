@@ -9,7 +9,6 @@
 
 
 var app = angular.module('Oshinko', [
-    'ngCookies',
     'ngRoute',
     'Oshinko.controllers',
     'Oshinko.factories'
@@ -33,26 +32,5 @@ app.config(['$routeProvider', function ($routeProvider) {
             controller: 'ClusterCtrl',
             activetab: 'clusters'
         });
-    $routeProvider.when('/login',
-        {
-            templateUrl: 'partials/login.html',
-            controller: 'LoginController',
-            activetab: ''
-        });
     $routeProvider.otherwise({redirectTo: '/clusters'});
 }]);
-
-app.run(['$rootScope', '$location', '$cookies', '$http',
-    function ($rootScope, $location, $cookies, $http) {
-        $rootScope.globals = $cookies.getObject('oshinkookie') || {};
-        if ($rootScope.globals.currentUser) {
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata;
-        }
-
-        $rootScope.$on('$locationChangeStart', function (event, next, current) {
-            // redirect to login page if not logged in
-//            if ($location.path() !== '/login' && !$cookies.getObject('oshinkookie')) {
-//                $location.path('/login');
-//            }
-        });
-    }]);

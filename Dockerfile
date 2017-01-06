@@ -1,4 +1,4 @@
-FROM nodesource/centos7:0.10.45
+FROM nodesource/centos7:6.3.1
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
