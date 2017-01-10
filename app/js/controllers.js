@@ -42,7 +42,11 @@ module.controller('ClusterCtrl', [
                     .then(function(response) {
                         console.log(response);
                         if(response.data.clusters)
-                            $scope.details = JSON.parse(response.data.clusters);
+                          try {
+                              $scope.details = JSON.parse(response.data.clusters);
+                          } catch(err) {
+                              $scope.details = null;
+                          }
                         else
                             $scope.details = null;
                     }, function(error) {
@@ -55,7 +59,12 @@ module.controller('ClusterCtrl', [
             $scope.reloadData = function() {
                 clusterDataFactory.getCluster(cluster_id)
                     .then(function(response) {
-                        $scope.cluster_details = JSON.parse(response.data.clusters)[0];
+                        try {
+                          $scope.cluster_details = JSON.parse(response.data.clusters)[0];
+                        } catch (e) {
+                          $scope.cluster_details = null;
+                        }
+
                     }, function(error) {
                         sendNotifications.notify(
                             "Error", "Unable to fetch cluster details.  Error code: "
