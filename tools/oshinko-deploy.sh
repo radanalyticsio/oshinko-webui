@@ -151,13 +151,13 @@ fi
 
 if [ -n "$WEBROUTE" ]
 then
-oc new-app --template oshinko \
+oc new-app --template oshinko-webui \
            -n $PROJECT \
            -p OSHINKO_CLUSTER_IMAGE=$SPARK_IMAGE \
            -p OSHINKO_WEB_IMAGE=$WEB_IMAGE \
            -p OSHINKO_WEB_ROUTE_HOSTNAME=$WEBROUTE
 else
-oc new-app --template oshinko \
+oc new-app --template oshinko-webui \
            -n $PROJECT \
            -p OSHINKO_CLUSTER_IMAGE=$SPARK_IMAGE \
            -p OSHINKO_WEB_IMAGE=$WEB_IMAGE
