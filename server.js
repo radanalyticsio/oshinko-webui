@@ -17,12 +17,16 @@ var oshinko_cert = process.env.KUBERNETES_CERT || "/var/run/secrets/kubernetes.i
 var kubernetes_host = process.env.KUBERNETES_SERVICE_HOST || "kubernetes.default";
 var kubernetes_port = process.env.KUBERNETES_SERVICE_PORT || "443";
 var use_insecure_cli = process.env.USE_INSECURE_CLI || false;
+var spark_image = process.env.OSHINKO_SPARK_IMAGE || null;
 var server_token_cert = " --server=https://" + kubernetes_host + ":" + kubernetes_port + " --token=" + oshinko_sa_token + " --certificate-authority=" + oshinko_cert;
 if (use_insecure_cli) {
   server_token_cert = " --server=https://" + kubernetes_host + ":" + kubernetes_port + " --token=" + oshinko_sa_token + " --insecure-skip-tls-verify=true";
 }
 var output_format = " -o json";
-
+var use_spark_image = "";
+if (spark_image) {
+  use_spark_image = " --image " + spark_image;
+}
 
 app.configure(function () {
   app.use(express.logger());
@@ -71,7 +75,7 @@ app.post('/api/clusters', function (request, response) {
   var workerCount = request.body.config.workerCount;
   var clusterName = request.body.name;
   var child_process = require('child_process');
-  var command = oshinko_cli_location + " create " + clusterName + " --workers=" + workerCount + " --masters=" + masterCount + server_token_cert;
+  var command = oshinko_cli_location + " create " + clusterName + use_spark_image + " --workers=" + workerCount + " --masters=" + masterCount + server_token_cert;
   oshinko_web_debug && console.log("Create command is: " + command);
   var output = child_process.execSync(command);
   response.send(output);

@@ -21,6 +21,7 @@ Set the following environment variables:
     KUBERNETES_SERVICE_HOST=<hostname of kubernetes service, default is kubernetes.default>
     KUBERNETES_SERVICE_PORT=<port where the kubernetes service is listening, default is 443>
     USE_INSECURE_CLI=<true if you don't want to use tls validation and don't require ca.crt, false by default>
+    OSHINKO_SPARK_IMAGE=<location of spark image that you want to use for your clusters, defaults to CLI default>
     
 You can pick one of these options:
 
