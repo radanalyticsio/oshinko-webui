@@ -44,6 +44,9 @@ objects:
               - name: o-web-port
                 containerPort: 8080
                 protocol: TCP
+            env:
+              - name: OSHINKO_SPARK_IMAGE
+                value: ${OSHINKO_CLUSTER_IMAGE}
             readinessProbe:
               failureThreshold: 3
               httpGet:
