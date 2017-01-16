@@ -1,0 +1,84 @@
+kind: Template
+apiVersion: v1
+template: oshinko-webui
+metadata:
+  name: oshinko-webui
+objects:
+
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: ${OSHINKO_WEB_NAME}
+    labels:
+      name: ${OSHINKO_WEB_NAME}
+  spec:
+    ports:
+      - name: o-web-port
+        protocol: TCP
+        port: 8080
+        targetPort: 8080
+    selector:
+      name: ${OSHINKO_WEB_NAME}
+
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: ${OSHINKO_DEPLOYMENT_NAME}
+  spec:
+    strategy:
+      type: Rolling
+    triggers:
+      - type: ConfigChange
+    replicas: 1
+    selector:
+      name: ${OSHINKO_WEB_NAME}
+    template:
+      metadata:
+        labels:
+          name: ${OSHINKO_WEB_NAME}
+      spec:
+        containers:
+          - name: ${OSHINKO_WEB_NAME}
+            image: ${OSHINKO_WEB_IMAGE}
+            ports:
+              - name: o-web-port
+                containerPort: 8080
+                protocol: TCP
+            env:
+              - name: OSHINKO_SPARK_IMAGE
+                value: ${OSHINKO_CLUSTER_IMAGE}
+            readinessProbe:
+              failureThreshold: 3
+              httpGet:
+                path: /
+                port: 8080
+                scheme: HTTP
+              periodSeconds: 10
+              successThreshold: 1
+              timeoutSeconds: 1
+            livenessProbe:
+              failureThreshold: 3
+              httpGet:
+                path: /
+                port: 8080
+                scheme: HTTP
+              periodSeconds: 10
+              successThreshold: 1
+              timeoutSeconds: 1
+        serviceAccount: oshinko
+
+parameters:
+- name: OSHINKO_CLUSTER_IMAGE
+  description: Full name of the spark image to use when creating clusters
+  required: true
+  value: radanalyticsio/openshift-spark
+- name: OSHINKO_WEB_NAME
+  description: Name of the oshinko web service
+  value: "oshinko-web"
+- name: OSHINKO_WEB_IMAGE
+  description: Full name of the oshinko web image
+  required: true
+  value: radanalyticsio/oshinko-webui
+- name: OSHINKO_DEPLOYMENT_NAME
+  description: Name of the oshinko deployment
+  value: "oshinko"
