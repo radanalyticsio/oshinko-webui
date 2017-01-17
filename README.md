@@ -41,6 +41,7 @@ set some of the environment variables listed in the previous section.
 ### Running unit tests
 To run the unit tests:
 
+    npm install -g karma-cli
     karma start test/karma.conf.js
 
 
