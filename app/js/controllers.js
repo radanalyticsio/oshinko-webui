@@ -147,8 +147,8 @@ module.controller('ClusterNewCtrl', [
     "sendNotifications",
     "errorHandling",
      function($q, $scope, dialogData, clusterData, sendNotifications, errorHandling) {
-        var NAME_RE = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/;
-        var NUMBER_RE = /^[0-9]*$/;
+        $scope.NAME_RE = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/;
+        $scope.NUMBER_RE = /^[0-9]*$/;
         var fields = {
                 name: "",
                 workers: 1,
@@ -161,7 +161,7 @@ module.controller('ClusterNewCtrl', [
             if (name !== undefined) {
                 if (!name)
                     ex = new Error("The cluster name cannot be empty.");
-                else if (!NAME_RE.test(name))
+                else if (!$scope.NAME_RE.test(name))
                     ex = new Error("The member name contains invalid characters.");
 
                 if (ex) {
@@ -172,7 +172,7 @@ module.controller('ClusterNewCtrl', [
             if (workers !== undefined) {
                 if (!workers)
                     ex = new Error("The number of workers count cannot be empty.");
-                else if (!NUMBER_RE.test(workers))
+                else if (!$scope.NUMBER_RE.test(workers))
                     ex = new Error("Please give a valid number of workers.");
                 else if (workers <= 0)
                     ex = new Error("Please give a value greater than 0.");
