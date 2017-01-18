@@ -43,13 +43,6 @@ app.get('/', function (request, response) {
   response.render('index.html')
 });
 
-var formatGetResponse = function (resultText) {
-  var jsonText = String.fromCharCode.apply(null, resultText);
-  var response = {clusters: jsonText};
-  oshinko_web_debug && console.log("Response is: " + JSON.stringify(response));
-  return response;
-};
-
 app.get('/api/clusters', function (request, response) {
   var child_process = require('child_process');
   var command = oshinko_cli_location + " get" + server_token_cert + output_format;
@@ -71,13 +64,21 @@ app.get('/api/clusters/:id', function (request, response) {
 });
 
 app.post('/api/clusters', function (request, response) {
+  var output = "";
   var masterCount = request.body.config.masterCount;
   var workerCount = request.body.config.workerCount;
   var clusterName = request.body.name;
   var child_process = require('child_process');
   var command = oshinko_cli_location + " create " + clusterName + use_spark_image + " --workers=" + workerCount + " --masters=" + masterCount + server_token_cert;
   oshinko_web_debug && console.log("Create command is: " + command);
-  var output = child_process.execSync(command);
+  try {
+    output = child_process.execSync(command);
+    output = String.fromCharCode.apply(null, output);
+  } catch (err) {
+    var error = formatErrResponse(err.message);
+    response.statusCode = error.statusCode;
+    output = error.message;
+  }
   response.send(output);
 });
 
@@ -109,3 +110,23 @@ app.listen(port, function () {
   console.log("Cert location is: " + oshinko_cert);
   console.log("Insecure mode is: " + use_insecure_cli);
 });
+
+var formatGetResponse = function (resultText) {
+  var jsonText = String.fromCharCode.apply(null, resultText);
+  var response = {clusters: jsonText};
+  oshinko_web_debug && console.log("Response is: " + JSON.stringify(response));
+  return response;
+};
+
+var formatErrResponse = function (resultText) {
+  var err = {
+    message: resultText,
+    statusCode: 500
+  };
+
+  if(resultText.indexOf("already exists") > -1) {
+    err.message = "A cluster with that name already exists.";
+    err.statusCode = 409;
+  }
+  return err;
+}

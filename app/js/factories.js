@@ -184,9 +184,9 @@ module.factory('errorHandling', function(sendNotifications) {
                 defer.reject(response.data.errors[0].details);
             }
         } else if (error) {
-            console.error("Problem communicating with server.  Error code:  " + error.data.code);
+            console.error("Problem communicating with server.  Error code:  " + error.status);
             if (defer) {
-                defer.reject(error.details);
+                defer.reject(error.data);
             }
         } else {
             sendNotifications.notify("Success", successMsg);
