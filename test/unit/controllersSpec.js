@@ -44,3 +44,65 @@ describe('New cluster functionality', function(){
     expect($scope.NAME_RE.test(4)).toBeTruthy();
   });
 });
+
+describe('Delete cluster functionality', function(){
+  var controller;
+  var $scope = {};
+
+  beforeEach(module('Oshinko'));
+
+  beforeEach(function() {
+    inject(function(_$controller_, $q) {
+      controller = _$controller_("ClusterDeleteCtrl", {
+        $scope: $scope,
+        $q: $q,
+        dialogData: {},
+        clusterData: {},
+        sendNotifications: {},
+        errorHandling: {}
+      });
+    });
+  });
+
+  it('should have the controller defined ', function() {
+    expect(controller).toBeDefined();
+    expect($scope.clusterName).toBe('');
+    expect($scope.workerCount).toBeDefined();
+  })
+});
+
+describe('Main controller functionality', function(){
+  var controller;
+  var scope = {};
+  var $route = {
+    current: {
+      params: {
+        Id: ""
+      }
+    }
+  };
+
+  beforeEach(module('Oshinko'));
+  beforeEach(function() {
+    inject(function(_$controller_, $q, $interval, $location, ListingState, $rootScope) {
+      controller = _$controller_;
+      scope = $rootScope.$new();
+      controller = ("ClusterCtrl", {
+        $scope: scope,
+        $q: $q,
+        $route: $route,
+        $interval: $interval,
+        $location: $location,
+        clusterDataFactory: {},
+        sendNotifications: {},
+        errorHandling: {}
+      });
+    });
+  });
+
+  it('should have the controller defined ', function() {
+    expect(controller).toBeDefined();
+  })
+});
+
+
