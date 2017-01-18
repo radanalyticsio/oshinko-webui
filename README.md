@@ -1,3 +1,6 @@
+[![Build status](https://travis-ci.org/radanalyticsio/oshinko-webui.svg?branch=master)](https://travis-ci.org/radanalyticsio/oshinko-webui)
+[![Docker build](https://img.shields.io/docker/automated/radanalyticsio/oshinko-webui.svg)](https://hub.docker.com/r/radanalyticsio/oshinko-webui)
+
 ### Running the app during development
 
 You'll need to have a node environment installed (developed using NodeJS v6.3.1).
