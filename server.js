@@ -43,21 +43,23 @@ app.get('/', function (request, response) {
   response.render('index.html')
 });
 
-var formatGetResponse = function (resultText) {
-  var jsonText = String.fromCharCode.apply(null, resultText);
-  var response = {clusters: jsonText};
-  oshinko_web_debug && console.log("Response is: " + JSON.stringify(response));
-  return response;
-};
-
 app.get('/api/clusters', function (request, response) {
+  var output = "";
+  var response_text = "";
   var child_process = require('child_process');
   var command = oshinko_cli_location + " get" + server_token_cert + output_format;
   oshinko_web_debug && console.log("List command is: " + command);
-  var output = child_process.execSync(command);
-  var response_text = formatGetResponse(output);
-  response.setHeader('Content-Type', 'application/json');
-  response.send(JSON.stringify(response_text));
+  try {
+    output = child_process.execSync(command);
+    response_text = formatGetResponse(output);
+    response_text = JSON.stringify(response_text);
+    response.setHeader('Content-Type', 'application/json');
+  } catch (err) {
+    var error = formatErrResponse(err.message);
+    response.statusCode = error.statusCode;
+    response_text = error.message;
+  }
+  response.send(response_text);
 });
 
 app.get('/api/clusters/:id', function (request, response) {
@@ -71,34 +73,80 @@ app.get('/api/clusters/:id', function (request, response) {
 });
 
 app.post('/api/clusters', function (request, response) {
+  var output = "";
   var masterCount = request.body.config.masterCount;
   var workerCount = request.body.config.workerCount;
   var clusterName = request.body.name;
   var child_process = require('child_process');
   var command = oshinko_cli_location + " create " + clusterName + use_spark_image + " --workers=" + workerCount + " --masters=" + masterCount + server_token_cert;
   oshinko_web_debug && console.log("Create command is: " + command);
-  var output = child_process.execSync(command);
+  try {
+    output = child_process.execSync(command);
+    output = String.fromCharCode.apply(null, output);
+    response.statusCode = 201;
+  } catch (err) {
+    var error = formatErrResponse(err.message);
+    response.statusCode = error.statusCode;
+    output = error.message;
+  }
   response.send(output);
 });
 
 app.put('/api/clusters/:id', function (request, response) {
+  var output = "";
   var masterCount = request.body.config.masterCount;
   var workerCount = request.body.config.workerCount;
   var clusterName = request.body.name;
   var child_process = require('child_process');
-  var command = oshinko_cli_location + " scale " + clusterName + " --workers=" + workerCount + " --masters=" + masterCount + server_token_cert + output_format;
+  var command = oshinko_cli_location + " scale " + clusterName + " --workers=" + workerCount + " --masters=" + masterCount + server_token_cert;
   oshinko_web_debug && console.log("Scale command is: " + command);
-  var output = child_process.execSync(command);
+  try {
+    output = child_process.execSync(command);
+    output = String.fromCharCode.apply(null, output);
+  } catch (err) {
+    var error = formatErrResponse(err.message);
+    response.statusCode = error.statusCode;
+    output = error.message;
+  }
   response.send(output);
 });
 
 app.delete('/api/clusters/:id', function (request, response) {
+  var output = "";
   var child_process = require('child_process');
   var command = oshinko_cli_location + " delete " + request.params.id + server_token_cert;
   oshinko_web_debug && console.log("Delete command is: " + command);
-  var output = child_process.execSync(command);
+  try {
+    output = child_process.execSync(command);
+    output = String.fromCharCode.apply(null, output);
+  } catch (err) {
+    var error = formatErrResponse(err.message);
+    response.statusCode = error.statusCode;
+    output = error.message;
+  }
   response.send(output);
 });
+
+// Utility functions
+var formatGetResponse = function (resultText) {
+  var jsonText = String.fromCharCode.apply(null, resultText);
+  var response = {clusters: jsonText};
+  oshinko_web_debug && console.log("Response is: " + JSON.stringify(response));
+  return response;
+};
+
+var formatErrResponse = function (resultText) {
+  var err = {
+    message: resultText,
+    statusCode: 500
+  };
+
+  if(resultText.indexOf("already exists") > -1) {
+    err.message = "A cluster with that name already exists.";
+    err.statusCode = 409;
+  }
+  return err;
+}
 
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 app.listen(port, function () {
