@@ -111,7 +111,7 @@ oc new-project oshinko
 # Wait for the registry to be fully up
 r=1
 while [ $r -ne 0 ]; do
-    sudo docker login -u oshinko -e "jack@jack.com" -p $(oc whoami -t) $REGISTRY
+    sudo docker login -u oshinko -p $(oc whoami -t) $REGISTRY
     r=$?
     sleep 1
 done
