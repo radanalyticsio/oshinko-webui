@@ -34,11 +34,39 @@ Then navigate your browser to `http://localhost:<port>` to see the app running i
 your browser.
 
 
-### Running the app in production
-The oshinko-webui is meant to run inside Openshift.  You can build the image
-from the Dockerfile.  The resultant image can be run standalone or inside
-Openshift.  If you are running in standalone mode, you may need to manually
-set some of the environment variables listed in the previous section.
+### Deploying the app
+In order to use oshinko-webui, you will need a serviceaccount created in your project.
+
+    oc create sa oshinko
+
+That service account will need to have edit privilages in your project.
+
+    oc policy add-role-to-user edit -z oshinko
+
+Choose ONE of the following options:
+
+If you want to run the app with an exposed route, run the following.
+Please keep in mind that you should only do this for routes that you can limit access to.
+
+    oc new-app -f tools/ui-template.yaml
+
+The default route is:  http://oshinko-web-<projectname>.<hostIp>.xip.io and that is where
+you will be able to access the oshinko-webui app.
+
+Or, if you'd prefer to not expose a route, you can run the app and then set up a port-forward
+to allow you to access the app.
+
+This line will give you the name of the pod where oshinko-webui is running
+
+    oc get pods -o jsonpath --selector='name=oshinko-web' --no-headers  --template='{.items[*].metadata.name}'
+
+Use the output from the above line as the pod name in the following line.
+The listen port can be any open port on your machine.  8080 is the port
+where oshinko-webui is listening in the pod.
+
+    oc port-forward <pod name> <listen port>:8080
+
+You can then access oshinko-webui at http://localhost:<listen port>
 
 
 ### Running unit tests
