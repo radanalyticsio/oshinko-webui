@@ -152,8 +152,22 @@ module.controller('ClusterNewCtrl', [
         var fields = {
                 name: "",
                 workers: 1,
-            };
+                configName: null,
+                masterconfigname: null,
+                workerconfigname: null
+        };
         $scope.fields = fields;
+        $scope.advanced = false;
+
+        $scope.toggleAdvanced = function () {
+            $scope.advanced = $scope.advanced ? false : true;
+            if($scope.advanced) {
+              // set to zero to indicate it's unset and to use the value in the cluster config
+              $scope.fields.workers = 0;
+            } else {
+              $scope.fields.workers = 1;
+            }
+        };
 
         function validate(name, workers) {
             var defer = $q.defer();
@@ -170,11 +184,11 @@ module.controller('ClusterNewCtrl', [
                 }
             }
             if (workers !== undefined) {
-                if (!workers)
+                if (!workers && !$scope.advanced)
                     ex = new Error("The number of workers count cannot be empty.");
                 else if (!$scope.NUMBER_RE.test(workers))
                     ex = new Error("Please give a valid number of workers.");
-                else if (workers <= 0)
+                else if (workers < 0)
                     ex = new Error("Please give a value greater than 0.");
 
                 if (ex) {
@@ -193,10 +207,13 @@ module.controller('ClusterNewCtrl', [
             var defer = $q.defer();
             var name = $scope.fields.name.trim();
             var workersInt = $scope.fields.workers;
+            var configName = $scope.advanced ? $scope.fields.configname : null;
+            var masterConfigName = $scope.advanced ? $scope.fields.masterconfigname : null;
+            var workerConfigName = $scope.advanced ? $scope.fields.workerconfigname : null;
 
             validate(name, workersInt)
                 .then(function() {
-                    clusterData.sendCreateCluster(name, workersInt).then(function(response) {
+                    clusterData.sendCreateCluster(name, workersInt, configName, masterConfigName, workerConfigName).then(function(response) {
                         var successMsg = "New cluster " + name + " deployed.";
                         errorHandling.handle(response, null, defer, successMsg);
                     }, function(error) {
