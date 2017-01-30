@@ -77,8 +77,21 @@ app.post('/api/clusters', function (request, response) {
   var masterCount = request.body.config.masterCount;
   var workerCount = request.body.config.workerCount;
   var clusterName = request.body.name;
+  var clusterConfig = request.body.config.clusterconfig;
+  var workerConfig = request.body.config.workerconfig;
+  var masterConfig = request.body.config.masterconfig;
+
+  var cConfigCommand = clusterConfig ? " --storedconfig=" + clusterConfig : "";
+  var wConfigCommand = workerConfig ? " --workerconfig=" + workerConfig : "";
+  var mConfigCommand = masterConfig ? " --masterconfig=" + masterConfig : "";
+  var wcCommand = workerCount > 0 ? " --workers=" + workerCount : "";
+  var mcCommand = " --masters=" + masterCount;
+  var createCommand = " create " + clusterName;
+
   var child_process = require('child_process');
-  var command = oshinko_cli_location + " create " + clusterName + use_spark_image + " --workers=" + workerCount + " --masters=" + masterCount + server_token_cert;
+  var command = oshinko_cli_location + createCommand + use_spark_image +
+    wcCommand + mcCommand + cConfigCommand + wConfigCommand + mConfigCommand +
+    server_token_cert ;
   oshinko_web_debug && console.log("Create command is: " + command);
   try {
     output = child_process.execSync(command);
@@ -98,7 +111,9 @@ app.put('/api/clusters/:id', function (request, response) {
   var workerCount = request.body.config.workerCount;
   var clusterName = request.body.name;
   var child_process = require('child_process');
-  var command = oshinko_cli_location + " scale " + clusterName + " --workers=" + workerCount + " --masters=" + masterCount + server_token_cert;
+  var command = oshinko_cli_location + " scale " + clusterName +
+    " --workers=" + workerCount + " --masters=" +
+    masterCount + server_token_cert;
   oshinko_web_debug && console.log("Scale command is: " + command);
   try {
     output = child_process.execSync(command);
@@ -114,7 +129,8 @@ app.put('/api/clusters/:id', function (request, response) {
 app.delete('/api/clusters/:id', function (request, response) {
   var output = "";
   var child_process = require('child_process');
-  var command = oshinko_cli_location + " delete " + request.params.id + server_token_cert;
+  var command = oshinko_cli_location + " delete " +
+    request.params.id + server_token_cert;
   oshinko_web_debug && console.log("Delete command is: " + command);
   try {
     output = child_process.execSync(command);

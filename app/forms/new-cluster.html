@@ -7,33 +7,50 @@
  */
 -->
 <modal-dialog>
-    <div class="modal-header">
-        <h4 class="modal-title" translatable="yes">Deploy cluster</h4>
-    </div>
-    <div class="modal-body" ng-keyup="submitForm($event, 'newCluster')">
-        <table class="form-table-ct">
-            <tr>
-                <td class="top">
-                    <label translatable="yes" class="control-label" for="cluster-new-name">Name</label>
-                </td>
-                <td>
-                    <input id="cluster-new-name" class="form-control" type="text"
-                        ng-model="fields.name" autofocus>
-                </td>
-            </tr>
-            <tr>
-                <td class="top">
-                    <label class="control-label" for="cluster-new-workers" translatable="yes">Number of workers</label>
-                </td>
-                <td>
-                    <input id="cluster-new-workers" class="form-control" type="number"
-                        ng-model="fields.workers">
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div class="modal-footer">
-        <button id="cancelbutton" class="btn btn-default btn-cancel" translatable="yes">Cancel</button>
-        <button id="createbutton" class="btn btn-primary" translatable="yes" ng-click="complete(newCluster())">Deploy</button>
-    </div>
+<div class="modal-header">
+  <h4 class="modal-title" translatable="yes">Deploy cluster</h4>
+</div>
+<div class="modal-body" ng-keyup="submitForm($event, 'newCluster')">
+  <form>
+    <fieldset ng-disabled="disableInputs">
+      <div class="form-group">
+          <label for="cluster-new-name">Name</label>
+          <input id="cluster-new-name" class="form-control input-lg" type="text" ng-model="fields.name" autofocus="true"/>
+      </div>
+      <div ng-show="!advanced">
+        <div class="form-group">
+          <label for="cluster-new-workers">Number of workers</label>
+          <input id="cluster-new-workers" class="form-control input-lg" type="number" ng-model="fields.workers"/>
+        </div>
+        <div class="form-group"><a href="" ng-click="toggleAdvanced()">Advanced cluster configuration</a></div>
+      </div>
+      <div ng-show="advanced">
+        <div class="form-group">
+          <label for="cluster-new-workers">Number of workers</label>
+          <input id="cluster-adv-workers" class="form-control input-lg" type="number" ng-model="fields.workers"/>
+        </div>
+        <div class="form-group">
+          <label for="cluster-new-name">Stored cluster configuration name</label>
+          <input id="cluster-config-name" class="form-control input-lg" type="text" ng-model="fields.configname" autofocus="true"/>
+        </div>
+        <div class="form-group">
+          <label for="cluster-new-name">Master configuration name</label>
+          <input id="cluster-masterconfig-name" class="form-control input-lg" type="text" ng-model="fields.masterconfigname" autofocus="true"/>
+        </div>
+        <div class="form-group">
+          <label for="cluster-new-name">Worker configuration name</label>
+          <input id="cluster-workerconfig-name" class="form-control input-lg" type="text" ng-model="fields.workerconfigname" autofocus="true"/>
+        </div>
+        <div class="form-group"><a href="" ng-click="toggleAdvanced()">Basic cluster configuration</a></div>
+      </div>
+    </fieldset>
+  </form>
+  <div ng-show="formError">
+    <span class="form-error">{{ formError }}</span>
+  </div>
+</div>
+<div class="modal-footer">
+  <button id="cancelbutton" class="btn btn-default btn-cancel1" translatable="yes" ng-click="cancelfn()">Cancel</button>
+  <button id="createbutton" class="btn btn-primary" translatable="yes" ng-click="complete(newCluster())">Deploy</button>
+</div>
 </modal-dialog>

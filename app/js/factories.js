@@ -71,11 +71,14 @@ module.factory('clusterData', [
                     }
                 });
             }
-            function sendCreateCluster(clusterName, workerCount) {
+            function sendCreateCluster(clusterName, workerCount, configName, masterConfigName, workerConfigName) {
                 var jsonData = {
                     "config": {
                         "masterCount": 1,
-                        "workerCount": workerCount
+                        "workerCount": workerCount,
+                        "clusterconfig": configName,
+                        "masterconfig": masterConfigName,
+                        "workerconfig": workerConfigName
                      },
                      "name": clusterName
                 }
