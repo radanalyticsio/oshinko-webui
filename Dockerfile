@@ -13,7 +13,9 @@ RUN yum install -y golang make git && \
 ENV GOPATH /go
 RUN mkdir -p /go/src/github.com/radanalyticsio && \
     cd /go/src/github.com/radanalyticsio && \
-    git clone https://github.com/radanalyticsio/oshinko-cli
+    git clone https://github.com/radanalyticsio/oshinko-cli && \
+    cd oshinko-cli && \
+    git checkout tags/v0.1.0
 
 RUN cd /go/src/github.com/radanalyticsio/oshinko-cli && \
     make build && \
