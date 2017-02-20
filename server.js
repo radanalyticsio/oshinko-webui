@@ -18,6 +18,7 @@ var kubernetes_host = process.env.KUBERNETES_SERVICE_HOST || "kubernetes.default
 var kubernetes_port = process.env.KUBERNETES_SERVICE_PORT || "443";
 var use_insecure_cli = process.env.USE_INSECURE_CLI || false;
 var spark_image = process.env.OSHINKO_SPARK_IMAGE || null;
+var refresh_interval = process.env.OSHINKO_REFRESH_INTERVAL || 5;
 var server_token_cert = " --server=https://" + kubernetes_host + ":" + kubernetes_port + " --token=" + oshinko_sa_token + " --certificate-authority=" + oshinko_cert;
 if (use_insecure_cli) {
   server_token_cert = " --server=https://" + kubernetes_host + ":" + kubernetes_port + " --token=" + oshinko_sa_token + " --insecure-skip-tls-verify=true";
@@ -163,6 +164,10 @@ var formatErrResponse = function (resultText) {
   }
   return err;
 }
+
+app.get('/config/refresh', function (request, response) {
+  response.send(parseInt(refresh_interval));
+});
 
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 app.listen(port, function () {
