@@ -34,3 +34,13 @@ app.config(['$routeProvider', function ($routeProvider) {
         });
     $routeProvider.otherwise({redirectTo: '/clusters'});
 }]);
+
+app.run(function ($http) {
+  window.__env = {};
+  $http.get('/config/refresh').success(function (result) {
+    window.__env.refresh_interval = result;
+  }).error(function(error) {
+    console.log("Unable to fetch refresh interval, using default of 5");
+    window.__env.refresh_interval = 5;
+  });
+});
