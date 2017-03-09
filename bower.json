@@ -28,6 +28,7 @@
     "angular-hint": "0.3.8"
   },
   "resolutions": {
-    "angular": "1.5.9"
+    "angular": "1.5.9",
+    "jquery": "1.9.1"
   }
 }
