@@ -7,20 +7,16 @@ COPY ./package.json /usr/src/app/
 COPY ./bower.json /usr/src/app/
 COPY ./scripts/launch.sh /usr/src/app/
 
-RUN yum install -y golang make git && \
+RUN yum install -y wget git && \
     yum clean all
 
-ENV GOPATH /go
-RUN mkdir -p /go/src/github.com/radanalyticsio && \
-    cd /go/src/github.com/radanalyticsio && \
-    git clone https://github.com/radanalyticsio/oshinko-cli && \
-    cd oshinko-cli && \
-    git checkout tags/v0.2.2
-
-RUN cd /go/src/github.com/radanalyticsio/oshinko-cli && \
-    make build && \
-    cp _output/oshinko-cli /usr/src/app && \
-    chmod +x /usr/src/app/oshinko-cli && rm -rf /go
+RUN export CLI_VER=v0.2.2 && \
+    pushd /tmp && \
+    wget https://github.com/radanalyticsio/oshinko-cli/releases/download/$CLI_VER/oshinko-cli_${CLI_VER}_linux_amd64.tar.gz && \
+    tar -zxvf oshinko-cli_${CLI_VER}_linux_amd64.tar.gz && \
+    mv oshinko-cli_linux_amd64 /usr/src/app/oshinko-cli && \
+    chmod +x /usr/src/app/oshinko-cli && rm -rf /tmp/oshinko-cli* && \
+    popd
 
 RUN echo '{ "allow_root": true, "directory": "app/bower_components" }' > /usr/src/app/.bowerrc
 RUN npm install
