@@ -111,7 +111,7 @@ module.controller('ClusterDeleteCtrl', [
 
         $scope.clusterName = dialogData.clusterName || "";
         $scope.workerCount = dialogData.workerCount || "";
-        $scope.workerCount = parseInt($scope.workerCount);
+        $scope.workerCount = parseInt($scope.workerCount) || 0;
 
         $scope.deleteCluster = function deleteCluster() {
             var defer = $q.defer();
@@ -148,7 +148,7 @@ module.controller('ClusterNewCtrl', [
     "errorHandling",
      function($q, $scope, dialogData, clusterData, sendNotifications, errorHandling) {
         $scope.NAME_RE = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/;
-        $scope.NUMBER_RE = /^[0-9]*$/;
+        $scope.NUMBER_RE = /^-?[0-9]*$/;
         var fields = {
                 name: "",
                 workers: 1,
@@ -162,8 +162,8 @@ module.controller('ClusterNewCtrl', [
         $scope.toggleAdvanced = function () {
             $scope.advanced = $scope.advanced ? false : true;
             if($scope.advanced) {
-              // set to zero to indicate it's unset and to use the value in the cluster config
-              $scope.fields.workers = 0;
+              // set to -1 to indicate it's unset and to use the value in the cluster config
+              $scope.fields.workers = -1;
             } else {
               $scope.fields.workers = 1;
             }
@@ -184,15 +184,15 @@ module.controller('ClusterNewCtrl', [
                 }
             }
             if (workers !== undefined) {
-                if (!workers && !$scope.advanced)
+                if (workers < -1 && !$scope.advanced)
                     ex = new Error("The number of workers count cannot be empty.");
                 else if (!$scope.NUMBER_RE.test(workers))
                     ex = new Error("Please give a valid number of workers.");
-                else if (workers < 0)
+                else if (workers < -1)
                     ex = new Error("Please give a value greater than 0.");
 
                 if (ex) {
-                    ex.target = "#cluster-new-workers";
+                    ex.target = $scope.advanced ? "#cluster-adv-workers" : "#cluster-new-workers";
                     defer.reject(ex);
                 }
             }
@@ -206,7 +206,7 @@ module.controller('ClusterNewCtrl', [
         $scope.newCluster = function newCluster() {
             var defer = $q.defer();
             var name = $scope.fields.name.trim();
-            var workersInt = $scope.fields.workers;
+            var workersInt = $scope.fields.workers || 0;
             var configName = $scope.advanced ? $scope.fields.configname : null;
             var masterConfigName = $scope.advanced ? $scope.fields.masterconfigname : null;
             var workerConfigName = $scope.advanced ? $scope.fields.workerconfigname : null;
