@@ -85,7 +85,7 @@ app.post('/api/clusters', function (request, response) {
   var cConfigCommand = clusterConfig ? " --storedconfig=" + clusterConfig : "";
   var wConfigCommand = workerConfig ? " --workerconfig=" + workerConfig : "";
   var mConfigCommand = masterConfig ? " --masterconfig=" + masterConfig : "";
-  var wcCommand = workerCount > 0 ? " --workers=" + workerCount : "";
+  var wcCommand = workerCount > -1 ? " --workers=" + workerCount : "";
   var mcCommand = " --masters=" + masterCount;
   var createCommand = " create " + clusterName;
 
@@ -166,7 +166,7 @@ var formatErrResponse = function (resultText) {
 }
 
 app.get('/config/refresh', function (request, response) {
-  response.send(parseInt(refresh_interval));
+  response.send(200, refresh_interval);
 });
 
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
