@@ -81,18 +81,25 @@ app.post('/api/clusters', function (request, response) {
   var clusterConfig = request.body.config.clusterconfig;
   var workerConfig = request.body.config.workerconfig;
   var masterConfig = request.body.config.masterconfig;
+  var exposeWebUI = request.body.config.exposewebui;
 
+  console.log("Expose webui is set to: " + exposeWebUI);
+
+  // Set up the parts of our command line call
   var cConfigCommand = clusterConfig ? " --storedconfig=" + clusterConfig : "";
   var wConfigCommand = workerConfig ? " --workerconfig=" + workerConfig : "";
   var mConfigCommand = masterConfig ? " --masterconfig=" + masterConfig : "";
   var wcCommand = workerCount > -1 ? " --workers=" + workerCount : "";
   var mcCommand = " --masters=" + masterCount;
   var createCommand = " create " + clusterName;
+  var exposeCommand = exposeWebUI ? "" : " --exposeui=false";
 
   var child_process = require('child_process');
+
+  // Smash our command snippets into one command
   var command = oshinko_cli_location + createCommand + use_spark_image +
     wcCommand + mcCommand + cConfigCommand + wConfigCommand + mConfigCommand +
-    server_token_cert ;
+    exposeCommand + server_token_cert;
   oshinko_web_debug && console.log("Create command is: " + command);
   try {
     output = child_process.execSync(command);

@@ -71,16 +71,17 @@ module.factory('clusterData', [
                     }
                 });
             }
-            function sendCreateCluster(clusterName, workerCount, configName, masterConfigName, workerConfigName) {
+            function sendCreateCluster(clusterConfig) {
                 var jsonData = {
                     "config": {
                         "masterCount": 1,
-                        "workerCount": workerCount,
-                        "clusterconfig": configName,
-                        "masterconfig": masterConfigName,
-                        "workerconfig": workerConfigName
+                        "workerCount": clusterConfig.workerCount,
+                        "clusterconfig": clusterConfig.configName,
+                        "masterconfig": clusterConfig.masterConfigName,
+                        "workerconfig": clusterConfig.workerConfigName,
+                        "exposewebui": clusterConfig.exposeWebUI
                      },
-                     "name": clusterName
+                     "name": clusterConfig.name
                 }
                 return $http.post(urlBase + "/clusters", jsonData);
             }
