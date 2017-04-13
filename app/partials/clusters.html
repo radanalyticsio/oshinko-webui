@@ -39,6 +39,9 @@
                         <th>
                             <a ng-click="order('worker_count')">Worker count</a>
                         </th>
+                        <th>
+                            <a ng-click="order('name')">Spark UI Link</a>
+                        </th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -59,6 +62,8 @@
                         </td>
                         <td name="masterurl-{{entry.name}}">{{entry.masterUrl}}</td>
                         <td name="workercount-{{entry.name}}">{{entry.workerCount}}</td>
+                        <td ng-if="entry.masterWebRoute" name="uilink-{{entry.name}}"><a href="http://{{entry.masterWebRoute}}" target="_blank">Spark UI</a></td>
+                        <td ng-if="!entry.masterWebRoute" name="uilink-{{entry.name}}">N/A</td>
                         <td>
                             <button name="scalebutton-{{entry.name}}" class="btn btn-default" translatable="yes">Scale</button>
                         </td>

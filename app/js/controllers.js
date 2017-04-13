@@ -212,7 +212,7 @@ module.controller('ClusterNewCtrl', [
 
       var clusterConfig = {
         name: name,
-        workersInt: workersInt,
+        workerCount: workersInt,
         configName: $scope.advanced ? $scope.fields.configname : null,
         masterConfigName: $scope.advanced ? $scope.fields.masterconfigname : null,
         workerConfigName: $scope.advanced ? $scope.fields.workerconfigname : null,
