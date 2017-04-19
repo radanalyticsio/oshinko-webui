@@ -60,7 +60,7 @@
                         <td name="masterurl-{{entry.name}}">{{entry.masterUrl}}</td>
                         <td name="workercount-{{entry.name}}">{{entry.workerCount}}</td>
                         <td>
-                            <button name="scalebutton-{{entry.name}}" class="btn btn-default" translatable="yes">Scale</button>
+                            <button name="scalebutton-{{entry.name}}" class="btn btn-default" translatable="yes" ng-click="scaleCluster(entry)">Scale</button>
                         </td>
                         <td>
                             <a class="pull-right close-icon" name="deletebutton-{{entry.name}}">
