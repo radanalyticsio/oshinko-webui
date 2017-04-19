@@ -8,5 +8,8 @@
         <dd>{{cluster_details.masterUrl}}</dd>
         <dt translatable="yes">Worker count</dt>
         <dd>{{cluster_details.workerCount}}</dd>
+        <dt translatable="yes">Master Web UI</dt>
+        <dd ng-if="cluster_details.masterWebRoute"><a href="http://{{cluster_details.masterWebRoute}}" target="_blank">{{cluster_details.masterWebRoute}}</a></dd>
+        <dd ng-if="!cluster_details.masterWebRoute">N/A</dd>
     </dl>
 </div>
