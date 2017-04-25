@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
  */
-
+/* jshint ignore:start */
 (function() {
     "use strict";
 
     angular.module('ui.cockpit', [
-        'ui.bootstrap',
+        'ui.bootstrap'
     ])
 
     /*
@@ -126,11 +126,11 @@
                      * that exists in the scope of the modal controller.
                      */
                     scope.submitForm = function mySubmit(event, subFunc, arg) {
-                        if (event.keyCode == 13) {
+                        if (event.keyCode === 13) {
                            scope.complete(eval("scope." + subFunc)(arg));
                         }
                     };
-                },
+                }
             };
         }
     ]);
@@ -274,7 +274,6 @@
 
         function handleClear(ev) {
             var target = ev.target;
-            /* jshint validthis:true */
             while (target !== this) {
                 clearError(angular.element(target));
                 target = target.parentNode;
@@ -306,7 +305,7 @@
 
         function notifyWait(data) {
             var message = data.message || data;
-            if (typeof message == "string" || typeof message == "number")
+            if (typeof message === "string" || typeof message === "number")
                 notify.text(message);
             else if (!message)
                 notify.text("");
@@ -348,3 +347,4 @@
     }
 
 }());
+/* jshint ignore:end */
