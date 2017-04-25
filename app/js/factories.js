@@ -43,7 +43,9 @@ module.factory('clusterActions', [
                     resolve: {
                         dialogData: function() {
                             return { clusterName: cluster.name,
-                                workerCount: cluster.workerCount };
+                                workerCount: cluster.workerCount,
+                                masterCount: cluster.masterCount
+                            };
                         }
                     },
                 }).result;
