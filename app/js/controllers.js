@@ -157,7 +157,8 @@ module.controller('ClusterNewCtrl', [
       workers: 1,
       configName: null,
       masterconfigname: null,
-      workerconfigname: null
+      workerconfigname: null,
+      exposewebui: true
     };
     $scope.advanced = false;
 
@@ -201,7 +202,6 @@ module.controller('ClusterNewCtrl', [
           defer.reject(ex);
         }
       }
-
       if (!ex) {
         defer.resolve();
       }
@@ -213,13 +213,18 @@ module.controller('ClusterNewCtrl', [
       var defer = $q.defer();
       var name = $scope.fields.name.trim();
       var workersInt = $scope.fields.workers || 0;
-      var configName = $scope.advanced ? $scope.fields.configName : null;
-      var masterConfigName = $scope.advanced ? $scope.fields.masterconfigname : null;
-      var workerConfigName = $scope.advanced ? $scope.fields.workerconfigname : null;
+      var clusterConfig = {
+        name: name,
+        workerCount: workersInt,
+        configName: $scope.advanced ? $scope.fields.configname : null,
+        masterConfigName: $scope.advanced ? $scope.fields.masterconfigname : null,
+        workerConfigName: $scope.advanced ? $scope.fields.workerconfigname : null,
+        exposeWebUI: $scope.advanced ? $scope.fields.exposewebui : true
+      };
 
       validate(name, workersInt)
         .then(function () {
-          clusterData.sendCreateCluster(name, workersInt, configName, masterConfigName, workerConfigName).then(function (response) {
+          clusterData.sendCreateCluster(clusterConfig).then(function (response) {
             var successMsg = "New cluster " + name + " deployed.";
             errorHandling.handle(response, null, defer, successMsg);
           }, function (error) {
