@@ -42,6 +42,10 @@
           <input id="cluster-workerconfig-name" class="form-control input-lg" type="text" ng-model="fields.workerconfigname"/>
         </div>
         <div class="form-group">
+          <label for="cluster-spark-image">Apache Spark image (only radanalyticsio/openshift-spark is supported)</label>
+          <input id="cluster-spark-image" class="form-control input-lg" type="text" ng-model="fields.sparkimage"/>
+        </div>
+        <div class="form-group">
           <label for="exposewebui">Expose Spark master web user interface</label>
           <input id="exposewebui" class="form-control input-lg" type="checkbox" ng-model="fields.exposewebui"/>
         </div>
