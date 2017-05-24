@@ -93,6 +93,9 @@ app.post('/api/clusters', function (request, response) {
   var mcCommand = " --masters=" + masterCount;
   var createCommand = " create " + clusterName;
   var exposeCommand = exposeWebUI ? "" : " --exposeui=false";
+  if (sparkImage === "") {
+    sparkImage = spark_image;
+  }
   var imageCommand = " --image " + sparkImage;
 
   var child_process = require('child_process');
