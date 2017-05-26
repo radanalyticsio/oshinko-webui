@@ -158,7 +158,8 @@ module.controller('ClusterNewCtrl', [
       configName: null,
       masterconfigname: null,
       workerconfigname: null,
-      exposewebui: true
+      exposewebui: true,
+      sparkimage: window.__env.spark_image
     };
     $scope.advanced = false;
 
@@ -219,7 +220,8 @@ module.controller('ClusterNewCtrl', [
         configName: $scope.advanced ? $scope.fields.configname : null,
         masterConfigName: $scope.advanced ? $scope.fields.masterconfigname : null,
         workerConfigName: $scope.advanced ? $scope.fields.workerconfigname : null,
-        exposeWebUI: $scope.advanced ? $scope.fields.exposewebui : true
+        exposeWebUI: $scope.advanced ? $scope.fields.exposewebui : true,
+        sparkImage: $scope.advanced ? $scope.fields.sparkimage : window.__env.spark_image
       };
 
       validate(name, workersInt)

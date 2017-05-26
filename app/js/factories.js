@@ -79,7 +79,8 @@ module.factory('clusterData', [
           "clusterconfig": clusterConfig.configName,
           "masterconfig": clusterConfig.masterConfigName,
           "workerconfig": clusterConfig.workerConfigName,
-          "exposewebui": clusterConfig.exposeWebUI
+          "exposewebui": clusterConfig.exposeWebUI,
+          "sparkimage": clusterConfig.sparkImage
         },
         "name": clusterConfig.name
       };
