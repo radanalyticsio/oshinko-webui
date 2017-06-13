@@ -87,10 +87,10 @@ module.factory('clusterData', [
                 }
                 return $http.post(urlBase + "/clusters", jsonData);
             }
-            function sendScaleCluster(clusterName, workerCount) {
+            function sendScaleCluster(clusterName, masterCount, workerCount) {
                 var jsonData = {
                     "config": {
-                        "masterCount": 1,
+                        "masterCount": masterCount,
                         "workerCount": workerCount
                     },
                     "name": clusterName
