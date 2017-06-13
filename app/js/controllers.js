@@ -47,7 +47,7 @@ module.controller('ClusterCtrl', [
               } catch (err) {
                 $scope.details = null;
               }
-            else
+            else {
               $scope.details = null;
           }, function (error) {
             sendNotifications.notify(
