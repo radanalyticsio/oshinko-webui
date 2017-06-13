@@ -4,6 +4,7 @@
  * Copyright (C) 2017 Red Hat, Inc.
  *
  */
+
 'use strict';
 
 var express = require("express");
