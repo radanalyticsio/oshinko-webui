@@ -41,7 +41,7 @@ module.controller('ClusterCtrl', [
         clusterDataFactory.getClusters()
           .then(function (response) {
             console.log(response);
-            if (response.data.clusters)
+            if (response.data.clusters) {
               try {
                 $scope.details = JSON.parse(response.data.clusters);
               } catch (err) {
@@ -67,8 +67,8 @@ module.controller('ClusterCtrl', [
 
           }, function (error) {
             sendNotifications.notify(
-              "Error", "Unable to fetch cluster details.  Error code: "
-              + error.status);
+              "Error", "Unable to fetch cluster details.  Error code: " +
+              error.status);
           });
       };
     }
@@ -86,8 +86,9 @@ module.controller('ClusterCtrl', [
 
     // no update when this page isn't displayed
     $scope.$on('$destroy', function () {
-      if (intervalPromise)
+      if (intervalPromise) {
         $interval.cancel(intervalPromise);
+      }
     });
 
     $scope.reloadData();
@@ -114,7 +115,6 @@ module.controller('ClusterDeleteCtrl', [
     $scope.masterCount = parseInt($scope.masterCount) || 0;
     $scope.workerCount = dialogData.workerCount || "";
     $scope.workerCount = parseInt($scope.workerCount) || 0;
-
 
     $scope.deleteCluster = function deleteCluster() {
       var defer = $q.defer();
@@ -152,19 +152,19 @@ module.controller('ClusterNewCtrl', [
   function ($q, $scope, dialogData, clusterData, sendNotifications, errorHandling) {
     $scope.NAME_RE = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/;
     $scope.NUMBER_RE = /^-?[0-9]*$/;
-    var fields = {
+    $scope.fields = {
       name: "",
       workers: 1,
       configName: null,
       masterconfigname: null,
       workerconfigname: null,
-      exposewebui: true
+      exposewebui: true,
+      sparkimage: window.__env.spark_image
     };
-    $scope.fields = fields;
     $scope.advanced = false;
 
     $scope.toggleAdvanced = function () {
-      $scope.advanced = $scope.advanced ? false : true;
+      $scope.advanced = !$scope.advanced;
       if ($scope.advanced) {
         // set to -1 to indicate it's unset and to use the value in the cluster config
         $scope.fields.workers = -1;
@@ -177,30 +177,32 @@ module.controller('ClusterNewCtrl', [
       var defer = $q.defer();
       var ex;
       if (name !== undefined) {
-        if (!name)
+        if (!name) {
           ex = new Error("The cluster name cannot be empty.");
-        else if (!$scope.NAME_RE.test(name))
+        }
+        else if (!$scope.NAME_RE.test(name)) {
           ex = new Error("The member name contains invalid characters.");
-
+        }
         if (ex) {
           ex.target = "#cluster-new-name";
           defer.reject(ex);
         }
       }
       if (workers !== undefined) {
-        if (workers < -1 && !$scope.advanced)
+        if (workers < -1 && !$scope.advanced) {
           ex = new Error("The number of workers count cannot be empty.");
-        else if (!$scope.NUMBER_RE.test(workers))
+        }
+        else if (!$scope.NUMBER_RE.test(workers)) {
           ex = new Error("Please give a valid number of workers.");
-        else if (workers < -1)
+        }
+        else if (workers < -1) {
           ex = new Error("Please give a value greater than 0.");
-
+        }
         if (ex) {
           ex.target = $scope.advanced ? "#cluster-adv-workers" : "#cluster-new-workers";
           defer.reject(ex);
         }
       }
-
       if (!ex) {
         defer.resolve();
       }
@@ -212,14 +214,14 @@ module.controller('ClusterNewCtrl', [
       var defer = $q.defer();
       var name = $scope.fields.name.trim();
       var workersInt = $scope.fields.workers || 0;
-
       var clusterConfig = {
         name: name,
         workerCount: workersInt,
         configName: $scope.advanced ? $scope.fields.configname : null,
         masterConfigName: $scope.advanced ? $scope.fields.masterconfigname : null,
         workerConfigName: $scope.advanced ? $scope.fields.workerconfigname : null,
-        exposeWebUI: $scope.advanced ? $scope.fields.exposewebui : true
+        exposeWebUI: $scope.advanced ? $scope.fields.exposewebui : true,
+        sparkImage: $scope.advanced ? $scope.fields.sparkimage : window.__env.spark_image
       };
 
       validate(name, workersInt)

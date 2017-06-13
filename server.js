@@ -1,13 +1,12 @@
-<!--
 /*
  * This file is part of Oshinko.
  *
  * Copyright (C) 2017 Red Hat, Inc.
  *
  */
--->
+'use strict';
+
 var express = require("express");
-var http = require("http");
 var app = express();
 
 var oshinko_web_debug = process.env.OSHINKO_WEB_DEBUG || false;
@@ -17,17 +16,13 @@ var oshinko_cert = process.env.KUBERNETES_CERT || "/var/run/secrets/kubernetes.i
 var kubernetes_host = process.env.KUBERNETES_SERVICE_HOST || "kubernetes.default";
 var kubernetes_port = process.env.KUBERNETES_SERVICE_PORT || "443";
 var use_insecure_cli = process.env.USE_INSECURE_CLI || false;
-var spark_image = process.env.OSHINKO_SPARK_IMAGE || null;
+var spark_image = process.env.OSHINKO_SPARK_IMAGE || "radanalyticsio/openshift-spark";
 var refresh_interval = process.env.OSHINKO_REFRESH_INTERVAL || 5;
 var server_token_cert = " --server=https://" + kubernetes_host + ":" + kubernetes_port + " --token=" + oshinko_sa_token + " --certificate-authority=" + oshinko_cert;
 if (use_insecure_cli) {
   server_token_cert = " --server=https://" + kubernetes_host + ":" + kubernetes_port + " --token=" + oshinko_sa_token + " --insecure-skip-tls-verify=true";
 }
 var output_format = " -o json";
-var use_spark_image = "";
-if (spark_image) {
-  use_spark_image = " --image " + spark_image;
-}
 
 app.configure(function () {
   app.use(express.logger());
@@ -41,7 +36,7 @@ app.configure(function () {
 });
 
 app.get('/', function (request, response) {
-  response.render('index.html')
+  response.render('index.html');
 });
 
 app.get('/api/clusters', function (request, response) {
@@ -49,7 +44,9 @@ app.get('/api/clusters', function (request, response) {
   var response_text = "";
   var child_process = require('child_process');
   var command = oshinko_cli_location + " get" + server_token_cert + output_format;
+ /* jshint -W030 */
   oshinko_web_debug && console.log("List command is: " + command);
+ /* jshint +W030 */
   try {
     output = child_process.execSync(command);
     response_text = formatGetResponse(output);
@@ -66,7 +63,9 @@ app.get('/api/clusters', function (request, response) {
 app.get('/api/clusters/:id', function (request, response) {
   var child_process = require('child_process');
   var command = oshinko_cli_location + " get " + request.params.id + server_token_cert + output_format;
+  /* jshint -W030 */
   oshinko_web_debug && console.log("Get command is: " + command);
+  /* jshint +W030 */
   var output = child_process.execSync(command);
   var response_text = formatGetResponse(output);
   response.setHeader('Content-Type', 'application/json');
@@ -82,6 +81,7 @@ app.post('/api/clusters', function (request, response) {
   var workerConfig = request.body.config.workerconfig;
   var masterConfig = request.body.config.masterconfig;
   var exposeWebUI = request.body.config.exposewebui;
+  var sparkImage = request.body.config.sparkimage;
 
   console.log("Expose webui is set to: " + exposeWebUI);
 
@@ -93,14 +93,20 @@ app.post('/api/clusters', function (request, response) {
   var mcCommand = " --masters=" + masterCount;
   var createCommand = " create " + clusterName;
   var exposeCommand = exposeWebUI ? "" : " --exposeui=false";
+  if (sparkImage === "") {
+    sparkImage = spark_image;
+  }
+  var imageCommand = " --image " + sparkImage;
 
   var child_process = require('child_process');
 
   // Smash our command snippets into one command
-  var command = oshinko_cli_location + createCommand + use_spark_image +
+  var command = oshinko_cli_location + createCommand + imageCommand +
     wcCommand + mcCommand + cConfigCommand + wConfigCommand + mConfigCommand +
     exposeCommand + server_token_cert;
+  /* jshint -W030 */
   oshinko_web_debug && console.log("Create command is: " + command);
+  /* jshint +W030 */
   try {
     output = child_process.execSync(command);
     output = String.fromCharCode.apply(null, output);
@@ -122,7 +128,9 @@ app.put('/api/clusters/:id', function (request, response) {
   var command = oshinko_cli_location + " scale " + clusterName +
     " --workers=" + workerCount + " --masters=" +
     masterCount + server_token_cert;
+  /* jshint -W030 */
   oshinko_web_debug && console.log("Scale command is: " + command);
+  /* jshint +W030 */
   try {
     output = child_process.execSync(command);
     output = String.fromCharCode.apply(null, output);
@@ -139,7 +147,9 @@ app.delete('/api/clusters/:id', function (request, response) {
   var child_process = require('child_process');
   var command = oshinko_cli_location + " delete " +
     request.params.id + server_token_cert;
+  /* jshint -W030 */
   oshinko_web_debug && console.log("Delete command is: " + command);
+  /* jshint +W030 */
   try {
     output = child_process.execSync(command);
     output = String.fromCharCode.apply(null, output);
@@ -155,7 +165,9 @@ app.delete('/api/clusters/:id', function (request, response) {
 var formatGetResponse = function (resultText) {
   var jsonText = String.fromCharCode.apply(null, resultText);
   var response = {clusters: jsonText};
+  /* jshint -W030 */
   oshinko_web_debug && console.log("Response is: " + JSON.stringify(response));
+  /* jshint +W030 */
   return response;
 };
 
@@ -170,10 +182,14 @@ var formatErrResponse = function (resultText) {
     err.statusCode = 409;
   }
   return err;
-}
+};
 
 app.get('/config/refresh', function (request, response) {
   response.send(200, refresh_interval);
+});
+
+app.get('/config/sparkimage', function (request, response) {
+  response.send(200, spark_image);
 });
 
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
