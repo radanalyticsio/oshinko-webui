@@ -43,7 +43,8 @@ module.factory('clusterActions', [
         resolve: {
           dialogData: function() {
             return { clusterName: cluster.name,
-              workerCount: cluster.workerCount };
+              workerCount: cluster.workerCount,
+              masterCount: cluster.masterCount};
           }
         }
       }).result;
@@ -74,7 +75,7 @@ module.factory('clusterData', [
     function sendCreateCluster(clusterConfig) {
       var jsonData = {
         "config": {
-          "masterCount": 1,
+          "masterCount": clusterConfig.masterCount,
           "workerCount": clusterConfig.workerCount,
           "clusterconfig": clusterConfig.configName,
           "masterconfig": clusterConfig.masterConfigName,
@@ -86,10 +87,10 @@ module.factory('clusterData', [
       };
       return $http.post(urlBase + "/clusters", jsonData);
     }
-    function sendScaleCluster(clusterName, workerCount) {
+    function sendScaleCluster(clusterName, masterCount, workerCount) {
       var jsonData = {
         "config": {
-          "masterCount": 1,
+          "masterCount": masterCount,
           "workerCount": workerCount
         },
         "name": clusterName
