@@ -12,7 +12,7 @@ var module = angular.module('Oshinko.controllers', [
   'patternfly.notification',
   'ui.cockpit',
   'ui.listing',
-  'Oshinko.directives',
+  'Oshinko.directives'
 ]);
 
 module.controller('ClusterCtrl', [
@@ -47,12 +47,13 @@ module.controller('ClusterCtrl', [
               } catch (err) {
                 $scope.details = null;
               }
+            }
             else {
               $scope.details = null;
+            }
           }, function (error) {
             sendNotifications.notify(
-              "Error", "Unable to fetch data.  Error code: "
-              + error.status);
+              "Error", "Unable to fetch data.  Error code: " + error.status);
           });
       };
     } else {
