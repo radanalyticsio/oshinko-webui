@@ -11,7 +11,7 @@ RUN yum install -y wget git && \
     yum clean all
 
 RUN export CLI_REPO=crobby && \
-    export CLI_VER=v0.2.x && \
+    export CLI_VER=v0.2.x.1 && \
     pushd /tmp && \
     wget https://github.com/${CLI_REPO}/oshinko-cli/releases/download/${CLI_VER}/oshinko-cli_${CLI_VER}_linux_amd64.tar.gz && \
     tar -zxvf oshinko-cli_${CLI_VER}_linux_amd64.tar.gz && \
