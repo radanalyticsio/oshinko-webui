@@ -1,10 +1,10 @@
-<!--
 /*
  * This file is part of Oshinko.
  *
  * Copyright (C) 2017 Red Hat, Inc.
  *
  */
+
 'use strict';
 
 var express = require("express");
