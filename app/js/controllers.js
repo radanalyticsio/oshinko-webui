@@ -53,8 +53,7 @@ module.controller('ClusterCtrl', [
             }
           }, function (error) {
             sendNotifications.notify(
-              "Error", "Unable to fetch data.  Error code: " +
-              error.status);
+              "Error", "Unable to fetch data.  Error code: " + error.status);
           });
       };
     } else {
@@ -113,8 +112,11 @@ module.controller('ClusterDeleteCtrl', [
   function ($q, $scope, dialogData, clusterData, sendNotifications, errorHandling) {
 
     $scope.clusterName = dialogData.clusterName || "";
+    $scope.masterCount = dialogData.masterCount || "";
+    $scope.masterCount = parseInt($scope.masterCount) || 0;
     $scope.workerCount = dialogData.workerCount || "";
     $scope.workerCount = parseInt($scope.workerCount) || 0;
+
 
     $scope.deleteCluster = function deleteCluster() {
       var defer = $q.defer();
@@ -128,9 +130,9 @@ module.controller('ClusterDeleteCtrl', [
       return defer.promise;
     };
 
-    $scope.scaleCluster = function scaleCluster(count) {
+    $scope.scaleCluster = function scaleCluster(mastercount, workercount) {
       var defer = $q.defer();
-      clusterData.sendScaleCluster($scope.clusterName, count)
+      clusterData.sendScaleCluster($scope.clusterName, mastercount, workercount)
         .then(function (response) {
           var successMsg = "Cluster scaling initiated for: " + $scope.clusterName;
           errorHandling.handle(response, null, defer, successMsg);
