@@ -17,17 +17,13 @@ var oshinko_cert = process.env.KUBERNETES_CERT || "/var/run/secrets/kubernetes.i
 var kubernetes_host = process.env.KUBERNETES_SERVICE_HOST || "kubernetes.default";
 var kubernetes_port = process.env.KUBERNETES_SERVICE_PORT || "443";
 var use_insecure_cli = process.env.USE_INSECURE_CLI || false;
-var spark_image = process.env.OSHINKO_SPARK_IMAGE || null;
+var spark_image = process.env.OSHINKO_SPARK_IMAGE || "radanalyticsio/openshift-spark";
 var refresh_interval = process.env.OSHINKO_REFRESH_INTERVAL || 5;
 var server_token_cert = " --server=https://" + kubernetes_host + ":" + kubernetes_port + " --token=" + oshinko_sa_token + " --certificate-authority=" + oshinko_cert;
 if (use_insecure_cli) {
   server_token_cert = " --server=https://" + kubernetes_host + ":" + kubernetes_port + " --token=" + oshinko_sa_token + " --insecure-skip-tls-verify=true";
 }
 var output_format = " -o json";
-var use_spark_image = "";
-if (spark_image) {
-  use_spark_image = " --image " + spark_image;
-}
 
 app.configure(function () {
   app.use(express.logger());
@@ -86,6 +82,7 @@ app.post('/api/clusters', function (request, response) {
   var workerConfig = request.body.config.workerconfig;
   var masterConfig = request.body.config.masterconfig;
   var exposeWebUI = request.body.config.exposewebui;
+  var sparkImage = request.body.config.sparkimage;
 
   console.log("Expose webui is set to: " + exposeWebUI);
 
@@ -97,11 +94,15 @@ app.post('/api/clusters', function (request, response) {
   var mcCommand = " --masters=" + masterCount;
   var createCommand = " create " + clusterName;
   var exposeCommand = exposeWebUI ? "" : " --exposeui=false";
+  if (sparkImage === "") {
+    sparkImage = spark_image;
+  }
+  var imageCommand = " --image " + sparkImage;
 
   var child_process = require('child_process');
 
   // Smash our command snippets into one command
-  var command = oshinko_cli_location + createCommand + use_spark_image +
+  var command = oshinko_cli_location + createCommand + imageCommand +
     wcCommand + mcCommand + cConfigCommand + wConfigCommand + mConfigCommand +
     exposeCommand + server_token_cert;
   /* jshint -W030 */
@@ -186,6 +187,10 @@ var formatErrResponse = function (resultText) {
 
 app.get('/config/refresh', function (request, response) {
   response.send(200, refresh_interval);
+});
+
+app.get('/config/sparkimage', function (request, response) {
+  response.send(200, spark_image);
 });
 
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;

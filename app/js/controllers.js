@@ -12,7 +12,7 @@ var module = angular.module('Oshinko.controllers', [
   'patternfly.notification',
   'ui.cockpit',
   'ui.listing',
-  'Oshinko.directives'
+  'Oshinko.directives',
 ]);
 
 module.controller('ClusterCtrl', [
@@ -47,14 +47,12 @@ module.controller('ClusterCtrl', [
               } catch (err) {
                 $scope.details = null;
               }
-            }
             else {
               $scope.details = null;
-            }
           }, function (error) {
             sendNotifications.notify(
-              "Error", "Unable to fetch data.  Error code: " +
-              error.status);
+              "Error", "Unable to fetch data.  Error code: "
+              + error.status);
           });
       };
     } else {
@@ -161,7 +159,8 @@ module.controller('ClusterNewCtrl', [
       configName: null,
       masterconfigname: null,
       workerconfigname: null,
-      exposewebui: true
+      exposewebui: true,
+      sparkimage: window.__env.spark_image
     };
     $scope.advanced = false;
 
@@ -222,7 +221,8 @@ module.controller('ClusterNewCtrl', [
         configName: $scope.advanced ? $scope.fields.configname : null,
         masterConfigName: $scope.advanced ? $scope.fields.masterconfigname : null,
         workerConfigName: $scope.advanced ? $scope.fields.workerconfigname : null,
-        exposeWebUI: $scope.advanced ? $scope.fields.exposewebui : true
+        exposeWebUI: $scope.advanced ? $scope.fields.exposewebui : true,
+        sparkImage: $scope.advanced ? $scope.fields.sparkimage : window.__env.spark_image
       };
 
       validate(name, workersInt)

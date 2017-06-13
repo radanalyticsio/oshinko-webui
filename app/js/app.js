@@ -45,4 +45,10 @@ app.run(function ($http) {
     console.log("Unable to fetch refresh interval, using default of 5. " + error);
     window.__env.refresh_interval = 5;
   });
+  $http.get('/config/sparkimage').success(function (result) {
+    window.__env.spark_image = result;
+  }).error(function (error) {
+    console.log("Unable to fetch default spark image, using default of radanalyticsio/openshift-spark. " + error);
+    window.__env.spark_image = 'radanalyticsio/openshift-spark';
+  });
 });
