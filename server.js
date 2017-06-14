@@ -75,7 +75,7 @@ app.get('/api/clusters/:id', function (request, response) {
 
 app.post('/api/clusters', function (request, response) {
   var output = "";
-  var masterCount = request.body.config.masterCount;
+  var masterCount = 1;
   var workerCount = request.body.config.workerCount;
   var clusterName = request.body.name;
   var clusterConfig = request.body.config.clusterconfig;
