@@ -11,7 +11,7 @@ var express = require("express");
 var app = express();
 
 var oshinko_web_debug = process.env.OSHINKO_WEB_DEBUG || false;
-var oshinko_cli_location = process.env.OSHINKO_CLI_LOCATION || "/usr/src/app/oshinko-cli";
+var oshinko_cli_location = process.env.OSHINKO_CLI_LOCATION || "/usr/src/app/oshinko";
 var oshinko_sa_token = process.env.OSHINKO_SA_TOKEN || '';
 var oshinko_cert = process.env.KUBERNETES_CERT || "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt";
 var kubernetes_host = process.env.KUBERNETES_SERVICE_HOST || "kubernetes.default";
