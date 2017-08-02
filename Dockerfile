@@ -15,8 +15,8 @@ RUN export CLI_REPO=crobby && \
     pushd /tmp && \
     wget https://github.com/${CLI_REPO}/oshinko-cli/releases/download/${CLI_VER}/oshinko-cli_${CLI_VER}_linux_amd64.tar.gz && \
     tar -zxvf oshinko-cli_${CLI_VER}_linux_amd64.tar.gz && \
-    mv oshinko-cli_linux_amd64 /usr/src/app/oshinko-cli && \
-    chmod +x /usr/src/app/oshinko-cli && rm -rf /tmp/oshinko-cli* && \
+    mv oshinko-cli_linux_amd64 /usr/src/app/oshinko && \
+    chmod +x /usr/src/app/oshinko && rm -rf /tmp/oshinko-cli* && \
     popd
 
 RUN echo '{ "allow_root": true, "directory": "app/bower_components" }' > /usr/src/app/.bowerrc
