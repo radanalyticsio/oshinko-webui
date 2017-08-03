@@ -1,14 +1,95 @@
 sudo: required
-services:
-  - docker
+dist: trusty
 language: node_js
 node_js:
-  - "6.1"
+    - "6"
+## home folder is /home/travis/radanalyticsio/oshinko-webui
+services:
+- docker
+matrix:
+  include:
+    - env: TO_TEST=e2e
+  fast_finish: true
+
 before_install:
-  - docker build -t radanalyticsio/oshinko-webui .
+## add insecure-registry and restart docker
+- |
+  if [ "$TO_TEST" = "e2e" ]; then
+      pwd
+      ls -l
+      bash --version
+      sudo apt-get install --only-upgrade bash
+      bash --version
+      sudo cat /etc/default/docker
+      sudo service docker stop
+      sudo sed -i -e 's/sock/sock --insecure-registry 172.30.0.0\/16/' /etc/default/docker
+      sudo cat /etc/default/docker
+      sudo service docker start
+      sudo service docker status
+      ## chmod needs sudo, so all other commands are with sudo
+      sudo mkdir -p /home/travis/origin
+      sudo chmod -R 766 /home/travis/origin
+      ## download oc 1.5.1 binary
+      sudo wget https://github.com/openshift/origin/releases/download/v1.5.1/openshift-origin-client-tools-v1.5.1-7b451fc-linux-64bit.tar.gz -P /home/travis/origin
+      sudo wget https://github.com/openshift/origin/releases/download/v1.5.1/openshift-origin-server-v1.5.1-7b451fc-linux-64bit.tar.gz -P /home/travis/origin
+      sudo ls -l /home/travis/origin
+      sudo tar -C /home/travis/origin -xvzf /home/travis/origin/openshift-origin-client-tools-v1.5.1-7b451fc-linux-64bit.tar.gz
+      sudo tar -C /home/travis/origin -xvzf /home/travis/origin/openshift-origin-server-v1.5.1-7b451fc-linux-64bit.tar.gz
+      sudo ls -l /home/travis/origin/openshift-origin-client-tools-v1.5.1-7b451fc-linux-64bit
+      sudo ls -l /home/travis/origin/openshift-origin-server-v1.5.1-7b451fc-linux-64bit
+      sudo cp /home/travis/origin/openshift-origin-client-tools-v1.5.1-7b451fc-linux-64bit/oc /home/travis/origin
+      sudo cp /home/travis/origin/openshift-origin-server-v1.5.1-7b451fc-linux-64bit/* /home/travis/origin
+      sudo chmod -R 766 /home/travis/origin
+      sudo ls -l /home/travis/origin
+      sudo chmod -R +755 /home/travis/origin/*
+      sudo cp /home/travis/origin/* /bin
+      sudo ls -l /bin
+      oc version
+      export PATH=$PATH:/home/travis/origin/
+      echo $PATH
+      # below cmd is important to get oc working in ubuntu
+      sudo docker run -v /:/rootfs -ti --rm --entrypoint=/bin/bash --privileged openshift/origin:v1.5.1 -c "mv /rootfs/bin/findmnt /rootfs/bin/findmnt.backup"
+      sudo oc cluster up --host-config-dir=/home/travis/origin
+      sudo chmod -R a+rwX /home/travis/.kube
+      sudo ls -l /home/travis/origin
+      # find IP:PORT of openshift
+      IPSTR=`sudo oc status |grep server`
+      echo $IPSTR
+      IP=${IPSTR##*/}
+      echo ${IP}
+      IPSTR=`sudo oc login -u developer -p test`
+      echo $IPSTR
+      echo "****Building oshinko-webui docker image****"
+      docker build -t oshinko-webui .
+      oc login -u system:admin > /dev/null
+      oc project default > /dev/null 2>&1
+      export REGIP=`oc get service docker-registry --template='{{index .spec.clusterIP}}:{{index .spec.ports 0 "port"}}'`
+      echo "***Found docker-registry at $REGIP***"
+      oc login -u developer -p test
+      oc project myproject
+      oc create -f http://radanalytics.io/resources.yaml
+      echo "My token is set to-  $(oc whoami -t)"
+      oc policy add-role-to-user admin system:serviceaccount:myproject:oshinko -n myproject
+      r=1; while [ $r -ne 0 ]; do docker login -u oshinko -p $(oc whoami -t) $REGIP ; r=$? ; sleep 1 ; done
+      docker tag oshinko-webui $REGIP/myproject/oshinko-webui
+      docker push $REGIP/myproject/oshinko-webui
+      oc new-app --template=oshinko-webui -p OSHINKO_WEB_IMAGE=$REGIP/myproject/oshinko-webui
+  fi
+install:
+  - npm install -g protractor
+before_script:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
-install:
-  - npm install -g bower
-  - npm install
-  - bower install
+  - webdriver-manager update
+  - webdriver-manager start &
+script:
+  - export IMAGETESTED=`oc get pods -l app=oshinko-webui --template="{{range .items}}{{range .spec.containers}}{{.image}}{{end}}{{end}}"`
+  - echo "Testing image $IMAGETESTED"
+  - export TESTROUTE=`oc get route oshinko-web --template='{{.spec.host}}'`
+  - echo TESTROUTE is $TESTROUTE
+  - while [ 1 ]; do wget $TESTROUTE ; if [ $? = 0 ]; then break; fi; sleep 20s; done
+  - protractor test/conf.js --baseUrl="http://$TESTROUTE"
+notifications:
+ email:
+   on_success: never
+on_failure: never
