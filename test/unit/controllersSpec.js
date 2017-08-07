@@ -41,7 +41,7 @@ describe('New cluster functionality', function(){
     expect($scope.NUMBER_RE.test("abcd")).toBeFalsy();
   });
   it('should allow a worker count of 4', function() {
-    expect($scope.NAME_RE.test(4)).toBeTruthy();
+    expect($scope.NUMBER_RE.test(4)).toBeTruthy();
   });
 });
 
@@ -68,7 +68,7 @@ describe('Delete cluster functionality', function(){
     expect(controller).toBeDefined();
     expect($scope.clusterName).toBe('');
     expect($scope.workerCount).toBeDefined();
-  })
+  });
 });
 
 describe('Main controller functionality', function(){
@@ -102,7 +102,7 @@ describe('Main controller functionality', function(){
 
   it('should have the controller defined ', function() {
     expect(controller).toBeDefined();
-  })
+  });
 });
 
 

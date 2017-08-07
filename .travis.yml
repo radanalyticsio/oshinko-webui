@@ -52,6 +52,7 @@ before_install:
   - docker build -t oshinko-webui .
   - oc login -u system:admin > /dev/null
   - oc project default > /dev/null 2>&1
+## Getting local docker registry so that we can push our freshly built image into it for use
   - export REGIP=`oc get service docker-registry --template='{{index .spec.clusterIP}}:{{index .spec.ports 0 "port"}}'`
   - echo "***Found docker-registry at $REGIP***"
   - oc login -u developer -p test
@@ -64,13 +65,19 @@ before_install:
   - docker push $REGIP/myproject/oshinko-webui
   - oc new-app --template=oshinko-webui -p OSHINKO_WEB_IMAGE=$REGIP/myproject/oshinko-webui
 install:
+  - npm install
+  - bower install
   - npm install -g protractor
+  - npm install -g karma-cli
 before_script:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
   - webdriver-manager update
   - webdriver-manager start &
 script:
+  - echo "Running unit tests via karma"
+  - karma start test/karma.conf.js
+  - echo "Running integration tests via protracor"
   - export IMAGETESTED=`oc get pods -l app=oshinko-webui --template="{{range .items}}{{range .spec.containers}}{{.image}}{{end}}{{end}}"`
   - echo "Testing image $IMAGETESTED"
   - export TESTROUTE=`oc get route oshinko-web --template='{{.spec.host}}'`
