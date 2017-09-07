@@ -10,13 +10,11 @@ COPY ./scripts/launch.sh /usr/src/app/
 RUN yum install -y wget git && \
     yum clean all
 
-RUN export CLI_REPO=crobby && \
-    export CLI_VER=v0.2.x.1 && \
-    pushd /tmp && \
-    wget https://github.com/${CLI_REPO}/oshinko-cli/releases/download/${CLI_VER}/oshinko-cli_${CLI_VER}_linux_amd64.tar.gz && \
-    tar -zxvf oshinko-cli_${CLI_VER}_linux_amd64.tar.gz && \
-    mv oshinko-cli_linux_amd64 /usr/src/app/oshinko && \
-    chmod +x /usr/src/app/oshinko && rm -rf /tmp/oshinko-cli* && \
+RUN pushd /tmp && \
+    wget https://github.com/openshift/origin/releases/download/v3.6.0/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit.tar.gz && \
+    tar -xvzf openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit.tar.gz && \
+    cp openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit/oc /usr/src/app/ && \
+    chmod +x /usr/src/app/oc && rm -rf /tmp/openshift* && \
     popd
 
 RUN echo '{ "allow_root": true, "directory": "app/bower_components" }' > /usr/src/app/.bowerrc
