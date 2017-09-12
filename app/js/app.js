@@ -48,7 +48,7 @@ app.run(function ($http) {
   $http.get('/config/sparkimage').success(function (result) {
     window.__env.spark_image = result;
   }).error(function (error) {
-    console.log("Unable to fetch default spark image, using default of radanalyticsio/openshift-spark. " + error);
-    window.__env.spark_image = 'radanalyticsio/openshift-spark';
+    console.log("Unable to fetch default spark image. " + error);
+    window.__env.spark_image = '';
   });
 });
