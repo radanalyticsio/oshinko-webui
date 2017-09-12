@@ -17,7 +17,14 @@ var oshinko_cert = process.env.KUBERNETES_CERT || "/var/run/secrets/kubernetes.i
 var kubernetes_host = process.env.KUBERNETES_SERVICE_HOST || "kubernetes.default";
 var kubernetes_port = process.env.KUBERNETES_SERVICE_PORT || "443";
 var use_insecure_cli = process.env.USE_INSECURE_CLI || false;
-var spark_image = process.env.OSHINKO_SPARK_IMAGE || "radanalyticsio/openshift-spark";
+
+// This is a potential override from the template
+var spark_image = process.env.OSHINKO_SPARK_IMAGE;
+
+// This is the default used by the embedded CLI, determined in launch.sh
+// It's used for logging and labeling, never read and used directly
+var spark_default = process.env.SPARK_DEFAULT;
+
 var refresh_interval = process.env.OSHINKO_REFRESH_INTERVAL || 5;
 var server_token_cert = " --server=https://" + kubernetes_host + ":" + kubernetes_port + " --token=" + oshinko_sa_token + " --certificate-authority=" + oshinko_cert;
 if (use_insecure_cli) {
@@ -94,11 +101,7 @@ app.post('/api/clusters', function (request, response) {
   var mcCommand = " --masters=" + masterCount;
   var createCommand = " create " + clusterName;
   var exposeCommand = exposeWebUI ? "" : " --exposeui=false";
-  if (sparkImage === "") {
-    sparkImage = spark_image;
-  }
-  var imageCommand = " --image " + sparkImage;
-
+  var imageCommand = sparkImage ? " --image=" + sparkImage : "";
   var child_process = require('child_process');
 
   // Smash our command snippets into one command
@@ -201,4 +204,5 @@ app.listen(port, function () {
   console.log("Oshinko sa token is: " + oshinko_sa_token);
   console.log("Cert location is: " + oshinko_cert);
   console.log("Insecure mode is: " + use_insecure_cli);
+  console.log("Spark default image if not overridden is " + spark_default);
 });
