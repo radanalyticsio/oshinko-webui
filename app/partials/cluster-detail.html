@@ -15,15 +15,15 @@
                     </button>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="javascript:void(0);" ng-click="deleteCluster(cluster_details.name)">Delete</a>
-                            <a href="javascript:void(0);" ng-click="scaleCluster(cluster_details)">Scale</a>
+                            <a href="javascript:void(0);" ng-click="deleteCluster(cluster_id)">Delete</a>
+                            <a href="javascript:void(0);" ng-click="scaleCluster(cluster_id)">Scale</a>
                         </li>
                     </ul>
             </div>
             <h2 class="card-pf-title" translatable="yes">Cluster Details</h2>
         </div>
         <div class="card-pf-body">
-            <div class="well blank-slate-pf spacious" ng-if="!cluster_details" >
+            <div class="well blank-slate-pf spacious" ng-if="!oshinkoClusters[cluster_id]" >
                 <div class="blank-slate-pf-icon">
                     <i class="fa fa-hourglass-start"></i>
                 </div>

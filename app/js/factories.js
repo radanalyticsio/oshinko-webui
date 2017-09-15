@@ -35,16 +35,16 @@ module.factory('clusterActions', [
         }
       }).result;
     }
-    function scaleCluster(cluster) {
+    function scaleCluster(clusterName, workerCount, masterCount) {
       return $uibModal.open({
         animation: true,
         controller: 'ClusterDeleteCtrl',
         templateUrl: '/forms/' + 'scale-cluster.html',
         resolve: {
           dialogData: function() {
-            return { clusterName: cluster.name,
-              workerCount: cluster.workerCount,
-              masterCount: cluster.masterCount
+            return { clusterName: clusterName,
+              workerCount: workerCount,
+              masterCount: masterCount
             };
           }
         }
@@ -57,102 +57,6 @@ module.factory('clusterActions', [
     };
   }
 ]);
-
-module.factory('clusterData', [
-  '$http',
-  function($http) {
-    var urlBase = 'api';
-    function sendDeleteCluster(clusterName) {
-      return $http({
-        method: "DELETE",
-        url: urlBase + '/clusters/' + clusterName,
-        data: '',
-        headers: {
-          'Content-Type': 'application/json',
-          'allow-access-control-origin': "*"
-        }
-      });
-    }
-    function sendCreateCluster(clusterConfig) {
-      var jsonData = {
-        "config": {
-          "masterCount": clusterConfig.masterCount,
-          "workerCount": clusterConfig.workerCount,
-          "clusterconfig": clusterConfig.configName,
-          "masterconfig": clusterConfig.masterConfigName,
-          "workerconfig": clusterConfig.workerConfigName,
-          "exposewebui": clusterConfig.exposeWebUI,
-          "sparkimage": clusterConfig.sparkImage
-        },
-        "name": clusterConfig.name
-      };
-      return $http.post(urlBase + "/clusters", jsonData);
-    }
-    function sendScaleCluster(clusterName, masterCount, workerCount) {
-      var jsonData = {
-        "config": {
-          "masterCount": masterCount,
-          "workerCount": workerCount
-        },
-        "name": clusterName
-      };
-      return $http.put(urlBase + '/clusters/' + clusterName, jsonData);
-    }
-    return {
-      sendDeleteCluster: sendDeleteCluster,
-      sendCreateCluster: sendCreateCluster,
-      sendScaleCluster: sendScaleCluster
-    };
-  }
-]);
-
-module.factory('clusterDataFactory', function($rootScope, $http) {
-  var urlBase = 'api';
-  var dataFactory = {};
-
-  dataFactory.getClusters = function() {
-    return $http.get(urlBase + "/clusters");
-  };
-
-  dataFactory.getCluster = function(id) {
-    return $http.get(urlBase + '/clusters/' + id);
-  };
-
-  dataFactory.deleteCluster = function(id) {
-    return $http({
-      method: "DELETE",
-      url: urlBase + '/clusters/' + id,
-      data: '',
-      headers: {
-        'Content-Type': 'application/json',
-        'allow-access-control-origin': "*"
-      }
-    });
-  };
-
-  dataFactory.createCluster = function(name, workerCount) {
-    var jsonData = {
-      "config": {
-        "masterCount": 1,
-        "workerCount": workerCount
-      },
-      "name": name
-    };
-    return $http.post(urlBase + "/clusters", jsonData);
-  };
-
-  dataFactory.updateCluster = function(id, name, workerCount) {
-    var jsonData = {
-      "config": {
-        "masterCount": 1,
-        "workerCount": workerCount
-      },
-      "name": name
-    };
-    return $http.put(urlBase + '/clusters/' + id, jsonData);
-  };
-  return dataFactory;
-});
 
 module.factory('sendNotifications', function(Notifications) {
   var notificationFactory = {};

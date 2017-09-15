@@ -19,10 +19,9 @@ module.directive('appVersion',
 );
 module.directive('clusterPanel', [
   '$q',
-  'clusterDataFactory',
   'sendNotifications',
   '$interval',
-  function ($q, clusterDataFactory, sendNotifications, $interval) {
+  function ($q) {
     return {
       restrict: 'A',
       scope: true,
@@ -53,6 +52,27 @@ module.directive('clusterPanel', [
           return defer.promise;
         }
 
+        var clusterId = scope.clusterId;
+        var setClusterDetails = function (clusterName) {
+          try {
+            scope.cluster_details = scope.oshinkoClusters[clusterName];
+            scope.cluster_details['name'] = scope.cluster_details.master.svc[Object.keys(scope.cluster_details.master.svc)[0]].metadata.labels['oshinko-cluster'];
+            scope.cluster_details['workerCount'] = Object.keys(scope.cluster_details.worker.pod).length;
+            scope.cluster_details['masterCount'] = Object.keys(scope.cluster_details.master.pod).length;
+            scope.cluster_details['allPods'] = Object.values(scope.cluster_details.worker.pod);
+            scope.cluster_details['allPods'].push(Object.values(scope.cluster_details.master.pod)[0]);
+            scope.cluster_details['containers'] = clusterName + "-m|" + clusterName + "-w";
+            var masterPodName = Object.keys(scope.cluster_details.master.pod)[0];
+            var clusterMetrics = scope.cluster_details.master.pod[masterPodName].metadata.labels["oshinko-metrics-enabled"] && scope.cluster_details.master.pod[masterPodName].metadata.labels["oshinko-metrics-enabled"] === "true";
+            scope.metricsAvailable = clusterMetrics && scope.OSmetricsAvailable ? true : false;
+          } catch (e) {
+            // most likely recently deleted
+            scope.cluster_details = null;
+          }
+        };
+        setClusterDetails(clusterId);
+
+
         var tab = 'main';
         var REFRESH_SECONDS = 10;
         scope.tab = function (name, ev) {
@@ -62,39 +82,7 @@ module.directive('clusterPanel', [
           }
           return tab === name;
         };
-        var clusterId = scope.clusterId;
-        scope.cluster_details = {};
 
-        scope.reloadDetails = function () {
-          wait.remove();
-          appendSpinnerPromise().then(function () {
-            clusterDataFactory.getCluster(clusterId)
-              .then(function (response) {
-                scope.cluster_details = JSON.parse(response.data.clusters)[0];
-              }, function (error) {
-                sendNotifications.notify("Error", "Unable to fetch cluster details");
-              })
-              .then(function () {
-                wait.remove();
-                REFRESH_SECONDS = 10;
-              });
-          });
-
-        };
-
-
-        var intervalPromise = $interval(function () {
-          scope.reloadDetails();
-        }.bind(this), REFRESH_SECONDS * 1000);
-
-        // no update when this page isn't displayed
-        scope.$on('$destroy', function () {
-          if (intervalPromise) {
-            $interval.cancel(intervalPromise);
-          }
-        });
-
-        scope.reloadDetails();
       },
       templateUrl: "forms/cluster-panel.html"
     };

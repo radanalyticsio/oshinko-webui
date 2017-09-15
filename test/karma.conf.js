@@ -10,18 +10,38 @@ module.exports = function(config) {
 
     basePath : '../',
 
+    plugins: [
+      'karma-firefox-launcher',
+      'karma-jasmine',
+      'karma-requirejs'
+    ],
+
     // list of files / patterns to load in the browser
     files: [
-      'app/bower_components/jquery/jquery.js',
+      'app/bower_components/jquery/dist/jquery.js',
       'app/bower_components/patternfly/dist/js/patternfly.js',
       'app/bower_components/angular/angular.js',
+      'node_modules/requirejs/require.js',
+      'node_modules/karma-requirejs/lib/adapter.js',
       'app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'app/bower_components/angular-patternfly/dist/angular-patternfly.js',
       'app/bower_components/angular-route/angular-route.js',
+      'node_modules/jasmine/lib/jasmine.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
       'app/bower_components/angular-animate/angular-animate.js',
-      'test/unit/*.js',
-      'app/js/*.js'
+      'app/bower_components/lodash/lodash.js',
+      'app/bower_components/js-logger/src/logger.js',
+      'app/bower_components/hawtio-core/dist/hawtio-core.js',
+      'app/bower_components/hawtio-extension-service/dist/hawtio-extension-service.js',
+      'app/bower_components/angular-utf8-base64/angular-utf8-base64.js',
+      'app/js/app.js',
+      'app/js/clusterops.js',
+      'app/js/DataService.js',
+      'app/js/dialog.js',
+      'app/js/directives.js',
+      'app/js/factories.js',
+      'app/js/listing.js',
+      'test/unit/controllersSpec.js'
     ],
 
 
