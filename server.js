@@ -13,6 +13,7 @@ var app = express();
 var oshinko_proxy_location = process.env.OSHINKO_PROXY_LOCATION || "";
 var oshinko_current_namespace = process.env.CURRENT_NAMESPACE || "";
 var oshinko_sa_token = process.env.OSHINKO_SA_TOKEN || '';
+
 var spark_image = process.env.OSHINKO_SPARK_IMAGE || "radanalyticsio/openshift-spark";
 var refresh_interval = process.env.OSHINKO_REFRESH_INTERVAL || 5;
 
@@ -37,6 +38,7 @@ app.get('/config/all', function (request, response) {
     spark_image: spark_image,
     oshinko_proxy_location: oshinko_proxy_location,
     oshinko_current_namespace: oshinko_current_namespace
+
   };
   response.send(200, config);
 });

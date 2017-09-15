@@ -72,8 +72,7 @@ objects:
 parameters:
 - name: OSHINKO_CLUSTER_IMAGE
   description: Full name of the spark image to use when creating clusters
-  required: true
-  value: radanalyticsio/openshift-spark
+  required: false
 - name: OSHINKO_WEB_NAME
   description: Name of the oshinko web service
   value: "oshinko-web"
