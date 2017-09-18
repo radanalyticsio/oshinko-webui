@@ -84,7 +84,7 @@ module.directive('clusterPanel', [
         };
 
       },
-      templateUrl: "forms/cluster-panel.html"
+      templateUrl: "webui/forms/cluster-panel.html"
     };
   }
 ]);
@@ -92,7 +92,7 @@ module.directive('clusterBody', [
   function () {
     return {
       restrict: 'A',
-      templateUrl: 'forms/cluster-body.html',
+      templateUrl: 'webui/forms/cluster-body.html',
       link: function (scope, element, attrs) {
       }
     };

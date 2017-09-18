@@ -15,7 +15,7 @@ module.factory('clusterActions', [
       return $uibModal.open({
         animation: true,
         controller: 'ClusterDeleteCtrl',
-        templateUrl: '/forms/' + 'delete-cluster.html',
+        templateUrl: '/webui/forms/' + 'delete-cluster.html',
         resolve: {
           dialogData: function() {
             return { clusterName: clusterName };
@@ -27,7 +27,7 @@ module.factory('clusterActions', [
       return $uibModal.open({
         animation: true,
         controller: 'ClusterNewCtrl',
-        templateUrl: '/forms/' + 'new-cluster.html',
+        templateUrl: '/webui/forms/' + 'new-cluster.html',
         resolve: {
           dialogData: function() {
             return { };
@@ -39,7 +39,7 @@ module.factory('clusterActions', [
       return $uibModal.open({
         animation: true,
         controller: 'ClusterDeleteCtrl',
-        templateUrl: '/forms/' + 'scale-cluster.html',
+        templateUrl: '/webui/forms/' + 'scale-cluster.html',
         resolve: {
           dialogData: function() {
             return { clusterName: clusterName,

@@ -1,5 +1,7 @@
 FROM nodesource/centos7:6.3.1
 
+MAINTAINER Chad Roberts croberts@redhat.com
+
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
