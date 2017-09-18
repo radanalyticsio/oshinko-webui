@@ -11,7 +11,7 @@ RUN yum install -y wget git && \
     yum clean all
 
 RUN export CLI_REPO=radanalyticsio && \
-    export CLI_VER=v0.2.7 && \
+    export CLI_VER=v0.3.0 && \
     pushd /tmp && \
     wget https://github.com/${CLI_REPO}/oshinko-cli/releases/download/${CLI_VER}/oshinko_${CLI_VER}_linux_amd64.tar.gz && \
     tar -zxvf oshinko_${CLI_VER}_linux_amd64.tar.gz && \
