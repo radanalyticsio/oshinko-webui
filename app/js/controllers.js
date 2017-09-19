@@ -276,7 +276,7 @@ module.controller('ClusterNewCtrl', function ($q, $scope, dialogData, clusterDat
       masterconfigname: null,
       workerconfigname: null,
       exposewebui: true,
-      sparkimage: window.__env.spark_image
+      sparkimage: ""
     };
     $scope.advanced = false;
     $scope.context = {
