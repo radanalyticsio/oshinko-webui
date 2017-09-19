@@ -20,14 +20,12 @@ describe('Cluster page functionality', function () {
     element(by.name('scalebutton-testcluster')).click();
     element(by.name('numworkers')).sendKeys(protractor.Key.CONTROL, "a", protractor.Key.NULL, "3");
     element(by.id('scalebutton')).click();
-    browser.get('');
     browser.wait(EC.textToBePresentInElement(element(by.name('workercount-testcluster')), "3"));
 
     // Scale down
     element(by.name('scalebutton-testcluster')).click();
     element(by.name('numworkers')).sendKeys(protractor.Key.CONTROL, "a", protractor.Key.NULL, "2");
     element(by.id('scalebutton')).click();
-    browser.get('');
     browser.wait(EC.textToBePresentInElement(element(by.name('workercount-testcluster')), "2"));
 
     // Delete
