@@ -79,12 +79,12 @@ to the following:
     $ oc status
     In project oshinko on server https://10.0.1.109:8443
 
-    http://oshinko-web-oshinko.10.0.1.109.xip.io (svc/oshinko-web)
+    http://oshinko-web-oshinko.10.0.1.109.nip.io (svc/oshinko-web)
       dc/oshinko deploys docker.io/radanalyticsio/oshinko-webui:latest
           deployment #1 deployed 16 seconds ago - 1 pod
 
 
-The default route is:  `http://oshinko-web-<projectname>.<hostIp>.xip.io` and
+The default route is:  `http://oshinko-web-<projectname>.<hostIp>.nip.io` and
 that is where you will be able to access the oshinko-webui browser interface.
 
 **Option 2. Use a custom port-forward**
@@ -115,10 +115,8 @@ If you are interesting in developing the code for oshinko-webui or hacking on
 its internals, the following instructions will help you to deploy, run, and
 test the code.
 
-Before getting started you will need to have access to an OpenShift cluster,
-the `oc` command line application, and the
-[oshinko-cli](https://github.com/radanalyticsio/oshinko-cli) command line
-application.
+Before getting started you will need to have access to an OpenShift cluster
+and the `oc` command line application.
 
 ### Running the app during development
 
@@ -133,17 +131,19 @@ Once that is set up, you can run the following:
 
 Now you're ready to run the oshinko-webui server.
 
-Set the following environment variables:
+First, you'll need start an instance of oc proxy.
+The following will start oc proxy listening on all interfaces, port 8001
 
-    OPENSHIFT_NODEJS_PORT=<port for the webui server to listen on, default is 8080>
-    OSHINKO_WEB_DEBUG=<true to get extra log entries, false by default>
-    OSHINKO_CLI_LOCATION=<path to oshinko-cli, default is /usr/src/app/oshinko-cli>
-    OSHINKO_SA_TOKEN=<token for oshinko serviceaccount, enpty by default>
-    KUBERNETES_CERT=<path to ca.crt file, /var/run/secrets/kubernetes.io/serviceaccount/ca.crt by default>
-    KUBERNETES_SERVICE_HOST=<hostname of kubernetes service, default is kubernetes.default>
-    KUBERNETES_SERVICE_PORT=<port where the kubernetes service is listening, default is 443>
-    USE_INSECURE_CLI=<true if you don't want to use tls validation and don't require ca.crt, false by default>
-    OSHINKO_SPARK_IMAGE=<location of spark image that you want to use for your clusters, defaults to CLI default>
+    `oc proxy -p 8001 --disable-filter=true --address=0.0.0.0 --api-prefix=/proxy`
+    
+Next, set the following environment variables:
+
+    export OSHINKO_PROXY_LOCATION=<host:port of proxy, localhost:8001 if you used above example>
+    export CURRENT_NAMESPACE=<name of your current openshift project>
+
+Then run the following to initialize your config.local.js file
+
+    sed -i "s/<PROXY>/'$OSHINKO_PROXY_LOCATION'/" app/config.local.js
 
 You can pick one of these options:
 
@@ -177,6 +177,3 @@ From another terminal window, you can run:
 
     $ protractor test/conf.js
 
-### Continuous Integration
-
-    *Coming soon*

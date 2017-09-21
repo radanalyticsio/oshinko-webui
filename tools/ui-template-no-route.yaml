@@ -8,6 +8,20 @@ objects:
 - kind: Service
   apiVersion: v1
   metadata:
+    name: ${PROXY_SERVICE_NAME}
+    labels:
+      name: ${PROXY_SERVICE_NAME}
+  spec:
+    ports:
+    - name: oc-proxy-port
+      protocol: TCP
+      port: 8001
+      targetPort: 8001
+    selector:
+      name: ${OSHINKO_WEB_NAME}
+- kind: Service
+  apiVersion: v1
+  metadata:
     name: ${OSHINKO_WEB_NAME}
     labels:
       name: ${OSHINKO_WEB_NAME}
@@ -38,6 +52,23 @@ objects:
           name: ${OSHINKO_WEB_NAME}
       spec:
         containers:
+          - name: oc-proxy
+            image: docker.io/crobby/oc-proxy
+            imagePullPolicy: IfNotPresent
+            args:
+              - proxy
+              - "-p"
+              - '8001'
+              - "--address=0.0.0.0"
+              - "--disable-filter=true"
+              - "--api-prefix=/proxy"
+            ports:
+              - name: oc-proxy-port
+                containerPort: 8001
+                protocol: TCP
+            volumes:
+              - name: test-volume
+                emptyDir: {}
           - name: ${OSHINKO_WEB_NAME}
             image: ${OSHINKO_WEB_IMAGE}
             ports:
