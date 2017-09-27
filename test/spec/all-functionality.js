@@ -1,11 +1,31 @@
+// uncomment if you need to take some screenshots for debugging purposes
+// var fs = require('fs');
+//
+// function writeScreenShot(data, filename) {
+//   var dir = "screenshots";
+//   if (!fs.existsSync(dir)){
+//     fs.mkdirSync(dir);
+//   }
+//   var stream = fs.createWriteStream(dir + "/" + filename);
+//   stream.write(new Buffer(data, 'base64'));
+//   stream.end();
+// }
+
 describe('Initial page functionality', function () {
 
   it('should login and display the clusters page', function () {
-    browser.get('');
+    browser.waitForAngularEnabled(false);
+    browser.get('/webui');
+    element(by.tagName("button")).click();
+    element(by.name('username')).sendKeys("developer");
+    element(by.name('password')).sendKeys("developerpass");
+    element(by.tagName("button")).click();
+    element(by.name("approve")).click();
+    browser.waitForAngularEnabled(true);
+    browser.get('/webui');
     expect(element(by.tagName('h2')).getText()).toEqual("Spark Clusters");
   });
 });
-
 
 describe('Cluster page functionality', function () {
   it('should create, scale, and delete a cluster', function () {
