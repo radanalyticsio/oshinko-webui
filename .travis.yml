@@ -10,6 +10,13 @@ addons:
   apt:
     packages:
       - net-tools
+matrix:
+  # no need to include the build target at present because the template
+  # tests perform builds from the local source to do the tests
+  include:
+    - env: TO_TEST=secure
+    - env: TO_TEST=standard
+fast_finish: true
 before_install:
 ## add insecure-registry and restart docker
   - pwd
@@ -73,7 +80,12 @@ before_install:
   - docker tag oshinko-webui $REGIP/myproject/oshinko-webui
   - docker push $REGIP/myproject/oshinko-webui
   - docker pull docker.io/radanalyticsio/openshift-spark
-  - oc new-app --template=oshinko-webui-secure -p OSHINKO_WEB_IMAGE=$REGIP/myproject/oshinko-webui
+  - |
+    if [ "$TO_TEST" = "secure" ]; then
+      oc new-app --template=oshinko-webui-secure -p OSHINKO_WEB_IMAGE=$REGIP/myproject/oshinko-webui
+    else
+      oc new-app --template=oshinko-webui -p OSHINKO_WEB_IMAGE=$REGIP/myproject/oshinko-webui
+    fi
 install:
   - npm install
   - bower install
@@ -85,15 +97,23 @@ before_script:
   - webdriver-manager update
   - webdriver-manager start &
 script:
-##  - echo "Running unit tests via karma"
-##  - karma start test/karma.conf.js
   - echo "Running integration tests via protracor"
   - export IMAGETESTED=`oc get pods -l app=oshinko-webui --template="{{range .items}}{{range .spec.containers}}{{.image}}{{end}}{{end}}"`
   - echo "Testing image $IMAGETESTED"
-  - export TESTROUTE=`oc get route proxy --template='{{.spec.host}}'`
+  - |
+      if [ "$TO_TEST" = "secure" ]; then
+        export TESTROUTE=`oc get route proxy --template='{{.spec.host}}'`
+      else
+        export TESTROUTE=`oc get route oshinko-web --template='{{.spec.host}}'`
+      fi
   - echo TESTROUTE is $TESTROUTE
   - echo "Waiting for proxy to come up"
-  - while [ 1 ]; do wget --no-check-certificate https://$TESTROUTE/proxy/api ; if [ $? = 0 ]; then break; fi; sleep 20s; done
+  - |
+      if [ "$TO_TEST" = "secure" ]; then
+        while [ 1 ]; do wget --no-check-certificate https://$TESTROUTE/proxy/api ; if [ $? = 0 ]; then break; fi; sleep 20s; done
+      else
+        while [ 1 ]; do wget  http://$TESTROUTE/proxy/api ; if [ $? = 0 ]; then break; fi; sleep 20s; done
+      fi
   - cat api && rm api
   - echo "Make sure that webui is up"
   - export WEBCLUSTERIP=`oc get svc oshinko-web -o=go-template --template='{{.spec.clusterIP}}'`
@@ -108,9 +128,12 @@ script:
   - oc get services
   - echo "Protractor version is:"
   - protractor --version
-  - echo Here is what the first page will look like
-  - curl -k https://$TESTROUTE/webui
-  - protractor test/conf.js --baseUrl="https://$TESTROUTE/webui"
+  - |
+      if [ "$TO_TEST" = "secure" ]; then
+        protractor test/conf.js --baseUrl="https://$TESTROUTE/webui" --specs=test/spec/all-functionality.js
+      else
+        protractor test/conf.js --baseUrl="http://$TESTROUTE/webui" --specs=test/spec/all-functionality-insecure.js
+      fi
 ## uncomment the following 3 lines for debugging purposes
 #  - export PODNAME=`oc get pods --template='{{range .items}}{{.metadata.name}}{{end}}'`
 #  - oc logs pod/$PODNAME -c oshinko-web
