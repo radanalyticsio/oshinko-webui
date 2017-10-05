@@ -1,35 +1,32 @@
 'use strict';
 
 (function() {
-  // This is the default configuration for the dev mode of the web console.
+  // This is the template configuration for the webui
   // A generated version of this config is created at run-time when running
-  // the web console from the openshift binary.
-  //
-  // To change configuration for local development, copy this file to
-  // assets/app/config.local.js and edit the copy.
-  var masterPublicHostname = <PROXY>;
+  // from the oshinko-webui template.  To run locally, you should edit
+  // this file replacing all <VALUES> with an appropriate value.
+  var proxyHost = <PROXY>;
   window.OPENSHIFT_CONFIG = {
     apis: {
-      hostPort: masterPublicHostname,
+      hostPort: proxyHost,
       prefix: "/proxy/apis"
     },
     api: {
       openshift: {
-        hostPort: masterPublicHostname,
+        hostPort: proxyHost,
         prefix: "/proxy/oapi"
       },
       k8s: {
-        hostPort: masterPublicHostname,
+        hostPort: proxyHost,
         prefix: "/proxy/api"
       }
-    },
-    loggingURL: "",
-    metricsURL: ""
+    }
   };
 
-  window.OPENSHIFT_VERSION = {
-    openshift: "dev-mode",
-    kubernetes: "dev-mode"
-  };
+  window.__env = {};
+  window.__env.oc_proxy_location = proxyHost;
+  window.__env.namespace = <NAMESPACE>;
+  window.__env.refresh_interval = <REFRESH_INTERVAL>;
+  window.__env.spark_image = <SPARK_IMAGE>;
 
 })();
