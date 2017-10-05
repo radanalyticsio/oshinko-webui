@@ -46,18 +46,6 @@ app.config(['$routeProvider', function ($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/clusters'});
 }]);
 
-app.run(function ($http) {
-  window.__env = {};
-  $http.get('/webui/config/all').success(function (result) {
-    window.__env.oc_proxy_location = result.oshinko_proxy_location;
-    window.__env.namespace = result.oshinko_current_namespace;
-    window.__env.refresh_interval = result.refresh_interval;
-    window.__env.spark_image = result.spark_image;
-  }).error(function (error) {
-    console.error("Unable to fetch oshinko webui config. " + error);
-  });
-});
-
 hawtioPluginLoader.addModule('Oshinko');
 hawtioPluginLoader.registerPreBootstrapTask(function(next) {
   // Skips api discovery, needed to run spec tests
