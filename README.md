@@ -79,12 +79,12 @@ to the following:
     $ oc status
     In project oshinko on server https://10.0.1.109:8443
 
-    http://oshinko-web-oshinko.10.0.1.109.nip.io (svc/oshinko-web)
+    http://oshinko-web-oshinko.10.0.1.109.xip.io (svc/oshinko-web)
       dc/oshinko deploys docker.io/radanalyticsio/oshinko-webui:latest
           deployment #1 deployed 16 seconds ago - 1 pod
 
 
-The default route is:  `http://oshinko-web-<projectname>.<hostIp>.nip.io` and
+The default route is:  `http://oshinko-web-<projectname>.<hostIp>.xip.io` and
 that is where you will be able to access the oshinko-webui browser interface.
 
 **Option 2. Use a custom port-forward**
@@ -115,8 +115,10 @@ If you are interesting in developing the code for oshinko-webui or hacking on
 its internals, the following instructions will help you to deploy, run, and
 test the code.
 
-Before getting started you will need to have access to an OpenShift cluster
-and the `oc` command line application.
+Before getting started you will need to have access to an OpenShift cluster,
+the `oc` command line application, and the
+[oshinko-cli](https://github.com/radanalyticsio/oshinko-cli) command line
+application.
 
 ### Running the app during development
 
@@ -131,19 +133,19 @@ Once that is set up, you can run the following:
 
 Now you're ready to run the oshinko-webui server.
 
-First, you'll need start an instance of oc proxy.
-The following will start oc proxy listening on all interfaces, port 8001
+Note, a working local "oc" binary is expected.
+To run locally, you'll need a proxy to the api server running.
+The following will run a basic proxy, see oc proxy --help if you require
+something more specific.
 
-    `oc proxy -p 8001 --disable-filter=true --address=0.0.0.0 --api-prefix=/proxy`
-    
-Next, set the following environment variables:
+    $ oc proxy --disable-filter=true --api-prefix=/proxy &
 
-    export OSHINKO_PROXY_LOCATION=<host:port of proxy, localhost:8001 if you used above example>
-    export CURRENT_NAMESPACE=<name of your current openshift project>
+Edit the exports in scripts/launch-local.sh to match your environment.
 
-Then run the following to initialize your config.local.js file
+Change to the scripts directory and run
 
-    sed -i "s/<PROXY>/'$OSHINKO_PROXY_LOCATION'/" app/config.local.js
+    $ ./launch-local.sh
+     
 
 You can pick one of these options:
 
@@ -177,3 +179,6 @@ From another terminal window, you can run:
 
     $ protractor test/conf.js
 
+### Continuous Integration
+
+    *Coming soon*
