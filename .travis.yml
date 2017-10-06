@@ -22,12 +22,12 @@ before_install:
 ## chmod needs sudo, so all other commands are with sudo
   - sudo mkdir -p /home/travis/origin
   - sudo chmod -R 766 /home/travis/origin
-## download oc 1.5.1 binary
-  - sudo wget https://github.com/openshift/origin/releases/download/v1.5.1/openshift-origin-client-tools-v1.5.1-7b451fc-linux-64bit.tar.gz -P /home/travis/origin
+## download oc 3.6.0 binary
+  - sudo wget https://github.com/openshift/origin/releases/download/v3.6.0/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit.tar.gz -P /home/travis/origin
   - sudo ls -l /home/travis/origin
-  - sudo tar -C /home/travis/origin -xvzf /home/travis/origin/openshift-origin-client-tools-v1.5.1-7b451fc-linux-64bit.tar.gz
-  - sudo ls -l /home/travis/origin/openshift-origin-client-tools-v1.5.1-7b451fc-linux-64bit
-  - sudo cp /home/travis/origin/openshift-origin-client-tools-v1.5.1-7b451fc-linux-64bit/oc /home/travis/origin
+  - sudo tar -C /home/travis/origin -xvzf /home/travis/origin/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit.tar.gz
+  - sudo ls -l /home/travis/origin/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit
+  - sudo cp /home/travis/origin/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit/oc /home/travis/origin
   - sudo chmod -R 766 /home/travis/origin
   - sudo ls -l /home/travis/origin
   - sudo chmod -R +755 /home/travis/origin/*
@@ -37,7 +37,7 @@ before_install:
   - export PATH=$PATH:/home/travis/origin/
   - echo $PATH
 ## below cmd is important to get oc working in ubuntu
-  - sudo docker run -v /:/rootfs -ti --rm --entrypoint=/bin/bash --privileged openshift/origin:v1.5.1 -c "mv /rootfs/bin/findmnt /rootfs/bin/findmnt.backup"
+  - sudo docker run -v /:/rootfs -ti --rm --entrypoint=/bin/bash --privileged openshift/origin:v3.6.0 -c "mv /rootfs/bin/findmnt /rootfs/bin/findmnt.backup"
   - sudo oc cluster up --host-config-dir=/home/travis/origin
   - sudo chmod -R a+rwX /home/travis/.kube
   - sudo ls -l /home/travis/origin
@@ -57,12 +57,13 @@ before_install:
   - echo "***Found docker-registry at $REGIP***"
   - oc login -u developer -p test
   - oc project myproject
-  - oc create -f http://radanalytics.io/resources.yaml
+  - oc create -f https://raw.githubusercontent.com/crobby/radanalyticsio.github.io/new-webui/resources.yaml
   - echo "My token is set to-  $(oc whoami -t)"
   - oc policy add-role-to-user admin system:serviceaccount:myproject:oshinko -n myproject
   - r=1; while [ $r -ne 0 ]; do docker login -u oshinko -p $(oc whoami -t) $REGIP ; r=$? ; sleep 1 ; done
   - docker tag oshinko-webui $REGIP/myproject/oshinko-webui
   - docker push $REGIP/myproject/oshinko-webui
+  - docker pull docker.io/radanalyticsio/openshift-spark
   - oc new-app --template=oshinko-webui -p OSHINKO_WEB_IMAGE=$REGIP/myproject/oshinko-webui
 install:
   - npm install
@@ -75,14 +76,28 @@ before_script:
   - webdriver-manager update
   - webdriver-manager start &
 script:
-  - echo "Running unit tests via karma"
-  - karma start test/karma.conf.js
+##  - echo "Running unit tests via karma"
+##  - karma start test/karma.conf.js
   - echo "Running integration tests via protracor"
   - export IMAGETESTED=`oc get pods -l app=oshinko-webui --template="{{range .items}}{{range .spec.containers}}{{.image}}{{end}}{{end}}"`
   - echo "Testing image $IMAGETESTED"
   - export TESTROUTE=`oc get route oshinko-web --template='{{.spec.host}}'`
   - echo TESTROUTE is $TESTROUTE
+  - echo "Waiting for proxy to come up"
+  - while [ 1 ]; do wget $TESTROUTE/proxy/api ; if [ $? = 0 ]; then break; fi; sleep 20s; done
+  - cat api && rm api
+  - echo "Make sure that webui is up"
   - while [ 1 ]; do wget $TESTROUTE ; if [ $? = 0 ]; then break; fi; sleep 20s; done
+  - cat index.html  && rm index.html
+  - echo "Other environment details"
+  - echo "ENVIRONMENT IS:"
+  - env
+  - echo "ROUTES"
+  - oc get routes
+  - echo "SERVICES"
+  - oc get services
+  - echo "Protractor version is:"
+  - protractor --version
   - protractor test/conf.js --baseUrl="http://$TESTROUTE"
 notifications:
  email:

@@ -10,27 +10,14 @@
 var express = require("express");
 var app = express();
 
-var oshinko_web_debug = process.env.OSHINKO_WEB_DEBUG || false;
-var oshinko_cli_location = process.env.OSHINKO_CLI_LOCATION || "/usr/src/app/oshinko";
-var oshinko_sa_token = process.env.OSHINKO_SA_TOKEN || '';
-var oshinko_cert = process.env.KUBERNETES_CERT || "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt";
-var kubernetes_host = process.env.KUBERNETES_SERVICE_HOST || "kubernetes.default";
-var kubernetes_port = process.env.KUBERNETES_SERVICE_PORT || "443";
-var use_insecure_cli = process.env.USE_INSECURE_CLI || false;
-
-// This is a potential override from the template
-var spark_image = process.env.OSHINKO_SPARK_IMAGE;
+var oshinko_proxy_location = process.env.OSHINKO_PROXY_LOCATION || "";
+var oshinko_current_namespace = process.env.CURRENT_NAMESPACE || "";
 
 // This is the default used by the embedded CLI, determined in launch.sh
 // It's used for logging and labeling, never read and used directly
 var spark_default = process.env.SPARK_DEFAULT;
 
 var refresh_interval = process.env.OSHINKO_REFRESH_INTERVAL || 5;
-var server_token_cert = " --server=https://" + kubernetes_host + ":" + kubernetes_port + " --token=" + oshinko_sa_token + " --certificate-authority=" + oshinko_cert;
-if (use_insecure_cli) {
-  server_token_cert = " --server=https://" + kubernetes_host + ":" + kubernetes_port + " --token=" + oshinko_sa_token + " --insecure-skip-tls-verify=true";
-}
-var output_format = " -o json";
 
 app.configure(function () {
   app.use(express.logger());
@@ -47,162 +34,21 @@ app.get('/', function (request, response) {
   response.render('index.html');
 });
 
-app.get('/api/clusters', function (request, response) {
-  var output = "";
-  var response_text = "";
-  var child_process = require('child_process');
-  var command = oshinko_cli_location + " get" + server_token_cert + output_format;
- /* jshint -W030 */
-  oshinko_web_debug && console.log("List command is: " + command);
- /* jshint +W030 */
-  try {
-    output = child_process.execSync(command);
-    response_text = formatGetResponse(output);
-    response_text = JSON.stringify(response_text);
-    response.setHeader('Content-Type', 'application/json');
-  } catch (err) {
-    var error = formatErrResponse(err.message);
-    response.statusCode = error.statusCode;
-    response_text = error.message;
-  }
-  response.send(response_text);
-});
-
-app.get('/api/clusters/:id', function (request, response) {
-  var child_process = require('child_process');
-  var command = oshinko_cli_location + " get " + request.params.id + server_token_cert + output_format;
-  /* jshint -W030 */
-  oshinko_web_debug && console.log("Get command is: " + command);
-  /* jshint +W030 */
-  var output = child_process.execSync(command);
-  var response_text = formatGetResponse(output);
-  response.setHeader('Content-Type', 'application/json');
-  response.send(JSON.stringify(response_text));
-});
-
-app.post('/api/clusters', function (request, response) {
-  var output = "";
-  var masterCount = 1;
-  var workerCount = request.body.config.workerCount;
-  var clusterName = request.body.name;
-  var clusterConfig = request.body.config.clusterconfig;
-  var workerConfig = request.body.config.workerconfig;
-  var masterConfig = request.body.config.masterconfig;
-  var exposeWebUI = request.body.config.exposewebui;
-  var sparkImage = request.body.config.sparkimage;
-
-  console.log("Expose webui is set to: " + exposeWebUI);
-
-  // Set up the parts of our command line call
-  var cConfigCommand = clusterConfig ? " --storedconfig=" + clusterConfig : "";
-  var wConfigCommand = workerConfig ? " --workerconfig=" + workerConfig : "";
-  var mConfigCommand = masterConfig ? " --masterconfig=" + masterConfig : "";
-  var wcCommand = workerCount > -1 ? " --workers=" + workerCount : "";
-  var mcCommand = " --masters=" + masterCount;
-  var createCommand = " create " + clusterName;
-  var exposeCommand = exposeWebUI ? "" : " --exposeui=false";
-  var imageCommand = sparkImage ? " --image=" + sparkImage : "";
-  var child_process = require('child_process');
-
-  // Smash our command snippets into one command
-  var command = oshinko_cli_location + createCommand + imageCommand +
-    wcCommand + mcCommand + cConfigCommand + wConfigCommand + mConfigCommand +
-    exposeCommand + server_token_cert;
-  /* jshint -W030 */
-  oshinko_web_debug && console.log("Create command is: " + command);
-  /* jshint +W030 */
-  try {
-    output = child_process.execSync(command);
-    output = String.fromCharCode.apply(null, output);
-    response.statusCode = 201;
-  } catch (err) {
-    var error = formatErrResponse(err.message);
-    response.statusCode = error.statusCode;
-    output = error.message;
-  }
-  response.send(output);
-});
-
-app.put('/api/clusters/:id', function (request, response) {
-  var output = "";
-  var masterCount = request.body.config.masterCount;
-  var workerCount = request.body.config.workerCount;
-  var clusterName = request.body.name;
-  var child_process = require('child_process');
-  var command = oshinko_cli_location + " scale " + clusterName +
-    " --workers=" + workerCount + " --masters=" +
-    masterCount + server_token_cert;
-  /* jshint -W030 */
-  oshinko_web_debug && console.log("Scale command is: " + command);
-  /* jshint +W030 */
-  try {
-    output = child_process.execSync(command);
-    output = String.fromCharCode.apply(null, output);
-  } catch (err) {
-    var error = formatErrResponse(err.message);
-    response.statusCode = error.statusCode;
-    output = error.message;
-  }
-  response.send(output);
-});
-
-app.delete('/api/clusters/:id', function (request, response) {
-  var output = "";
-  var child_process = require('child_process');
-  var command = oshinko_cli_location + " delete " +
-    request.params.id + server_token_cert;
-  /* jshint -W030 */
-  oshinko_web_debug && console.log("Delete command is: " + command);
-  /* jshint +W030 */
-  try {
-    output = child_process.execSync(command);
-    output = String.fromCharCode.apply(null, output);
-  } catch (err) {
-    var error = formatErrResponse(err.message);
-    response.statusCode = error.statusCode;
-    output = error.message;
-  }
-  response.send(output);
-});
-
-// Utility functions
-var formatGetResponse = function (resultText) {
-  var jsonText = String.fromCharCode.apply(null, resultText);
-  var response = {clusters: jsonText};
-  /* jshint -W030 */
-  oshinko_web_debug && console.log("Response is: " + JSON.stringify(response));
-  /* jshint +W030 */
-  return response;
-};
-
-var formatErrResponse = function (resultText) {
-  var err = {
-    message: resultText,
-    statusCode: 500
+app.get('/config/all', function (request, response) {
+  var config = {
+    refresh_interval: refresh_interval,
+    spark_image: spark_default,
+    oshinko_proxy_location: oshinko_proxy_location,
+    oshinko_current_namespace: oshinko_current_namespace
   };
-
-  if(resultText.indexOf("already exists") > -1) {
-    err.message = "A cluster with that name already exists.";
-    err.statusCode = 409;
-  }
-  return err;
-};
-
-app.get('/config/refresh', function (request, response) {
-  response.send(200, refresh_interval);
-});
-
-app.get('/config/sparkimage', function (request, response) {
-  response.send(200, spark_image);
+  response.send(200, config);
 });
 
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 app.listen(port, function () {
   console.log("Listening on " + port);
-  console.log("Kubernetes server is: " + kubernetes_host + ":" + kubernetes_port);
-  console.log("CLI executable location is: " + oshinko_cli_location);
-  console.log("Oshinko sa token is: " + oshinko_sa_token);
-  console.log("Cert location is: " + oshinko_cert);
-  console.log("Insecure mode is: " + use_insecure_cli);
+  console.log("Proxy location: " + oshinko_proxy_location);
   console.log("Spark default image if not overridden is " + spark_default);
+  console.log("Current namespace is: " + oshinko_current_namespace);
 });
+
