@@ -1,6 +1,6 @@
 exports.config = {
   framework: 'jasmine',
-  specs: ['spec/all-functionality.js'],
+  specs: ['spec/all-functionality-insecure.js'],
   baseUrl: 'http://localhost:8080',
   getPageTimeout: 120000,
   allScriptsTimeout: 120000,
