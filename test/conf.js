@@ -2,9 +2,9 @@ exports.config = {
   framework: 'jasmine',
   specs: ['spec/all-functionality.js'],
   baseUrl: 'http://localhost:8080',
-  getPageTimeout: 30000,
-  allScriptsTimeout: 30000,
+  getPageTimeout: 120000,
+  allScriptsTimeout: 120000,
   jasmineNodeOpts: {
-    defaultTimeoutInterval: 120000
+    defaultTimeoutInterval: 240000
   }
 }
