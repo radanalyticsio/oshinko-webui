@@ -404,6 +404,11 @@ angular.module('Oshinko')
           }
           deferred.resolve(finalConfig);
         }
+        if (finalConfig["workerCount"] < 0) {
+          // default to a workerCount of 1
+          // can happen if we expected a configmap to contain a count, but it did not
+          finalConfig["workerCount"] = 1;
+        }
         return deferred.promise;
       }
 
