@@ -1,7 +1,8 @@
 #!/bin/bash
 
+source /usr/src/app/sparkimage.sh
 if [ -z "$SPARK_DEFAULT" ]; then
-    SPARK_DEFAULT=radanalyticsio/openshift-spark
+    SPARK_DEFAULT=$SPARK_IMAGE
 fi
 export SPARK_DEFAULT
 
