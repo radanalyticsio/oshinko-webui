@@ -356,11 +356,11 @@ angular.module('Oshinko')
         return DataService.create('routes', null, route, context);
       }
 
-      function getFinalConfigs(configName, workerCount, sparkWorkerConfig, sparkMasterConfig, context) {
+      function getFinalConfigs(origConfig, context) {
         var deferred = $q.defer();
         var finalConfig = {};
-        if (configName) {
-          DataService.get('configmaps', configName, context, null).then(function (cm) {
+        if (origConfig.configName) {
+          DataService.get('configmaps', origConfig.configName, context, null).then(function (cm) {
             if (cm.data["workercount"]) {
               finalConfig["workerCount"] = parseInt(cm.data["workercount"]);
             }
@@ -370,37 +370,52 @@ angular.module('Oshinko')
             if (cm.data["sparkworkerconfig"]) {
               finalConfig["workerConfigName"] = cm.data["sparkworkerconfig"];
             }
-            if (workerCount) {
+            if (cm.data["sparkimage"]) {
+              finalConfig["sparkImage"] = cm.data["sparkimage"];
+            }
+            if (origConfig.workerCount) {
               finalConfig["workerCount"] = workerCount;
             }
-            if (sparkWorkerConfig) {
-              finalConfig["workerConfigName"] = sparkWorkerConfig;
+            if (origConfig.sparkWorkerConfig) {
+              finalConfig["workerConfigName"] = origConfig.sparkWorkerConfig;
             }
-            if (sparkMasterConfig) {
-              finalConfig["masterConfigName"] = sparkMasterConfig;
+            if (origConfig.sparkMasterConfig) {
+              finalConfig["masterConfigName"] = origConfig.sparkMasterConfig;
+            }
+            if (origConfig.sparkImage) {
+              finalConfig["sparkImage"] = origConfig.sparkImage;
             }
             deferred.resolve(finalConfig);
           }).catch(function () {
-            if (workerCount) {
-              finalConfig["workerCount"] = workerCount;
+            if (origConfig.workerCount) {
+              finalConfig["workerCount"] = origConfig.workerCount;
             }
-            if (sparkWorkerConfig) {
-              finalConfig["workerConfigName"] = sparkWorkerConfig;
+            if (origConfig.sparkWorkerConfig) {
+              finalConfig["workerConfigName"] = origConfig.sparkWorkerConfig;
             }
-            if (sparkMasterConfig) {
-              finalConfig["masterConfigName"] = sparkMasterConfig;
+            if (origConfig.sparkMasterConfig) {
+              finalConfig["masterConfigName"] = origConfig.sparkMasterConfig;
+            }
+            if (origConfig.sparkImage) {
+              finalConfig["sparkImage"] = origConfig.sparkImage;
             }
             deferred.resolve(finalConfig);
           });
         } else {
-          if (workerCount) {
-            finalConfig["workerCount"] = workerCount;
+          if (origConfig.workerCount) {
+            finalConfig["workerCount"] = origConfig.workerCount;
           }
-          if (sparkWorkerConfig) {
-            finalConfig["workerConfigName"] = sparkWorkerConfig;
+          if (origConfig.sparkWorkerConfig) {
+            finalConfig["workerConfigName"] = origConfig.sparkWorkerConfig;
           }
-          if (sparkMasterConfig) {
-            finalConfig["masterConfigName"] = sparkMasterConfig;
+          if (origConfig.sparkMasterConfig) {
+            finalConfig["masterConfigName"] = origConfig.sparkMasterConfig;
+          }
+          if (origConfig.sparkMasterConfig) {
+            finalConfig["masterConfigName"] = origConfig.sparkMasterConfig;
+          }
+          if (origConfig.sparkImage) {
+            finalConfig["sparkImage"] = origConfig.sparkImage;
           }
           deferred.resolve(finalConfig);
         }
@@ -413,7 +428,6 @@ angular.module('Oshinko')
       }
 
       function sendCreateCluster(clusterConfigs, context) {
-        var sparkImage = "docker.io/radanalyticsio/openshift-spark:latest";
         var workerPorts = [
           {
             "name": "spark-webui",
@@ -474,9 +488,9 @@ angular.module('Oshinko')
         var jolokiaService = null;
         var clusterMetricsConfig = null;
         var deferred = $q.defer();
-        getFinalConfigs(clusterConfigs.configName, clusterConfigs.workerCount, clusterConfigs.workerConfigName, clusterConfigs.masterConfigName).then(function (finalConfigs) {
-          sm = sparkDC(sparkImage, clusterConfigs.clusterName, "master", null, masterPorts, enableMetrics, finalConfigs["masterConfigName"]);
-          sw = sparkDC(sparkImage, clusterConfigs.clusterName, "worker", finalConfigs["workerCount"], workerPorts, enableMetrics, finalConfigs["workerConfigName"]);
+        getFinalConfigs(clusterConfigs).then(function (finalConfigs) {
+          sm = sparkDC(finalConfigs.sparkImage, clusterConfigs.clusterName, "master", null, masterPorts, enableMetrics, finalConfigs["masterConfigName"]);
+          sw = sparkDC(finalConfigs.sparkImage, clusterConfigs.clusterName, "worker", finalConfigs["workerCount"], workerPorts, enableMetrics, finalConfigs["workerConfigName"]);
           smService = sparkService(clusterConfigs.clusterName, clusterConfigs.clusterName, "master", masterServicePort);
           suiService = sparkService(clusterConfigs.clusterName + "-ui", clusterConfigs.clusterName, "webui", uiServicePort);
 
