@@ -102,7 +102,7 @@ script:
   - echo "Testing image $IMAGETESTED"
   - |
       if [ "$TO_TEST" = "secure" ]; then
-        export TESTROUTE=`oc get route proxy --template='{{.spec.host}}'`
+        export TESTROUTE=`oc get route oshinko-web-oaproxy --template='{{.spec.host}}'`
       else
         export TESTROUTE=`oc get route oshinko-web --template='{{.spec.host}}'`
       fi
