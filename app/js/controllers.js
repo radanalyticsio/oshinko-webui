@@ -337,12 +337,14 @@ module.controller('ClusterNewCtrl', function ($q, $scope, dialogData, clusterDat
       var workersInt = $scope.fields.workers || 0;
       var clusterConfig = {
         clusterName: name,
+        masterCount: 1,
         workerCount: workersInt,
         configName: $scope.advanced ? $scope.fields.configname : null,
         masterConfigName: $scope.advanced ? $scope.fields.masterconfigname : null,
         workerConfigName: $scope.advanced ? $scope.fields.workerconfigname : null,
         exposewebui: $scope.advanced ? $scope.fields.exposewebui : true,
-        sparkImage: $scope.advanced && $scope.fields.sparkimage !== "" ? $scope.fields.sparkimage  : "SPARK_DEFAULT"
+        sparkImage: $scope.advanced && $scope.fields.sparkimage !== "" ? $scope.fields.sparkimage  : "SPARK_DEFAULT",
+        metrics: true
       };
 
       validate(name, workersInt)

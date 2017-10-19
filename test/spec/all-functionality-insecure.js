@@ -14,14 +14,6 @@
 describe('Initial page functionality', function () {
 
   it('should login and display the clusters page', function () {
-    browser.waitForAngularEnabled(false);
-    browser.get('/webui');
-    element(by.tagName("button")).click();
-    element(by.name('username')).sendKeys("developer");
-    element(by.name('password')).sendKeys("developerpass");
-    element(by.tagName("button")).click();
-    element(by.name("approve")).click();
-    browser.waitForAngularEnabled(true);
     browser.get('/webui');
     expect(element(by.tagName('h2')).getText()).toEqual("Spark Clusters");
   });

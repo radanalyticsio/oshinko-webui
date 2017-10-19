@@ -6,6 +6,17 @@ node_js:
 ## home folder is /home/travis/radanalyticsio/oshinko-webui
 services:
 - docker
+addons:
+  apt:
+    packages:
+      - net-tools
+matrix:
+  # no need to include the build target at present because the template
+  # tests perform builds from the local source to do the tests
+  include:
+    - env: TO_TEST=secure
+    - env: TO_TEST=standard
+fast_finish: true
 before_install:
 ## add insecure-registry and restart docker
   - pwd
@@ -23,11 +34,13 @@ before_install:
   - sudo mkdir -p /home/travis/origin
   - sudo chmod -R 766 /home/travis/origin
 ## download oc 3.6.0 binary
-  - sudo wget https://github.com/openshift/origin/releases/download/v3.6.0/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit.tar.gz -P /home/travis/origin
+  - export OC_VERSION=v3.6.0
+  - export OC_DOWNLOAD_PREFIX=openshift-origin-client-tools-v3.6.0-c4dd4cf
+  - sudo wget https://github.com/openshift/origin/releases/download/$OC_VERSION/$OC_DOWNLOAD_PREFIX-linux-64bit.tar.gz -P /home/travis/origin
   - sudo ls -l /home/travis/origin
-  - sudo tar -C /home/travis/origin -xvzf /home/travis/origin/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit.tar.gz
-  - sudo ls -l /home/travis/origin/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit
-  - sudo cp /home/travis/origin/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit/oc /home/travis/origin
+  - sudo tar -C /home/travis/origin -xvzf /home/travis/origin/$OC_DOWNLOAD_PREFIX-linux-64bit.tar.gz
+  - sudo ls -l /home/travis/origin/$OC_DOWNLOAD_PREFIX-linux-64bit
+  - sudo cp /home/travis/origin/$OC_DOWNLOAD_PREFIX-linux-64bit/oc /home/travis/origin
   - sudo chmod -R 766 /home/travis/origin
   - sudo ls -l /home/travis/origin
   - sudo chmod -R +755 /home/travis/origin/*
@@ -36,9 +49,12 @@ before_install:
   - oc version
   - export PATH=$PATH:/home/travis/origin/
   - echo $PATH
+  - ip addr show eth0
+  - export HOST_IP_ADDRESS="$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)"
+  - echo "Host IP is $HOST_IP_ADDRESS"
 ## below cmd is important to get oc working in ubuntu
   - sudo docker run -v /:/rootfs -ti --rm --entrypoint=/bin/bash --privileged openshift/origin:v3.6.0 -c "mv /rootfs/bin/findmnt /rootfs/bin/findmnt.backup"
-  - sudo oc cluster up --host-config-dir=/home/travis/origin
+  - sudo oc cluster up --host-config-dir=/home/travis/origin --public-hostname=$HOST_IP_ADDRESS
   - sudo chmod -R a+rwX /home/travis/.kube
   - sudo ls -l /home/travis/origin
 ## find IP:PORT of openshift
@@ -57,14 +73,19 @@ before_install:
   - echo "***Found docker-registry at $REGIP***"
   - oc login -u developer -p test
   - oc project myproject
-  - oc create -f https://raw.githubusercontent.com/radanalyticsio/radanalyticsio.github.io/master/resources.yaml
+  - oc create -f https://raw.githubusercontent.com/crobby/radanalyticsio.github.io/oauth-proxy/resources.yaml
   - echo "My token is set to-  $(oc whoami -t)"
   - oc policy add-role-to-user admin system:serviceaccount:myproject:oshinko -n myproject
   - r=1; while [ $r -ne 0 ]; do docker login -u oshinko -p $(oc whoami -t) $REGIP ; r=$? ; sleep 1 ; done
   - docker tag oshinko-webui $REGIP/myproject/oshinko-webui
   - docker push $REGIP/myproject/oshinko-webui
   - docker pull docker.io/radanalyticsio/openshift-spark
-  - oc new-app --template=oshinko-webui -p OSHINKO_WEB_IMAGE=$REGIP/myproject/oshinko-webui
+  - |
+    if [ "$TO_TEST" = "secure" ]; then
+      oc new-app --template=oshinko-webui-secure -p OSHINKO_WEB_IMAGE=$REGIP/myproject/oshinko-webui
+    else
+      oc new-app --template=oshinko-webui -p OSHINKO_WEB_IMAGE=$REGIP/myproject/oshinko-webui
+    fi
 install:
   - npm install
   - bower install
@@ -76,19 +97,28 @@ before_script:
   - webdriver-manager update
   - webdriver-manager start &
 script:
-##  - echo "Running unit tests via karma"
-##  - karma start test/karma.conf.js
   - echo "Running integration tests via protracor"
   - export IMAGETESTED=`oc get pods -l app=oshinko-webui --template="{{range .items}}{{range .spec.containers}}{{.image}}{{end}}{{end}}"`
   - echo "Testing image $IMAGETESTED"
-  - export TESTROUTE=`oc get route oshinko-web --template='{{.spec.host}}'`
+  - |
+      if [ "$TO_TEST" = "secure" ]; then
+        export TESTROUTE=`oc get route oshinko-web-oaproxy --template='{{.spec.host}}'`
+      else
+        export TESTROUTE=`oc get route oshinko-web --template='{{.spec.host}}'`
+      fi
   - echo TESTROUTE is $TESTROUTE
   - echo "Waiting for proxy to come up"
-  - while [ 1 ]; do wget $TESTROUTE/proxy/api ; if [ $? = 0 ]; then break; fi; sleep 20s; done
+  - |
+      if [ "$TO_TEST" = "secure" ]; then
+        while [ 1 ]; do wget --no-check-certificate https://$TESTROUTE/proxy/api ; if [ $? = 0 ]; then break; fi; sleep 20s; done
+      else
+        while [ 1 ]; do wget  http://$TESTROUTE/proxy/api ; if [ $? = 0 ]; then break; fi; sleep 20s; done
+      fi
   - cat api && rm api
   - echo "Make sure that webui is up"
-  - while [ 1 ]; do wget $TESTROUTE ; if [ $? = 0 ]; then break; fi; sleep 20s; done
-  - cat index.html  && rm index.html
+  - export WEBCLUSTERIP=`oc get svc oshinko-web -o=go-template --template='{{.spec.clusterIP}}'`
+  - while [ 1 ]; do wget http://$WEBCLUSTERIP:8080/webui ; if [ $? = 0 ]; then break; fi; sleep 20s; done
+  - cat webui  && rm webui
   - echo "Other environment details"
   - echo "ENVIRONMENT IS:"
   - env
@@ -98,7 +128,16 @@ script:
   - oc get services
   - echo "Protractor version is:"
   - protractor --version
-  - protractor test/conf.js --baseUrl="http://$TESTROUTE"
+  - |
+      if [ "$TO_TEST" = "secure" ]; then
+        protractor test/conf.js --baseUrl="https://$TESTROUTE/webui" --specs=test/spec/all-functionality.js
+      else
+        protractor test/conf.js --baseUrl="http://$TESTROUTE/webui" --specs=test/spec/all-functionality-insecure.js
+      fi
+## uncomment the following 3 lines for debugging purposes
+#  - export PODNAME=`oc get pods --template='{{range .items}}{{.metadata.name}}{{end}}'`
+#  - oc logs pod/$PODNAME -c oshinko-web
+#  - oc logs pod/$PODNAME -c oauth-proxy
 notifications:
  email:
    on_success: never
