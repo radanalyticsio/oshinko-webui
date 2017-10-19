@@ -8,6 +8,7 @@ WORKDIR /usr/src/app
 COPY ./package.json /usr/src/app/
 COPY ./bower.json /usr/src/app/
 COPY ./scripts /usr/src/app/
+COPY ./sparkimage.sh /usr/src/app
 
 RUN yum install -y wget git && \
     yum clean all
