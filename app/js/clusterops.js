@@ -399,7 +399,7 @@ angular.module('Oshinko')
             if (cm.data["metrics"]) {
               finalConfig["metrics"] = cm.data["metrics"];
             }
-            if (origConfig.workerCount) {
+            if (origConfig.workerCount && origConfig.workerCount >= 0) {
               finalConfig["workerCount"] = origConfig.workerCount;
             }
             if (origConfig.workerConfigName) {
@@ -513,7 +513,7 @@ angular.module('Oshinko')
         var jolokiaService = null;
         var clusterMetricsConfig = null;
         var deferred = $q.defer();
-        getFinalConfigs(clusterConfigs).then(function (finalConfigs) {
+        getFinalConfigs(clusterConfigs, context).then(function (finalConfigs) {
           sm = sparkDC(finalConfigs.sparkImage, clusterConfigs.clusterName, "master", null, masterPorts, enableMetrics, finalConfigs["masterConfigName"], finalConfigs);
           sw = sparkDC(finalConfigs.sparkImage, clusterConfigs.clusterName, "worker", finalConfigs["workerCount"], workerPorts, enableMetrics, finalConfigs["workerConfigName"], finalConfigs);
           smService = sparkService(clusterConfigs.clusterName, clusterConfigs.clusterName, "master", masterServicePort);
