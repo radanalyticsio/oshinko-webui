@@ -73,7 +73,17 @@ before_install:
   - echo "***Found docker-registry at $REGIP***"
   - oc login -u developer -p test
   - oc project myproject
-  - oc create -f https://raw.githubusercontent.com/crobby/radanalyticsio.github.io/oauth-proxy/resources.yaml
+  - wget https://raw.githubusercontent.com/radanalyticsio/radanalyticsio.github.io/master/resources.yaml -O master_resources.yaml
+  - echo `pwd`
+  - |
+    diff master_resources.yaml tools/resources.yaml
+    if [ "$?" -eq 0 ]; then
+      echo "No change in resources.yaml, using radanalyticsio master resources.yaml"
+      oc create -f master_resources.yaml
+    else
+      echo "local resources.yaml has changed, using local resources.yaml"
+      oc create -f tools/resources.yaml
+    fi
   - echo "My token is set to-  $(oc whoami -t)"
   - oc policy add-role-to-user admin system:serviceaccount:myproject:oshinko -n myproject
   - r=1; while [ $r -ne 0 ]; do docker login -u oshinko -p $(oc whoami -t) $REGIP ; r=$? ; sleep 1 ; done
