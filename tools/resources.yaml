@@ -1,0 +1,893 @@
+kind: List
+apiVersion: v1
+metadata: {}
+
+items:
+
+  - apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: oshinko
+      annotations:
+        serviceaccounts.openshift.io/oauth-redirectreference.first: '{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"oshinko-web-oaproxy"}}'
+
+  - apiVersion: v1
+    kind: RoleBinding
+    metadata:
+      name: oshinko-edit
+    roleRef:
+      name: edit
+    subjects:
+      - kind: ServiceAccount
+        name: oshinko
+
+  - apiVersion: v1
+    kind: Template
+    labels:
+      application: oshinko-pyspark
+      createdBy: template-oshinko-pyspark-build-dc
+    metadata:
+      annotations:
+        openshift.io/display-name: PySpark
+        description: Create a buildconfig, imagestream and deploymentconfig using source-to-image and pyspark source hosted in git
+      name: oshinko-pyspark-build-dc
+    objects:
+      - apiVersion: v1
+        kind: ImageStream
+        metadata:
+          name: ${APPLICATION_NAME}
+          labels:
+            app: ${APPLICATION_NAME}
+        spec:
+          dockerImageRepository: ${APPLICATION_NAME}
+          tags:
+            - name: latest
+      - apiVersion: v1
+        kind: BuildConfig
+        metadata:
+          name: ${APPLICATION_NAME}
+          labels:
+            app: ${APPLICATION_NAME}
+        spec:
+          output:
+            to:
+              kind: ImageStreamTag
+              name: ${APPLICATION_NAME}:latest
+          source:
+            git:
+              ref: ${GIT_REF}
+              uri: ${GIT_URI}
+            type: Git
+          strategy:
+            sourceStrategy:
+              type: Source
+              env:
+                - name: APP_FILE
+                  value: ${APP_FILE}
+              forcePull: true
+              from:
+                kind: DockerImage
+                name: radanalyticsio/radanalytics-pyspark:stable
+          triggers:
+            - type: ConfigChange
+            - type: ImageChange
+              imageChange: {}
+            - type: GitHub
+              github:
+                secret: ${APPLICATION_NAME}
+            - type: Generic
+              generic:
+                secret: ${APPLICATION_NAME}
+      - apiVersion: v1
+        kind: DeploymentConfig
+        metadata:
+          labels:
+            app: ${APPLICATION_NAME}
+          name: ${APPLICATION_NAME}
+        spec:
+          replicas: 1
+          selector:
+            deploymentconfig: ${APPLICATION_NAME}
+          strategy:
+            type: Rolling
+          template:
+            metadata:
+              labels:
+                deploymentconfig: ${APPLICATION_NAME}
+                app: ${APPLICATION_NAME}
+            spec:
+              containers:
+                - name: ${APPLICATION_NAME}
+                  image: ${APPLICATION_NAME}
+                  imagePullPolicy: Always
+                  resources: {}
+                  terminationMessagePath: /dev/termination-log
+                  env:
+                    - name: OSHINKO_CLUSTER_NAME
+                      value: ${OSHINKO_CLUSTER_NAME}
+                    - name: APP_ARGS
+                      value: ${APP_ARGS}
+                    - name: SPARK_OPTIONS
+                      value: ${SPARK_OPTIONS}
+                    - name: OSHINKO_DEL_CLUSTER
+                      value: ${OSHINKO_DEL_CLUSTER}
+                    - name: APP_EXIT
+                      value: "true"
+                    - name: OSHINKO_NAMED_CONFIG
+                      value: ${OSHINKO_NAMED_CONFIG}
+                    - name: OSHINKO_SPARK_DRIVER_CONFIG
+                      value: ${OSHINKO_SPARK_DRIVER_CONFIG}
+                    - name: POD_NAME
+                      valueFrom:
+                        fieldRef:
+                          fieldPath: metadata.name
+                  volumeMounts:
+                  - mountPath: /etc/podinfo
+                    name: podinfo
+                    readOnly: false
+              dnsPolicy: ClusterFirst
+              restartPolicy: Always
+              serviceAccount: oshinko
+              volumes:
+              - downwardAPI:
+                  items:
+                  - fieldRef:
+                      fieldPath: metadata.labels
+                    path: labels
+                name: podinfo
+          triggers:
+            - type: ConfigChange
+            - type: ImageChange
+              imageChangeParams:
+                automatic: true
+                containerNames:
+                  - ${APPLICATION_NAME}
+                from:
+                  kind: ImageStreamTag
+                  name: ${APPLICATION_NAME}:latest
+      - apiVersion: v1
+        kind: Service
+        metadata:
+          name: ${APPLICATION_NAME}
+          labels:
+            app: ${APPLICATION_NAME}
+        spec:
+          ports:
+            - name: 8080-tcp
+              port: 8080
+              protocol: TCP
+              targetPort: 8080
+          selector:
+            deploymentconfig: ${APPLICATION_NAME}
+    parameters:
+      - name: APPLICATION_NAME
+        displayName: Application Name
+        description: The name to use for the BuildConfig, ImageStream and DeploymentConfig components
+        from: pyspark-[a-z0-9]{4}
+        generate: expression
+      - name: GIT_URI
+        displayName: Git Repository URL
+        description: The URL of the repository with your application source code
+        required: true
+      - name: APP_ARGS
+        displayName: Application Arguments
+        description: Command line arguments to pass to the application
+      - name: SPARK_OPTIONS
+        displayName: spark-submit Options
+        description: List of additional options to pass to spark-submit (for exmaple --conf property=value or --package ...). --master and --class are set by the launcher and should not be set here.
+      - name: GIT_REF
+        displayName: Git Reference
+        description: Optional branch, tag or commit
+      - name: OSHINKO_CLUSTER_NAME
+        description: The name of the spark cluster to run against. The cluster will be created if it does not exist, and a random cluster name will be chosen if this value is left blank.
+      - name: OSHINKO_NAMED_CONFIG
+        description: The name of a stored cluster configuration to use if a cluster is created, default is 'default'.
+      - name: OSHINKO_SPARK_DRIVER_CONFIG
+        description: The name of a configmap to use for the spark configuration of the driver. If this configmap is empty the default spark configuration will be used.
+      - name: OSHINKO_DEL_CLUSTER
+        description: If a cluster is created on-demand, delete the cluster when the application finishes if this option is set to 'true'
+        value: "true"
+        required: true
+      - name: APP_FILE
+        description: The name of the main py file to run. If this is not specified and there is a single py file at top level of the git respository, that file will be chosen.
+
+  - apiVersion: v1
+    kind: Template
+    labels:
+      application: oshinko-java-spark
+      createdBy: template-oshinko-java-build-dc
+    metadata:
+      annotations:
+        openshift.io/display-name: JavaSpark
+        description: Create a buildconfig, imagestream and deploymentconfig using source-to-image and java spark source hosted in git
+      name: oshinko-java-spark-build-dc
+    objects:
+      - apiVersion: v1
+        kind: ImageStream
+        metadata:
+          name: ${APPLICATION_NAME}
+          labels:
+            app: ${APPLICATION_NAME}
+        spec:
+          dockerImageRepository: ${APPLICATION_NAME}
+          tags:
+            - name: latest
+      - apiVersion: v1
+        kind: BuildConfig
+        metadata:
+          name: ${APPLICATION_NAME}
+          labels:
+            app: ${APPLICATION_NAME}
+        spec:
+          output:
+            to:
+              kind: ImageStreamTag
+              name: ${APPLICATION_NAME}:latest
+          source:
+            git:
+              ref: ${GIT_REF}
+              uri: ${GIT_URI}
+            type: Git
+          strategy:
+            sourceStrategy:
+              type: Source
+              env:
+                - name: APP_FILE
+                  value: ${APP_FILE}
+              forcePull: true
+              from:
+                kind: DockerImage
+                name: radanalyticsio/radanalytics-java-spark:stable
+          triggers:
+            - type: ConfigChange
+            - type: ImageChange
+              imageChange: {}
+            - type: GitHub
+              github:
+                secret: ${APPLICATION_NAME}
+            - type: Generic
+              generic:
+                secret: ${APPLICATION_NAME}
+      - apiVersion: v1
+        kind: DeploymentConfig
+        metadata:
+          labels:
+            app: ${APPLICATION_NAME}
+          name: ${APPLICATION_NAME}
+        spec:
+          replicas: 1
+          selector:
+            deploymentconfig: ${APPLICATION_NAME}
+          strategy:
+            type: Rolling
+          template:
+            metadata:
+              labels:
+                deploymentconfig: ${APPLICATION_NAME}
+                app: ${APPLICATION_NAME}
+            spec:
+              containers:
+                - name: ${APPLICATION_NAME}
+                  image: ${APPLICATION_NAME}
+                  imagePullPolicy: Always
+                  resources: {}
+                  terminationMessagePath: /dev/termination-log
+                  env:
+                    - name: OSHINKO_CLUSTER_NAME
+                      value: ${OSHINKO_CLUSTER_NAME}
+                    - name: APP_ARGS
+                      value: ${APP_ARGS}
+                    - name: SPARK_OPTIONS
+                      value: ${SPARK_OPTIONS}
+                    - name: APP_MAIN_CLASS
+                      value: ${APP_MAIN_CLASS}
+                    - name: OSHINKO_DEL_CLUSTER
+                      value: ${OSHINKO_DEL_CLUSTER}
+                    - name: APP_EXIT
+                      value: "true"
+                    - name: OSHINKO_NAMED_CONFIG
+                      value: ${OSHINKO_NAMED_CONFIG}
+                    - name: OSHINKO_SPARK_DRIVER_CONFIG
+                      value: ${OSHINKO_SPARK_DRIVER_CONFIG}
+                    - name: POD_NAME
+                      valueFrom:
+                        fieldRef:
+                          fieldPath: metadata.name
+                  volumeMounts:
+                  - mountPath: /etc/podinfo
+                    name: podinfo
+                    readOnly: false
+              dnsPolicy: ClusterFirst
+              restartPolicy: Always
+              serviceAccount: oshinko
+              volumes:
+              - downwardAPI:
+                  items:
+                  - fieldRef:
+                      fieldPath: metadata.labels
+                    path: labels
+                name: podinfo
+          triggers:
+            - type: ConfigChange
+            - type: ImageChange
+              imageChangeParams:
+                automatic: true
+                containerNames:
+                  - ${APPLICATION_NAME}
+                from:
+                  kind: ImageStreamTag
+                  name: ${APPLICATION_NAME}:latest
+      - apiVersion: v1
+        kind: Service
+        metadata:
+          name: ${APPLICATION_NAME}
+          labels:
+            app: ${APPLICATION_NAME}
+        spec:
+          ports:
+            - name: 8080-tcp
+              port: 8080
+              protocol: TCP
+              targetPort: 8080
+          selector:
+            deploymentconfig: ${APPLICATION_NAME}
+    parameters:
+      - name: APPLICATION_NAME
+        displayName: Application Name
+        description: |-
+          The name to use for the BuildConfig, ImageStream and
+          DeploymentConfig components
+        from: java-[a-z0-9]{4}
+        generate: expression
+      - name: GIT_URI
+        displayName: Git Repository URL
+        description: |-
+          The URL of the repository with your application source code
+        required: true
+      - name: APP_MAIN_CLASS
+        description: Application main class for jar-based applications
+      - name: APP_ARGS
+        displayName: Application Arguments
+        description: Command line arguments to pass to the application
+      - name: SPARK_OPTIONS
+        displayName: spark-submit Options
+        description: |-
+          List of additional options to pass to spark-submit (for exmaple
+          --conf property=value or --package ...). --master and --class are
+          set by the launcher and should not be set here.
+      - name: GIT_REF
+        displayName: Git Reference
+        description: Optional branch, tag or commit
+      - name: OSHINKO_CLUSTER_NAME
+        description: |-
+          The name of the spark cluster to run against. The cluster will be
+          created if it does not exist, and a random cluster name will be
+          chosen if this value is left blank.
+      - name: OSHINKO_NAMED_CONFIG
+        description: |-
+          The name of a stored cluster configuration to use if a cluster is
+          created, default is 'default'.
+      - name: OSHINKO_SPARK_DRIVER_CONFIG
+        description: |-
+          The name of a configmap to use for the spark configuration of the
+          driver. If this configmap is empty the default spark configuration
+          will be used.
+      - name: OSHINKO_DEL_CLUSTER
+        description: |-
+          If a cluster is created on-demand, delete the cluster when the
+          application finishes if this option is set to 'true'
+        value: "true"
+        required: true
+      - name: APP_FILE
+        description: |-
+          The name of the main JAR file. If this is not specified and there is
+          a single JAR produced by the build, that JAR will be chosen.
+
+  - apiVersion: v1
+    kind: Template
+    labels:
+      application: oshinko-scala-spark
+      createdBy: template-oshinko-scala-spark-build-dc
+    metadata:
+      annotations:
+        description: Create a buildconfig, imagestream and deploymentconfig using source-to-image and Scala Spark source hosted in git
+      name: oshinko-scala-spark-build-dc
+    objects:
+      - apiVersion: v1
+        kind: ImageStream
+        metadata:
+          name: ${APPLICATION_NAME}
+        spec:
+          dockerImageRepository: ${APPLICATION_NAME}
+          tags:
+            - name: latest
+      - apiVersion: v1
+        kind: BuildConfig
+        metadata:
+          name: ${APPLICATION_NAME}
+        spec:
+          output:
+            to:
+              kind: ImageStreamTag
+              name: ${APPLICATION_NAME}:latest
+          source:
+            git:
+              ref: ${GIT_REF}
+              uri: ${GIT_URI}
+            type: Git
+          strategy:
+            sourceStrategy:
+              type: Source
+              env:
+                - name: APP_FILE
+                  value: ${APP_FILE}
+              forcePull: true
+              from:
+                kind: DockerImage
+                name: radanalyticsio/radanalytics-scala-spark:stable
+          triggers:
+            - type: ConfigChange
+            - type: ImageChange
+              imageChange: {}
+            - type: GitHub
+              github:
+                secret: ${APPLICATION_NAME}
+            - type: Generic
+              generic:
+                secret: ${APPLICATION_NAME}
+      - apiVersion: v1
+        kind: DeploymentConfig
+        metadata:
+          labels:
+            deploymentConfig: ${APPLICATION_NAME}
+          name: ${APPLICATION_NAME}
+        spec:
+          replicas: 1
+          selector:
+            deploymentConfig: ${APPLICATION_NAME}
+          strategy:
+            type: Rolling
+          template:
+            metadata:
+              labels:
+                deploymentConfig: ${APPLICATION_NAME}
+            spec:
+              containers:
+                - name: ${APPLICATION_NAME}
+                  image: ${APPLICATION_NAME}
+                  imagePullPolicy: Always
+                  resources: {}
+                  terminationMessagePath: /dev/termination-log
+                  env:
+                    - name: OSHINKO_CLUSTER_NAME
+                      value: ${OSHINKO_CLUSTER_NAME}
+                    - name: APP_ARGS
+                      value: ${APP_ARGS}
+                    - name: SPARK_OPTIONS
+                      value: ${SPARK_OPTIONS}
+                    - name: APP_MAIN_CLASS
+                      value: ${APP_MAIN_CLASS}
+                    - name: OSHINKO_DEL_CLUSTER
+                      value: ${OSHINKO_DEL_CLUSTER}
+                    - name: APP_EXIT
+                      value: "true"
+                    - name: OSHINKO_NAMED_CONFIG
+                      value: ${OSHINKO_NAMED_CONFIG}
+                    - name: OSHINKO_SPARK_DRIVER_CONFIG
+                      value: ${OSHINKO_SPARK_DRIVER_CONFIG}
+                    - name: POD_NAME
+                      valueFrom:
+                        fieldRef:
+                          fieldPath: metadata.name
+                  volumeMounts:
+                    - mountPath: /etc/podinfo
+                      name: podinfo
+                      readOnly: false
+              dnsPolicy: ClusterFirst
+              restartPolicy: Always
+              serviceAccount: oshinko
+              volumes:
+                - downwardAPI:
+                    items:
+                      - fieldRef:
+                          fieldPath: metadata.labels
+                        path: labels
+                  name: podinfo
+          triggers:
+            - type: ConfigChange
+            - type: ImageChange
+              imageChangeParams:
+                automatic: true
+                containerNames:
+                  - ${APPLICATION_NAME}
+                from:
+                  kind: ImageStreamTag
+                  name: ${APPLICATION_NAME}:latest
+      - apiVersion: v1
+        kind: Service
+        metadata:
+          name: ${APPLICATION_NAME}
+          labels:
+            app: ${APPLICATION_NAME}
+        spec:
+          ports:
+            - name: 8080-tcp
+              port: 8080
+              protocol: TCP
+              targetPort: 8080
+          selector:
+            deploymentconfig: ${APPLICATION_NAME}
+    parameters:
+      - name: APPLICATION_NAME
+        displayName: Application Name
+        description: |-
+          The name to use for the BuildConfig, ImageStream and
+          DeploymentConfig components
+        from: scala-[a-z0-9]{4}
+        generate: expression
+      - name: GIT_URI
+        displayName: Git Repository URL
+        description: |-
+          The URL of the repository with your application source code
+        required: true
+      - name: APP_MAIN_CLASS
+        description: Application main class for jar-based applications
+      - name: APP_ARGS
+        displayName: Application Arguments
+        description: Command line arguments to pass to the application
+      - name: SPARK_OPTIONS
+        displayName: spark-submit Options
+        description: |-
+          List of additional options to pass to spark-submit (for exmaple
+          --conf property=value or --package ...). --master and --class are
+          set by the launcher and should not be set here.
+      - name: GIT_REF
+        displayName: Git Reference
+        description: Optional branch, tag or commit
+      - name: OSHINKO_CLUSTER_NAME
+        description: |-
+          The name of the spark cluster to run against. The cluster will be
+          created if it does not exist, and a random cluster name will be
+          chosen if this value is left blank.
+      - name: OSHINKO_NAMED_CONFIG
+        description: |-
+          The name of a stored cluster configuration to use if a cluster is
+          created, default is 'default'.
+      - name: OSHINKO_SPARK_DRIVER_CONFIG
+        description: |-
+          The name of a configmap to use for the spark configuration of the
+          driver. If this configmap is empty the default spark configuration
+          will be used.
+      - name: OSHINKO_DEL_CLUSTER
+        description: |-
+          If a cluster is created on-demand, delete the cluster when the
+          application finishes if this option is set to 'true'
+        value: "true"
+        required: true
+      - name: APP_FILE
+        description: |-
+          The name of the main JAR file. If this is not specified and there is
+          a single JAR produced by the build, that JAR will be chosen.
+  - apiVersion: v1
+    kind: Template
+    template: oshinko-webui-secure
+    metadata:
+      name: oshinko-webui-secure
+    objects:
+      - kind: Service
+        apiVersion: v1
+        metadata:
+          name: ${OSHINKO_WEB_NAME}-ocproxy
+          labels:
+            name: ${OSHINKO_WEB_NAME}-ocproxy
+            appName: ${OSHINKO_WEB_NAME}
+        spec:
+          ports:
+          - name: oc-proxy-port
+            protocol: TCP
+            port: 8001
+            targetPort: 8001
+          selector:
+            name: ${OSHINKO_WEB_NAME}
+      - kind: Service
+        apiVersion: v1
+        metadata:
+          name: ${OSHINKO_WEB_NAME}
+          labels:
+            name: ${OSHINKO_WEB_NAME}
+            appName: ${OSHINKO_WEB_NAME}
+        spec:
+          ports:
+            - name: o-web-port
+              protocol: TCP
+              port: 8080
+              targetPort: 8080
+          selector:
+            name: ${OSHINKO_WEB_NAME}
+      - kind: Route
+        apiVersion: route.openshift.io/v1
+        metadata:
+          name: ${OSHINKO_WEB_NAME}-oaproxy
+        spec:
+          path: /webui
+          to:
+            name: ${OSHINKO_WEB_NAME}-oaproxy
+          tls:
+            termination: Reencrypt
+          alternateBackends:
+            - kind: Service
+              name: ${OSHINKO_WEB_NAME}-oaproxy
+      - kind: Service
+        apiVersion: v1
+        metadata:
+          name: ${OSHINKO_WEB_NAME}-oaproxy
+          annotations:
+            service.alpha.openshift.io/serving-cert-secret-name: proxy-tls
+        spec:
+          ports:
+          - name: oaproxy-port
+            port: 443
+            targetPort: 8443
+          selector:
+            name: ${OSHINKO_WEB_NAME}
+      - kind: DeploymentConfig
+        apiVersion: v1
+        metadata:
+          name: ${OSHINKO_WEB_NAME}
+          labels:
+            name: ${OSHINKO_WEB_NAME}
+            appName: ${OSHINKO_WEB_NAME}
+        spec:
+          strategy:
+            type: Rolling
+          triggers:
+            - type: ConfigChange
+          replicas: 1
+          selector:
+            name: ${OSHINKO_WEB_NAME}
+          template:
+            metadata:
+              labels:
+                name: ${OSHINKO_WEB_NAME}
+                appName: ${OSHINKO_WEB_NAME}
+            spec:
+              containers:
+                - name: oauth-proxy
+                  image: openshift/oauth-proxy:v1.0.0
+                  imagePullPolicy: IfNotPresent
+                  ports:
+                  - containerPort: 8443
+                    name: public
+                  args:
+                    - --https-address=:8443
+                    - --provider=openshift
+                    - --openshift-service-account=oshinko
+                    - --upstream=http://localhost:8080
+                    - --tls-cert=/etc/tls/private/tls.crt
+                    - --tls-key=/etc/tls/private/tls.key
+                    - --cookie-secret=SECRET
+                    - -openshift-sar={"namespace":"$(CURRENT_NAMESPACE)","resource":"services","name":"${OSHINKO_WEB_NAME}","verb":"get"}
+                    - --proxy-prefix=/webui
+                    - -cookie-expire=24h0m0s
+                    - -proxy-prefix=/webui
+                    - -cookie-expire=24h0m0s
+                  volumeMounts:
+                  - mountPath: /etc/tls/private
+                    name: proxy-tls
+                  env:
+                    - name: CURRENT_NAMESPACE
+                      valueFrom:
+                        fieldRef:
+                          fieldPath: metadata.namespace
+                - name: ${OSHINKO_WEB_NAME}
+                  image: ${OSHINKO_WEB_IMAGE}
+                  imagePullPolicy: IfNotPresent
+                  ports:
+                    - name: o-web-port
+                      containerPort: 8080
+                      protocol: TCP
+                  env:
+                    - name: SPARK_DEFAULT
+                      value: ${SPARK_DEFAULT}
+                    - name: OSHINKO_REFRESH_INTERVAL
+                      value: ${OSHINKO_REFRESH_INTERVAL}
+                    - name: WEB_ROUTE_NAME
+                      value: ${OSHINKO_WEB_NAME}
+                    - name: INSECURE_WEBUI
+                      value: "false"
+                    - name: CURRENT_NAMESPACE
+                      valueFrom:
+                        fieldRef:
+                          fieldPath: metadata.namespace
+                  readinessProbe:
+                    failureThreshold: 3
+                    httpGet:
+                      path: /webui
+                      port: 8080
+                      scheme: HTTP
+                    periodSeconds: 10
+                    successThreshold: 1
+                    timeoutSeconds: 1
+                    initialDelaySeconds: 20
+                  livenessProbe:
+                    failureThreshold: 3
+                    httpGet:
+                      path: /webui
+                      port: 8080
+                      scheme: HTTP
+                    periodSeconds: 10
+                    successThreshold: 1
+                    timeoutSeconds: 1
+                    initialDelaySeconds: 20
+                - name: oc-proxy
+                  image: radanalyticsio/oc-proxy:stable
+                  imagePullPolicy: IfNotPresent
+                  args:
+                    - proxy
+                    - "-p"
+                    - '8001'
+                    - "--address=0.0.0.0"
+                    - "--disable-filter=true"
+                    - "--api-prefix=/proxy"
+                  ports:
+                    - name: oc-proxy-port
+                      containerPort: 8001
+                      protocol: TCP
+              volumes:
+                - name: proxy-tls
+                  secret:
+                    secretName: proxy-tls
+              serviceAccount: oshinko
+    parameters:
+      - name: SPARK_DEFAULT
+        description: Full name of the spark image to use when creating clusters
+        required: false
+      - name: OSHINKO_WEB_NAME
+        description: Name of the oshinko web service
+        value: "oshinko-web"
+      - name: OSHINKO_WEB_IMAGE
+        description: Full name of the oshinko web image
+        required: true
+        value: radanalyticsio/oshinko-webui:stable
+      - name: OSHINKO_WEB_ROUTE_HOSTNAME
+        description: The hostname used to create the external route for the webui
+      - name: OSHINKO_REFRESH_INTERVAL
+        value: "5"
+        description: Refresh interval for updating cluster list in seconds
+  - apiVersion: v1
+    kind: Template
+    template: oshinko-webui
+    metadata:
+      name: oshinko-webui
+    objects:
+      - kind: Service
+        apiVersion: v1
+        metadata:
+          name: ${OSHINKO_WEB_NAME}-proxy
+          labels:
+            name: ${OSHINKO_WEB_NAME}-proxy
+        spec:
+          ports:
+          - name: oc-proxy-port
+            protocol: TCP
+            port: 8001
+            targetPort: 8001
+          selector:
+            name: ${OSHINKO_WEB_NAME}
+      - kind: Service
+        apiVersion: v1
+        metadata:
+          name: ${OSHINKO_WEB_NAME}
+          labels:
+            name: ${OSHINKO_WEB_NAME}
+        spec:
+          ports:
+            - name: o-web-port
+              protocol: TCP
+              port: 8080
+              targetPort: 8080
+          selector:
+            name: ${OSHINKO_WEB_NAME}
+      - kind: Route
+        apiVersion: v1
+        metadata:
+          name: ${OSHINKO_WEB_NAME}
+        spec:
+          host: ${OSHINKO_WEB_ROUTE_HOSTNAME}
+          path: /webui
+          to:
+            kind: Service
+            name: ${OSHINKO_WEB_NAME}
+          alternateBackends:
+            - kind: Service
+              name: ${OSHINKO_WEB_NAME}
+      - kind: DeploymentConfig
+        apiVersion: v1
+        metadata:
+          name: ${OSHINKO_WEB_NAME}
+        spec:
+          strategy:
+            type: Rolling
+          triggers:
+            - type: ConfigChange
+          replicas: 1
+          selector:
+            name: ${OSHINKO_WEB_NAME}
+          template:
+            metadata:
+              labels:
+                name: ${OSHINKO_WEB_NAME}
+            spec:
+              containers:
+                - name: ${OSHINKO_WEB_NAME}
+                  image: ${OSHINKO_WEB_IMAGE}
+                  imagePullPolicy: Always
+                  ports:
+                    - name: o-web-port
+                      containerPort: 8080
+                      protocol: TCP
+                  env:
+                    - name: SPARK_DEFAULT
+                      value: ${SPARK_DEFAULT}
+                    - name: OSHINKO_REFRESH_INTERVAL
+                      value: ${OSHINKO_REFRESH_INTERVAL}
+                    - name: WEB_ROUTE_NAME
+                      value: ${OSHINKO_WEB_NAME}
+                    - name: INSECURE_WEBUI
+                      value: "true"
+                    - name: CURRENT_NAMESPACE
+                      valueFrom:
+                        fieldRef:
+                          fieldPath: metadata.namespace
+                  readinessProbe:
+                    failureThreshold: 3
+                    httpGet:
+                      path: /webui
+                      port: 8080
+                      scheme: HTTP
+                    periodSeconds: 10
+                    successThreshold: 1
+                    timeoutSeconds: 1
+                    initialDelaySeconds: 20
+                  livenessProbe:
+                    failureThreshold: 3
+                    httpGet:
+                      path: /webui
+                      port: 8080
+                      scheme: HTTP
+                    periodSeconds: 10
+                    successThreshold: 1
+                    timeoutSeconds: 1
+                    initialDelaySeconds: 20
+                - name: oc-proxy
+                  image: radanalyticsio/oc-proxy:stable
+                  imagePullPolicy: IfNotPresent
+                  args:
+                    - proxy
+                    - "-p"
+                    - '8001'
+                    - "--address=0.0.0.0"
+                    - "--disable-filter=true"
+                    - "--api-prefix=/proxy"
+                  ports:
+                    - name: oc-proxy-port
+                      containerPort: 8001
+                      protocol: TCP
+              serviceAccount: oshinko
+    parameters:
+      - name: SPARK_DEFAULT
+        description: Full name of the spark image to use when creating clusters
+        required: false
+        value: radanalyticsio/openshift-spark
+      - name: OSHINKO_WEB_NAME
+        description: Name of the oshinko web service
+        value: "oshinko-web"
+      - name: OSHINKO_WEB_IMAGE
+        description: Full name of the oshinko web image
+        required: true
+        value: radanalyticsio/oshinko-webui:stable
+      - name: OSHINKO_WEB_ROUTE_HOSTNAME
+        description: The hostname used to create the external route for the webui
+      - name: OSHINKO_REFRESH_INTERVAL
+        value: "5"
+        description: Refresh interval for updating cluster list in seconds
