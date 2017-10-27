@@ -163,6 +163,10 @@ To run the unit tests:
 
 
 ### End to end testing
+First set up a configmap in your project.  It is used by the tests.
+
+    $ oc create configmap storedconfig --from-literal=mastercount=1 --from-literal=workercount=4
+
 You'll need protractor installed:
 
     $ npm install -g protractor
@@ -178,7 +182,3 @@ You may need to update `test/conf.js` to point to your correct `baseUrl` [defaul
 From another terminal window, you can run:
 
     $ protractor test/conf.js
-
-### Continuous Integration
-
-    *Coming soon*

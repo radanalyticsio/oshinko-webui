@@ -96,6 +96,7 @@ before_install:
     else
       oc new-app --template=oshinko-webui -p OSHINKO_WEB_IMAGE=$REGIP/myproject/oshinko-webui
     fi
+  - oc create configmap storedconfig --from-literal=mastercount=1 --from-literal=workercount=4
 install:
   - npm install
   - bower install
