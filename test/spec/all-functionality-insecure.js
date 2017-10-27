@@ -47,7 +47,6 @@ describe('Cluster page functionality', function () {
   });
 });
 
-
 describe('Cluster page functionality, with additional cancel clicks', function () {
   it('should create, scale, and delete a cluster', function () {
     var EC = protractor.ExpectedConditions;
@@ -82,5 +81,40 @@ describe('Cluster page functionality, with additional cancel clicks', function (
     element(by.name('deletebutton-secondcluster')).click();
     element(by.id('deletebutton')).click();
     browser.wait(EC.invisibilityOf(element(by.name('deletebutton-secondcluster'))));
+  });
+});
+
+describe('Test advanced create functionality', function () {
+  it('should create and delete a cluster', function () {
+    var EC = protractor.ExpectedConditions;
+    // Create a cluster
+    element(by.id('startbutton')).click();
+    element(by.id('toggle-adv')).click();
+    element(by.id('cluster-new-name')).sendKeys('advcluster');
+    element(by.id('createbutton')).click();
+    browser.wait(EC.visibilityOf(element(by.name('deletebutton-advcluster'))));
+
+    // Delete
+    element(by.name('deletebutton-advcluster')).click();
+    element(by.id('deletebutton')).click();
+    browser.wait(EC.invisibilityOf(element(by.name('deletebutton-advcluster'))));
+  });
+});
+
+describe('Test advanced create functionality', function () {
+  it('should create and delete a cluster with a stored config', function () {
+    var EC = protractor.ExpectedConditions;
+    // Create a cluster
+    element(by.id('startbutton')).click();
+    element(by.id('toggle-adv')).click();
+    element(by.id('cluster-new-name')).sendKeys('advcluster');
+    element(by.id('cluster-config-name')).sendKeys('storedconfig');
+    element(by.id('createbutton')).click();
+    browser.wait(EC.visibilityOf(element(by.name('deletebutton-advcluster'))));
+
+    // Delete
+    element(by.name('deletebutton-advcluster')).click();
+    element(by.id('deletebutton')).click();
+    browser.wait(EC.invisibilityOf(element(by.name('deletebutton-advcluster'))));
   });
 });
