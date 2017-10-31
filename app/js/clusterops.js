@@ -527,7 +527,7 @@ angular.module('Oshinko')
           ];
 
           // Only create the metrics service if we're going to be using it
-          if (clusterConfigs.enablemetrics) {
+          if (finalConfigs.metrics) {
             jolokiaService = metricsService(clusterConfigs.clusterName, jolokiaServicePort);
             steps.push(createService(jolokiaService, context));
 
