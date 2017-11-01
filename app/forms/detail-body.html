@@ -13,5 +13,7 @@
         <dt translatable="yes">Master Web UI</dt>
         <dd ng-if="getSparkWebUi(oshinkoClusters[cluster_id])"><a href="{{getSparkWebUi(oshinkoClusters[cluster_id])}}" target="_blank">{{getSparkWebUi(oshinkoClusters[cluster_id])}}</a></dd>
         <dd ng-if="!getSparkWebUi(oshinkoClusters[cluster_id])">N/A</dd>
+        <dt translateable="yes">Cluster configuration</dt>
+        <dd><pre>{{getClusterConfig(oshinkoClusters[cluster_id])}}</pre></dd>
     </dl>
 </div>
