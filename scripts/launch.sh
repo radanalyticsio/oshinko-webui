@@ -13,7 +13,7 @@ sed -i "s@SPARK_DEFAULT@$SPARK_DEFAULT@" app/forms/new-cluster.html
 sed -i "s@SPARK_DEFAULT@$SPARK_DEFAULT@" app/js/controllers.js
 sed -i "s#<NAMESPACE>#'$CURRENT_NAMESPACE'#" /usr/src/app/app/config.local.js
 sed -i "s#<REFRESH_INTERVAL>#'$OSHINKO_REFRESH_INTERVAL'#" /usr/src/app/app/config.local.js
-sed -i "s#<SPARK_IMAGE>#'$OSHINKO_SPARK_IMAGE'#" /usr/src/app/app/config.local.js
+sed -i "s#<SPARK_IMAGE>#'$SPARK_DEFAULT'#" /usr/src/app/app/config.local.js
 if [ $INSECURE_WEBUI = "true" ]; then
   export OSHINKO_PROXY_LOCATION=`/usr/src/app/oc get routes $WEB_ROUTE_NAME --template={{.spec.host}}`
   echo "The oshinko proxy location is $OSHINKO_PROXY_LOCATION"

@@ -18,7 +18,7 @@ var module = angular.module('Oshinko.controllers', [
 module.controller('ClusterCtrl',
   function ($scope, $interval, $location, $route, $filter, sendNotifications, clusterActions, ListingState, DataService) {
     $scope.cluster_id = $route.current.params.Id || '';
-    var services, pods, routes;
+    var services, pods, routes, dcs;
     var watches = [];
     $scope.predicate = 'name';
     $scope.reverse = false;
@@ -37,7 +37,7 @@ module.controller('ClusterCtrl',
       return false;
     }
 
-    function groupByClusters(pods, services, routes) {
+    function groupByClusters(pods, services, routes, dcs) {
       var clusters = {};
       var clusterName;
       var type;
@@ -79,6 +79,13 @@ module.controller('ClusterCtrl',
         }
 
       });
+      _.each(dcs, function (dc) {
+        clusterName = label(dc, "oshinko-cluster");
+        if (clusterName) {
+          _.set(clusters, [clusterName, 'dc'], dc);
+        }
+
+      });
       return clusters;
     }
 
@@ -104,7 +111,7 @@ module.controller('ClusterCtrl',
       if (!pods || !services) {
         return;
       }
-      $scope.oshinkoClusters = groupByClusters(pods, services, routes);
+      $scope.oshinkoClusters = groupByClusters(pods, services, routes, dcs);
       $scope.oshinkoClusterNames = Object.keys($scope.oshinkoClusters);
       if ($scope.cluster_id !== '' && $scope.oshinkoClusters[$scope.cluster_id]) {
         setClusterDetails($scope.cluster_id, $scope.oshinkoClusters);
@@ -131,6 +138,12 @@ module.controller('ClusterCtrl',
     $scope.getClusterName = function (cluster) {
       var name = Object.keys(cluster);
       return name[0];
+    };
+    $scope.getClusterConfig = function(cluster) {
+      if (!cluster || !cluster.dc) {
+        return "";
+      }
+      return JSON.stringify(JSON.parse(cluster.dc.metadata.annotations['oshinko-config']), undefined, 2);
     };
     $scope.getSparkWebUi = function (cluster) {
       var route = "";
@@ -207,6 +220,11 @@ module.controller('ClusterCtrl',
 
     watches.push(DataService.watch("routes", $scope.context, function (routeData) {
       $scope.routes = routes = routeData.by("metadata.name");
+      groupClusters();
+    }, {"poll": true, "pollInterval": REFRESH_MS}));
+
+    watches.push(DataService.watch("deploymentconfigs", $scope.context, function (dcData) {
+      $scope.dcs = dcs = dcData.by("metadata.name");
       groupClusters();
     }, {"poll": true, "pollInterval": REFRESH_MS}));
 
@@ -343,7 +361,7 @@ module.controller('ClusterNewCtrl', function ($q, $scope, dialogData, clusterDat
         masterConfigName: $scope.advanced ? $scope.fields.masterconfigname : null,
         workerConfigName: $scope.advanced ? $scope.fields.workerconfigname : null,
         exposewebui: $scope.advanced ? $scope.fields.exposewebui : true,
-        sparkImage: $scope.advanced && $scope.fields.sparkimage !== "" ? $scope.fields.sparkimage  : "SPARK_DEFAULT",
+        sparkImage: $scope.advanced && $scope.fields.sparkimage !== "" ? $scope.fields.sparkimage  : "radanalyticsio/openshift-spark",
         metrics: true
       };
 
