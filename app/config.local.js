@@ -27,6 +27,6 @@
   window.__env.oc_proxy_location = proxyHost;
   window.__env.namespace = 'secureui';
   window.__env.refresh_interval = '5';
-  window.__env.spark_image = 'radanalyticsio/openshift-spark:latest';
+  window.__env.spark_image = 'SPARK_DEFAULT';
 
 })();

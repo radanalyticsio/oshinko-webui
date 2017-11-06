@@ -27,6 +27,6 @@
   window.__env.oc_proxy_location = proxyHost;
   window.__env.namespace = <NAMESPACE>;
   window.__env.refresh_interval = <REFRESH_INTERVAL>;
-  window.__env.spark_image = <SPARK_IMAGE>;
+  window.__env.spark_image = 'SPARK_DEFAULT';
 
 })();
