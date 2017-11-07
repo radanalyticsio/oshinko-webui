@@ -245,8 +245,8 @@ angular.module('Oshinko')
           "SparkMasterConfig": clusterConfig.masterConfigName || "",
           "SparkWorkerConfig": clusterConfig.workerConfigName || "",
           "SparkImage": clusterConfig.sparkImage,
-          "ExposeWebUI": clusterConfig.exposewebui,
-          "Metrics": clusterConfig.metrics
+          "ExposeWebUI": "" + clusterConfig.exposewebui,
+          "Metrics": "" + clusterConfig.metrics
         };
       }
 
