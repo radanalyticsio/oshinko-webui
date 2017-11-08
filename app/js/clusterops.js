@@ -504,7 +504,7 @@ angular.module('Oshinko')
           }
         ];
 
-        var enableMetrics = clusterConfigs.enablemetrics;
+        var enableMetrics = clusterConfigs.metrics;
 
         var sm = null;
         var sw = null;
