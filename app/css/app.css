@@ -30,6 +30,9 @@
    text-transform: capitalize;
 }
 
+.nav-tabs {
+  margin-bottom:20px !important;
+}
 
 /* login page css */
 .login-pf {
