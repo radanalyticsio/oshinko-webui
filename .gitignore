@@ -49,3 +49,6 @@ node_modules/
 debug
 test/localconf.js
 app/bower_components/
+
+# generated configuration
+config.local.js

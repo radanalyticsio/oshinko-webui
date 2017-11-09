@@ -10,15 +10,15 @@
     <div class="card-pf card-pf-double" id="cluster-list">
         <div class="card-pf-heading">
             <div class="dropdown pull-right">
-                    <button class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">Actions
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="javascript:void(0);" ng-click="deleteCluster(cluster_id)">Delete</a>
-                            <a href="javascript:void(0);" ng-click="scaleCluster(cluster_id)">Scale</a>
-                        </li>
-                    </ul>
+                <button class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">Actions
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="javascript:void(0);" ng-click="deleteCluster(cluster_id)">Delete</a>
+                        <a href="javascript:void(0);" ng-click="scaleCluster(cluster_id)">Scale</a>
+                    </li>
+                </ul>
             </div>
             <h2 class="card-pf-title" translatable="yes">Cluster Details</h2>
         </div>
@@ -30,8 +30,20 @@
                 <h3 translatable="yes">Details are unavailable</h3>
                 <p translatable="yes">The cluster may have been deleted.</p>
             </div>
-            <div ng-include="'webui/forms/detail-body.html'"></div>
-            <div ng-include="'webui/forms/cluster-body.html'"></div>
+            <uib-tabset>
+                <uib-tab heading="Details" active="selectedTab.details">
+                    <uib-tab-heading>Details</uib-tab-heading>
+                    <div ng-include="'webui/partials/detail-body.html'"></div>
+                </uib-tab>
+                <uib-tab heading="Pods" active="selectedTab.pods">
+                    <uib-tab-heading>Pods</uib-tab-heading>
+                    <div ng-include="'webui/partials/cluster-body.html'"></div>
+                </uib-tab>
+                <uib-tab heading="Metrics" ng-if="metricsAvailable" active="selectedTab.metrics">
+                    <uib-tab-heading>Metrics</uib-tab-heading>
+                    <div>Placeholder for cluster -> metrics information</div>
+                </uib-tab>
+            </uib-tabset>
         </div>
     </div>
 </div>
