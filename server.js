@@ -12,6 +12,7 @@ var app = express();
 
 var oshinko_proxy_location = process.env.OSHINKO_PROXY_LOCATION || "";
 var oshinko_current_namespace = process.env.CURRENT_NAMESPACE || "";
+var spark_default = process.env.SPARK_DEFAULT || "";
 
 app.configure(function () {
   app.use(express.logger());
@@ -38,4 +39,5 @@ app.listen(port, function () {
   console.log("Listening on " + port);
   console.log("Proxy location: " + oshinko_proxy_location + "/proxy");
   console.log("Current namespace is: " + oshinko_current_namespace);
+  console.log("Spark default image if not overridden is " + spark_default);
 });
