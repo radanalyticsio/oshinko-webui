@@ -126,7 +126,7 @@
                 },
                 templateUrl: function(element, attrs) {
                     var kind = attrs.kind;
-                    return "webui/forms/" + kind.toLowerCase() + "-panel.html";
+                    return "webui/partials/" + kind.toLowerCase() + "-panel.html";
                 }
             };
         }

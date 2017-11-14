@@ -11,7 +11,7 @@
         <div class="card-pf-heading">
             <div class="pull-right">
                 <button class="btn btn-primary" id="startbutton" ng-click="newCluster()"
-                    translatable="yes">Deploy</button>
+                        translatable="yes">Deploy</button>
             </div>
             <h2 class="card-pf-title" translatable="yes">Spark Clusters</h2>
         </div>
@@ -23,62 +23,55 @@
                 <h3>No Spark Clusters present</h3>
                 <p translatable="yes">You can deploy a new spark cluster.</p>
             </div>
-            <table listing-table  class="listing-ct" ng-if="oshinkoClusterNames.length > 0">
+            <div class="table-responsive"></div>
+            <table class="table table-striped table-bordered table-hover" ng-if="oshinkoClusterNames.length > 0">
                 <thead>
-                    <tr>
-                        <th class="listing-ct-empty"></th>
-                        <th>
-                            <a ng-click="order('name')">Name</a>
-                        </th>
-                        <th>
-                            <a ng-click="order('status')">Status</a>
-                        </th>
-                        <th>
-                            <a ng-click="order('master_address')">Master</a>
-                        </th>
-                        <th>
-                            <a ng-click="order('worker_count')">Worker count</a>
-                        </th>
-                        <th>
-                            <a ng-click="order('webui_host')">Spark UI Link</a>
-                        </th>
-                        <th></th>
-                        <th></th>
-                    </tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Master</th>
+                    <th>Masters</th>
+                    <th>Workers</th>
+                    <th>Spark UI Link</th>
+                    <th><span class="sr-only">Actions</span></th>
+                </tr>
                 </thead>
-                <tbody  ng-repeat="cluster in oshinkoClusterNames | orderBy:predicate:reverse" ng-init="id = cluster" name="cluster-row-{{$index}}"
-                    data-id="{{id}}" ng-class="{open: listing.expanded(id)}">
-                    <tr class="listing-ct-item">
-                        <td ng-click="listing.toggle(id, $event)"
-                            class="listing-ct-toggle">
-                            <a href=""><i class="fa fa-fw"></i></a>
-                        </td>
-                        <td id="clustername-{{cluster}}"><a ng-click="gotoCluster(cluster)">{{cluster}}</a></td>
-                        <td ng-switch="getClusterStatus(oshinkoClusters[cluster])">
-                            <span ng-switch-when="Running" class="label label-success"></span>
-                            <span ng-switch-when="Error" class="label label-danger"></span>
-                            <span ng-switch-when="Scaling" class="label label-default"></span>
-                            <span ng-switch-default class="label label-default"></span>
-                            <span>{{ getClusterStatus(oshinkoClusters[cluster]) }}</span>
-                        </td>
-                        <td name="masterurl-{{cluster}}">{{ getSparkMasterUrl(cluster) }}</td>
-                        <td name="workercount-{{cluster}}">{{ countWorkers(oshinkoClusters[cluster]) }}</td>
-                        <td ng-if="getSparkWebUi(oshinkoClusters[cluster])" name="uilink-{{cluster}}"><a href="{{ getSparkWebUi(oshinkoClusters[cluster]) }}" target="_blank">Spark UI</a></td>
-                        <td ng-if="!getSparkWebUi(oshinkoClusters[cluster])" name="uilink-{{cluster}}">N/A</td>
-                        <td>
-                            <button name="scalebutton-{{cluster}}" class="btn btn-default" translatable="yes" ng-click="scaleCluster(cluster, countWorkers(oshinkoClusters[cluster]), countMasters(oshinkoClusters[cluster]))">Scale</button>
-                        </td>
-                        <td>
-                            <a class="pull-right close-icon" name="deletebutton-{{cluster}}">
-                                <i translatable="yes" class=" pficon-delete" ng-click="deleteCluster(cluster)"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="listing-ct-panel" ng-if="listing.expanded(id)" ng-init="clusterId = id">
-                        <td cluster-panel colspan="7"></td>
-                    </tr>
+                <tbody ng-repeat="cluster in oshinkoClusterNames" ng-init="id = cluster" name="cluster-row-{{ $index }}" data-id="{{ id }}">
+                <tr>
+                    <td data-title="Name" id="clustername-{{ cluster }}"><a href="" ng-click="gotoCluster(cluster)">{{ cluster }}</a></td>
+                    <td data-title="Status" ng-switch="getClusterStatus(oshinkoClusters[cluster])">
+                        <span ng-switch-when="Running" class="fa fa-refresh" aria-hidden="true" ng-class="{'fa-spin' : spinning, 'fa-fw': fixedWidth}"></span>
+                        <span ng-switch-when="Error" class="fa fa-times text-danger" aria-hidden="true" ng-class="{'fa-fw': fixedWidth}"></span>
+                        <span ng-switch-when="Scaling" class="spinner spinner-xs spinner-inline" aria-hidden="true" ng-class="{'fa-fw': fixedWidth}"></span>
+                        <span ng-switch-when="Pending" class="spinner spinner-xs spinner-inline" aria-hidden="true" ng-class="{'fa-fw': fixedWidth}"></span>
+                        <span ng-switch-default class="fa fa-question text-danger" aria-hidden="true" ng-class="{'fa-fw': fixedWidth}"></span>
+                        <span> {{ getClusterStatus(oshinkoClusters[cluster]) }}</span>
+                    </td>
+                    <td data-title="MasterURL" name="masterurl-{{ cluster }}">{{ getSparkMasterUrl(cluster) }}</td>
+                    <td data-title="Masters" name="mastercount-{{ cluster }}">{{ countMasters(oshinkoClusters[cluster]) }}</td>
+                    <td data-title="Workers" name="workercount-{{ cluster }}">{{ countWorkers(oshinkoClusters[cluster]) }}</td>
+                    <td ng-if="getSparkWebUi(oshinkoClusters[cluster])" data-title="WebUI" name="webui-{{ cluster }}"><a target="_blank" href="{{ getSparkWebUi(oshinkoClusters[cluster]) }}">Spark UI</a></td>
+                    <td ng-if="!getSparkWebUi(oshinkoClusters[cluster])" data-title="WebUI" name="webui-{{ cluster }}">N/A</td>
+                    <td data-title="Actions" class="text-xs-left text-right">
+                      <span uib-dropdown>
+                        <button id="{{cluster}}-actions" type="button" class="dropdown-toggle btn btn-default actions-dropdown-btn hidden-xs" data-toggle="dropdown">
+                          Actions
+                          <span class="caret" aria-hidden="true"></span>
+                        </button>
+                        <ul class="uib-dropdown-menu dropdown-menu-right">
+                          <li>
+                            <a href="" id="{{cluster}}-scalebutton" role="button" ng-click="scaleCluster(cluster, countWorkers(oshinkoClusters[cluster]), countMasters(oshinkoClusters[cluster]))">Scale Cluster</a>
+                          </li>
+                          <li>
+                            <a href="" id="{{cluster}}-deletebutton" role="button" ng-click="deleteCluster(cluster)">Delete Cluster</a>
+                          </li>
+                        </ul>
+                      </span>
+                    </td>
+                </tr>
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 </div>

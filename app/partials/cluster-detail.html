@@ -10,13 +10,13 @@
     <div class="card-pf card-pf-double" id="cluster-list">
         <div class="card-pf-heading">
             <div class="dropdown pull-right">
-                <button class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">Actions
+                <button class="btn dropdown-toggle btn-default" type="button" data-toggle="dropdown">Actions
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
                     <li>
+                        <a href="javascript:void(0);" ng-click="scaleCluster(cluster_id, countWorkers(oshinkoClusters[cluster_id]), countMasters(oshinkoClusters[cluster_id]))">Scale</a>
                         <a href="javascript:void(0);" ng-click="deleteCluster(cluster_id)">Delete</a>
-                        <a href="javascript:void(0);" ng-click="scaleCluster(cluster_id)">Scale</a>
                     </li>
                 </ul>
             </div>
