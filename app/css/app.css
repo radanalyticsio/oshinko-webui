@@ -266,3 +266,11 @@ table.cluster-listing {
 .close-icon {
     color:#000000;
 }
+
+.table.table-bordered > tbody > tr td, .table.table-bordered > tbody > tr th, .table.table-bordered > thead > tr td, .table.table-bordered > thead > tr th {
+    border-left: 0;
+    border-right: 0;
+    padding-bottom: 8px;
+    padding-top: 8px;
+    vertical-align: middle
+}
