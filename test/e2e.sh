@@ -3,6 +3,7 @@
 TOP_DIR=$(readlink -f `dirname "${BASH_SOURCE[0]}"` | grep -o '.*/oshinko-webui')
 PROJECT=$(oc project -q)
 
+WEBUI_TEST_IMAGE=${WEBUI_TEST_IMAGE:-}
 WEBUI_TEST_SECURE=${WEBUI_TEST_SECURE:-false}
 WEBUI_TEST_LOCAL_IMAGE=${WEBUI_TEST_LOCAL_IMAGE:-true}
 WEBUI_TEST_INTEGRATED_REGISTRY=${WEBUI_TEST_INTEGRATED_REGISTRY:-}
@@ -111,20 +112,85 @@ function tweak_template {
     fi
 }
 
+function try_until_success {
+    # This is a really simple case that just tests for success.
+    # If more complicated waits are needed, we can use the oc commandline testsuite
+    echo $1
+    while true; do
+        set +e
+        eval $1
+        res=$?
+        set -e
+        if [ "$res" = 0 ]; then
+            break
+        fi
+        sleep 20s
+    done
+}
+
+function create_resources {
+    set +e
+    oc create -f $WEBUI_TEST_RESOURCES
+    if [ "$WEBUI_TEST_SECURE" == true ]; then
+        oc new-app --template=oshinko-webui-secure -p OSHINKO_WEB_IMAGE=$OSHINKO_WEB_IMAGE
+    else
+        oc new-app --template=oshinko-webui -p OSHINKO_WEB_IMAGE=$OSHINKO_WEB_IMAGE
+    fi
+    oc create configmap storedconfig --from-literal=mastercount=1 --from-literal=workercount=4
+    set -e
+}
+
+function wait_for_proxy {
+    local command=
+
+    try_until_success "oc get pods -l app=oshinko-webui"
+    IMAGETESTED=$(oc get pods -l app=oshinko-webui --template="{{range .items}}{{range .spec.containers}}{{.image}}{{end}}{{end}}")
+    echo "Testing image $IMAGETESTED"
+
+    if [ "$WEBUI_TEST_SECURE" == true ]; then
+        TESTROUTE=$(oc get route oshinko-web-oaproxy --template='{{.spec.host}}')
+        command="wget --no-check-certificate https://$TESTROUTE/proxy/api"
+    else
+        TESTROUTE=$(oc get route oshinko-web --template='{{.spec.host}}')
+        command="wget http://$TESTROUTE/proxy/api"
+    fi
+    echo "Waiting for proxy to come up"
+    try_until_success "$command"
+    cat api && rm api
+}
+
+function wait_for_webui {
+    echo "Make sure that webui is up"
+    WEBCLUSTERIP=$(oc get svc oshinko-web --template='{{.spec.clusterIP}}')
+    try_until_success "wget http://$WEBCLUSTERIP:8080/webui"
+    cat webui  && rm webui
+}
+
+function dump_env {
+    echo "Other environment details"
+    echo "ENVIRONMENT IS:"
+    env
+    echo "ROUTES"
+    oc get routes
+    echo "SERVICES"
+    oc get services
+}
+
 # Modify the template if we're using a local image with no registry, i.e. we're in an oc cluster up case
 # In this case we don't need a push at all, but we to have a pullpolicy of IfNotPresent
 tweak_template
 print_test_env
-# Push the image if required
 push_image
+create_resources
+wait_for_proxy
+wait_for_webui
+dump_env
 
-set +e
-oc create -f $WEBUI_TEST_RESOURCES
-oc policy add-role-to-user admin system:serviceaccount:$PROJECT:oshinko
+echo "Running integration tests via protracor"
+echo "Protractor version is:"
+protractor --version
 if [ "$WEBUI_TEST_SECURE" == true ]; then
-    oc new-app --template=oshinko-webui-secure -p OSHINKO_WEB_IMAGE=$OSHINKO_WEB_IMAGE
+    protractor test/conf.js --baseUrl="https://$TESTROUTE/webui" --specs=test/spec/all-functionality.js
 else
-    oc new-app --template=oshinko-webui -p OSHINKO_WEB_IMAGE=$OSHINKO_WEB_IMAGE
+    protractor test/conf.js --baseUrl="http://$TESTROUTE/webui" --specs=test/spec/all-functionality-insecure.js
 fi
-oc create configmap storedconfig --from-literal=mastercount=1 --from-literal=workercount=4
-set -e
