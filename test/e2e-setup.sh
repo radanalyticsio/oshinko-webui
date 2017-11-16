@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# nodejs version 6 is needed for tests, so if you're on rhel you may have
+# to follow these instructions here.
+# https://nodejs.org/en/download/package-manager/#enterprise-linux-and-fedora
+
 sudo dnf install -y which npm tar bzip2 wget xorg-x11-server-Xvfb
 
 which bower
