@@ -66,37 +66,7 @@ before_install:
   - echo $IPSTR
   - echo "****Building oshinko-webui docker image****"
   - docker build -t oshinko-webui .
-  - oc login -u system:admin > /dev/null
-  - oc project default > /dev/null 2>&1
-## Getting local docker registry so that we can push our freshly built image into it for use
-  - export REGIP=`oc get service docker-registry --template='{{index .spec.clusterIP}}:{{index .spec.ports 0 "port"}}'`
-  - echo "***Found docker-registry at $REGIP***"
-  - oc login -u developer -p test
-  - oc project myproject
-  - wget https://raw.githubusercontent.com/radanalyticsio/radanalyticsio.github.io/master/resources.yaml -O master_resources.yaml
-  - echo `pwd`
-  - |
-    diff master_resources.yaml tools/resources.yaml
-    if [ "$?" -eq 0 ]; then
-      echo "No change in resources.yaml, using radanalyticsio master resources.yaml"
-      oc create -f master_resources.yaml
-    else
-      echo "local resources.yaml has changed, using local resources.yaml"
-      oc create -f tools/resources.yaml
-    fi
   - echo "My token is set to-  $(oc whoami -t)"
-  - oc policy add-role-to-user admin system:serviceaccount:myproject:oshinko -n myproject
-  - r=1; while [ $r -ne 0 ]; do docker login -u oshinko -p $(oc whoami -t) $REGIP ; r=$? ; sleep 1 ; done
-  - docker tag oshinko-webui $REGIP/myproject/oshinko-webui
-  - docker push $REGIP/myproject/oshinko-webui
-  - docker pull docker.io/radanalyticsio/openshift-spark
-  - |
-    if [ "$TO_TEST" = "secure" ]; then
-      oc new-app --template=oshinko-webui-secure -p OSHINKO_WEB_IMAGE=$REGIP/myproject/oshinko-webui
-    else
-      oc new-app --template=oshinko-webui -p OSHINKO_WEB_IMAGE=$REGIP/myproject/oshinko-webui
-    fi
-  - oc create configmap storedconfig --from-literal=mastercount=1 --from-literal=workercount=4
 install:
   - npm install
   - bower install
@@ -108,42 +78,11 @@ before_script:
   - webdriver-manager update
   - webdriver-manager start &
 script:
-  - echo "Running integration tests via protracor"
-  - export IMAGETESTED=`oc get pods -l app=oshinko-webui --template="{{range .items}}{{range .spec.containers}}{{.image}}{{end}}{{end}}"`
-  - echo "Testing image $IMAGETESTED"
   - |
       if [ "$TO_TEST" = "secure" ]; then
-        export TESTROUTE=`oc get route oshinko-web-oaproxy --template='{{.spec.host}}'`
+          WEBUI_START_XVFB=false  WEBUI_TEST_SECURE=true test/e2e.sh
       else
-        export TESTROUTE=`oc get route oshinko-web --template='{{.spec.host}}'`
-      fi
-  - echo TESTROUTE is $TESTROUTE
-  - echo "Waiting for proxy to come up"
-  - |
-      if [ "$TO_TEST" = "secure" ]; then
-        while [ 1 ]; do wget --no-check-certificate https://$TESTROUTE/proxy/api ; if [ $? = 0 ]; then break; fi; sleep 20s; done
-      else
-        while [ 1 ]; do wget  http://$TESTROUTE/proxy/api ; if [ $? = 0 ]; then break; fi; sleep 20s; done
-      fi
-  - cat api && rm api
-  - echo "Make sure that webui is up"
-  - export WEBCLUSTERIP=`oc get svc oshinko-web -o=go-template --template='{{.spec.clusterIP}}'`
-  - while [ 1 ]; do wget http://$WEBCLUSTERIP:8080/webui ; if [ $? = 0 ]; then break; fi; sleep 20s; done
-  - cat webui  && rm webui
-  - echo "Other environment details"
-  - echo "ENVIRONMENT IS:"
-  - env
-  - echo "ROUTES"
-  - oc get routes
-  - echo "SERVICES"
-  - oc get services
-  - echo "Protractor version is:"
-  - protractor --version
-  - |
-      if [ "$TO_TEST" = "secure" ]; then
-        protractor test/conf.js --baseUrl="https://$TESTROUTE/webui" --specs=test/spec/all-functionality.js
-      else
-        protractor test/conf.js --baseUrl="http://$TESTROUTE/webui" --specs=test/spec/all-functionality-insecure.js
+          WEBUI_START_XVFB=false test/e2e.sh
       fi
 ## uncomment the following 3 lines for debugging purposes
 #  - export PODNAME=`oc get pods --template='{{range .items}}{{.metadata.name}}{{end}}'`
