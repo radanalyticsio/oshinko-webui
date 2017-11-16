@@ -3,6 +3,7 @@
 TOP_DIR=$(readlink -f `dirname "${BASH_SOURCE[0]}"` | grep -o '.*/oshinko-webui')
 PROJECT=$(oc project -q)
 
+WEBUI_START_XVFB=${WEBUI_START_XVFB:-true}
 WEBUI_TEST_IMAGE=${WEBUI_TEST_IMAGE:-}
 WEBUI_TEST_SECURE=${WEBUI_TEST_SECURE:-false}
 WEBUI_TEST_LOCAL_IMAGE=${WEBUI_TEST_LOCAL_IMAGE:-true}
@@ -43,6 +44,7 @@ function print_test_env {
     else
         echo Not using external or integrated registry
     fi
+    echo Start xvfb = $WEBUI_START_XVFB
 }
 
 function push_image {
@@ -176,10 +178,23 @@ function dump_env {
     oc get services
 }
 
+function check_for_xvfb {
+    if [ "$WEBUI_START_XVFB" == true ]; then
+        if ! [ -f /tmp/.X99-lock ]; then
+            echo Starting xvfb
+            Xvfb -ac :99 -screen 0 1280x1024x16  &
+        else
+            echo xvfb is already running
+        fi
+        export DISPLAY=:99
+    fi
+}
+
 # Modify the template if we're using a local image with no registry, i.e. we're in an oc cluster up case
 # In this case we don't need a push at all, but we to have a pullpolicy of IfNotPresent
-tweak_template
 print_test_env
+check_for_xvfb
+tweak_template
 push_image
 create_resources
 wait_for_proxy
