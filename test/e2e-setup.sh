@@ -1,5 +1,5 @@
 #!/bin/bash
-sudo dnf install -y which npm tar bzip2 wget
+sudo dnf install -y which npm tar bzip2 wget xorg-x11-server-Xvfb
 
 which bower
 if [ "$?" -ne 0 ]; then
@@ -15,8 +15,6 @@ which karma
 if [ "$?" -ne 0 ]; then
     sudo npm install -g karma-cli
 fi
-
-
 
 which java
 if [ "$?" -ne 0 ]; then
