@@ -1,5 +1,5 @@
 #!/bin/bash
-sudo dnf install which npm tar bzip2 wget
+sudo dnf install -y which npm tar bzip2 wget
 
 which bower
 if [ "$?" -ne 0 ]; then
@@ -16,11 +16,11 @@ if [ "$?" -ne 0 ]; then
     sudo npm install -g karma-cli
 fi
 
-which oc
+
+
+which java
 if [ "$?" -ne 0 ]; then
-    wget https://github.com/openshift/origin/releases/download/v3.6.1/openshift-origin-client-tools-v3.6.1-008f2d5-linux-64bit.tar.gz
-    tar -xvzf openshift-origin-client-tools-v3.6.1-008f2d5-linux-64bit.tar.gz
-    sudo cp openshift-origin-client-tools-v3.6.1-008f2d5-linux-64bit/oc /usr/local/bin
+    sudo dnf install -y java-1.8.0-openjdk
 fi
 
 which google-chrome-stable
@@ -40,3 +40,14 @@ fi
 sudo webdriver-manager update
 npm install
 bower install
+
+which docker
+if [ "$?" -ne 0 ]; then
+    echo *** Docker is not installed, it will be necessary to run the tests.
+fi
+
+
+which oc
+if [ "$?" -ne 0 ]; then
+    echo *** The 'oc' client is not installed, it will be necessary to run the tests
+fi
