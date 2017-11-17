@@ -142,7 +142,7 @@ function create_resources {
     set -e
 }
 
-function wait_for_proxy {
+function wait_for_webui {
     local command=
 
     try_until_success "oc get pods -l app=oshinko-webui"
@@ -159,12 +159,10 @@ function wait_for_proxy {
     echo "Waiting for proxy to come up"
     try_until_success "$command"
     cat api && rm api
-}
 
-function wait_for_webui {
     echo "Make sure that webui is up"
-    WEBCLUSTERIP=$(oc get svc oshinko-web --template='{{.spec.clusterIP}}')
-    try_until_success "wget http://$WEBCLUSTERIP:8080/webui"
+    WEBROUTE=$(oc get route oshinko-web --template='{{.spec.host}}')
+    try_until_success "wget http://$WEBROUTE/webui"
     cat webui  && rm webui
 }
 
@@ -197,7 +195,6 @@ check_for_xvfb
 tweak_template
 push_image
 create_resources
-wait_for_proxy
 wait_for_webui
 dump_env
 
