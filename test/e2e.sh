@@ -7,10 +7,18 @@ WEBUI_START_XVFB=${WEBUI_START_XVFB:-true}
 WEBUI_TEST_IMAGE=${WEBUI_TEST_IMAGE:-}
 WEBUI_TEST_SECURE=${WEBUI_TEST_SECURE:-false}
 WEBUI_TEST_LOCAL_IMAGE=${WEBUI_TEST_LOCAL_IMAGE:-true}
+
+# If you're doing a test of the secure webui, default user/pass is "developer/developerpass"
+# If you need to change it you can set these
+WEBUI_TEST_SECURE_USER=${WEBUI_TEST_SECURE_USER:-}
+WEBUI_TEST_SECURE_PASSWORD=${WEBUI_TEST_SECURE_PASSWORD:-}
+
+# This is all for dealing with registries. External registry requires creds other than the current login
 WEBUI_TEST_INTEGRATED_REGISTRY=${WEBUI_TEST_INTEGRATED_REGISTRY:-}
 WEBUI_TEST_EXTERNAL_REGISTRY=${WEBUI_TEST_EXTERNAL_REGISTRY:-}
 WEBUI_TEST_EXTERNAL_USER=${WEBUI_TEST_EXTERNAL_USER:-}
 WEBUI_TEST_EXTERNAL_PASSWORD=${WEBUI_TEST_EXTERNAL_PASSWORD:-}
+
 WEBUI_TEST_RESOURCES=${WEBUI_TEST_RESOURCES:-$TOP_DIR/tools/resources.yaml}
 if [ -z "$WEBUI_TEST_IMAGE" ]; then
     if [ "$WEBUI_TEST_LOCAL_IMAGE" == true ]; then
@@ -161,9 +169,12 @@ function wait_for_webui {
     cat api && rm api
 
     echo "Make sure that webui is up"
-    WEBROUTE=$(oc get route oshinko-web --template='{{.spec.host}}')
-    try_until_success "wget http://$WEBROUTE/webui"
-    cat webui  && rm webui
+    if [ "$WEBUI_TEST_SECURE" == true ]; then
+        command="curl --insecure https://$TESTROUTE/webui"
+    else
+        command="curl http://$TESTROUTE/webui"
+    fi
+    try_until_success "$command"
 }
 
 function dump_env {
@@ -202,7 +213,15 @@ echo "Running integration tests via protracor"
 echo "Protractor version is:"
 protractor --version
 if [ "$WEBUI_TEST_SECURE" == true ]; then
-    protractor test/conf.js --baseUrl="https://$TESTROUTE/webui" --specs=test/spec/all-functionality.js
+    user=""
+    password=""
+    if [ -n "$WEBUI_TEST_SECURE_USER" ]; then
+        name="--params.securelogin.name=$WEBUI_TEST_SECURE_USER "
+    fi
+    if [ -n "$WEBUI_TEST_SECURE_PASSWORD" ]; then
+        passw="--params.securelogin.password=$WEBUI_TEST_SECURE_PASSWORD "
+    fi
+    protractor test/conf.js $name$passw --baseUrl="https://$TESTROUTE/webui" --specs=test/spec/all-functionality.js
 else
     protractor test/conf.js --baseUrl="http://$TESTROUTE/webui" --specs=test/spec/all-functionality-insecure.js
 fi

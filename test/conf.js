@@ -6,5 +6,11 @@ exports.config = {
   allScriptsTimeout: 120000,
   jasmineNodeOpts: {
     defaultTimeoutInterval: 240000
+  },
+  params: {
+    securelogin: {
+      name: 'developer',
+      password: 'developerpass'
+    }
   }
 };

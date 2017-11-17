@@ -17,8 +17,8 @@ describe('Initial page functionality', function () {
     browser.waitForAngularEnabled(false);
     browser.get('/webui');
     element(by.tagName("button")).click();
-    element(by.name('username')).sendKeys("developer");
-    element(by.name('password')).sendKeys("developerpass");
+    element(by.name('username')).sendKeys(browser.params.securelogin.name);
+    element(by.name('password')).sendKeys(browser.params.securelogin.password);
     element(by.tagName("button")).click();
     element(by.name("approve")).click();
     browser.waitForAngularEnabled(true);
