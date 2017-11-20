@@ -107,18 +107,19 @@ function push_image {
 function tweak_template {
     if [ "$WEBUI_TEST_LOCAL_IMAGE" == true ] && [ -z "$WEBUI_TEST_INTEGRATED_REGISTRY" ] && [ -z "$WEBUI_TEST_EXTERNAL_REGISTRY" ]; then
 	echo Updating $WEBUI_TEST_RESOURCES to pull local webui image
+	mkdir -p `pwd`/test/scratch/
         if [ -f "$WEBUI_TEST_RESOURCES" ]; then
-            cp "$WEBUI_TEST_RESOURCES" `pwd`/resources_mod.yaml
+            cp "$WEBUI_TEST_RESOURCES" `pwd`/test/scratch/resources_mod.yaml
         else
-            wget "$WEBUI_TEST_RESOURCES" -O `pwd`/resources_mod.yaml	     
+            wget "$WEBUI_TEST_RESOURCES" -O `pwd`/test/scratch/resources_mod.yaml
         fi
         # This sed command finds the line with image: ${OSHINKO_WEB_IMAGE}
         # The next line sets the pull policy in the standard template (this should be maintained)
         # !b;n;s throws away the current processing, reads the next line, and starts a new substitution
         # Ultimately, this sets the pull policy for the web image to IfNotPresent so that an 'oc cluster up'
         # case can just reference the image from the host
-        sed -i -r '/image.*OSHINKO_WEB_IMAGE/!b;n;s/(.*imagePullPolicy: *)Always/\1IfNotPresent/' resources_mod.yaml
-        WEBUI_TEST_RESOURCES=`pwd`/resources_mod.yaml
+        sed -i -r '/image.*OSHINKO_WEB_IMAGE/!b;n;s/(.*imagePullPolicy: *)Always/\1IfNotPresent/' `pwd`/test/scratch/resources_mod.yaml
+        WEBUI_TEST_RESOURCES=`pwd`/test/scratch/resources_mod.yaml
     fi
 }
 
