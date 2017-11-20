@@ -53,6 +53,19 @@ function print_test_env {
         echo Not using external or integrated registry
     fi
     echo Start xvfb = $WEBUI_START_XVFB
+    echo Using secure oshinko webui $WEBUI_TEST_SECURE
+    if [ "$WEBUI_TEST_SECURE" == true ]; then
+        if [ -n "$WEBUI_TEST_SECURE_USER" ]; then
+            echo Using oshinko webui secure user $WEBUI_TEST_SECURE_USER
+        else
+            echo Using default oshinko webui secure user set in conf.js
+        fi
+        if [ -n "$WEBUI_TEST_SECURE_PASSWORD" ]; then
+            echo Oshinko webui secure password has been set
+        else
+            echo Using default oshinko webui secure password set in conf.js
+        fi
+    fi
 }
 
 function push_image {
@@ -62,7 +75,7 @@ function push_image {
     # no special pushes of images have to be done.
     # In the case of a "normal" openshift cluster, a local image we'll use for build has to be
     # available from the designated registry.
-    # If we're using a pyspark image already in an external registry, openshift can pull it from
+    # If we're using an image already in an external registry, openshift can pull it from
     # there and we don't have to do anything.
     local user=
     local password=
@@ -89,7 +102,7 @@ function push_image {
 	docker login --help | grep email &> /dev/null
 	res=$?
 	set -e
-	if [ -n "$password" ]; then
+	if [ -n "$password" ] && [ -n "$user" ]; then
 	    if [ "$res" -eq 0 ]; then
 		docker login -u ${user} -e jack@jack.com -p ${password} ${registry}
 	    else
@@ -201,7 +214,7 @@ function check_for_xvfb {
 }
 
 # Modify the template if we're using a local image with no registry, i.e. we're in an oc cluster up case
-# In this case we don't need a push at all, but we to have a pullpolicy of IfNotPresent
+# In this case we don't need a push at all, but we need to have a pullpolicy of IfNotPresent
 print_test_env
 check_for_xvfb
 tweak_template
