@@ -111,7 +111,7 @@ http://localhost:<listen port>
 
 ## Developer instructions
 
-If you are interesting in developing the code for oshinko-webui or hacking on
+If you are interested in developing the code for oshinko-webui or hacking on
 its internals, the following instructions will help you to deploy, run, and
 test the code.
 
@@ -163,22 +163,108 @@ To run the unit tests:
 
 
 ### End to end testing
-First set up a configmap in your project.  It is used by the tests.
 
-    $ oc create configmap storedconfig --from-literal=mastercount=1 --from-literal=workercount=4
+The end to end tests can be run using the `test/e2e.sh` script.
+This script assumes a current login to an OpenShift instance
+and it runs the test in the current project (it's recommended
+to create a fresh project for the test run). It also assumes
+that the local oshinko-webui repository has been setup (ie all
+the dependencies have been installed and the webui components
+have been installed with `npm` and `bower` as noted above).
 
-You'll need protractor installed:
+The `test/e2e.sh` script will create a serviceaccount,
+templates, a configmap, etc in the current project as part
+of the test.
 
-    $ npm install -g protractor
+```sh
+$ oc new-project mywebuitest
+$ test/e2e.sh
+```
 
-<optional> Then run:
+There are several enviroment variables that you can set
+to configure the tests:
 
-    $ webdriver-manager update
+``WEBUI_START_XVFB`` (default is true)
 
-You may need to update `test/conf.js` to point to your correct `baseUrl` [default is `http://localhost:8080`] Or, you can pass `--baseUrl=<your baseUrl>` on the protractor command line
+  This causes the test to start an Xvfb server running
+  for display 99 if it's not already running (required).
 
-    $ webdriver-manager start
+``WEBUI_TEST_IMAGE`` (default is oshinko-webui:latest if WEBUI_TEST_LOCAL_IMAGE is true or docker.io/radanalyticsio/oshinko-webui otherwise)
 
-From another terminal window, you can run:
+  The image to use for testing. The defaults are set up to
+  reference an image from the local docker host (ie, one that has just been
+  built) but this setting can be used to reference an image from an arbitrary
+  docker registry.
 
-    $ protractor test/conf.js
+``WEBUI_TEST_LOCAL_IMAGE`` (default is true)
+
+  This indicates that the s2i images to be tested are local, that is they
+  are available from the local docker daemon but not in an external registry
+  like docker hub.
+
+  If this is set to "false", the test image is assumed to be in an external
+  registy. **WEBUI_TEST_INTEGRATED_REGISTRY** and **WEBUI_TEST_EXTERNAL_REGISTRY**
+  will be ignored because there will be no need to push local images to
+  a registry.
+
+``WEBUI_TEST_INTEGRATED_REGISTRY``
+
+  This is the IP address of the integrated registry. Use this setting when:
+  * running the test using local images
+  * running the test on a host where the integrated registry is reachable (like the OpenShift master)
+  * using an OpenShift instance that was not created with `oc cluster up`
+
+```sh
+$ WEBUI_TEST_INTEGRATED_REGISTRY=172.123.456.89:5000 test/e2e.sh
+```
+
+``WEBUI_TEST_EXTERNAL_REGISTRY``
+
+  This is the IP address of a docker registry. If this is set then
+  **WEBUI_TEST_EXTERNAL_USER** and **WEBUI_TEST_EXTERNAL_PASSWORD** must also
+  be set so that the tests can log in to the registry.
+  Use this setting when:
+  * running the test using local images
+  * running the test from a host where the integrated registry is not reachable
+  * using an OpenShift instance that was not created with `oc cluster up`
+
+``WEBUI_TEST_SECURE`` (default is false)
+
+  Use the template for a secure webui. If this is set to true
+  and the OpenShift instance was not created with `oc cluster up`,
+  then **WEBUI_TEST_SECURE_USER** and **WEBUI_TEST_SECURE_PASSWORD**
+  should be used to set login credentials for the webui.
+
+``WEBUI_TEST_SECURE_USER`` (default is "developer")
+
+  Username to use for a secure webui test
+
+``WEBUI_TEST_SECURE_PASSWORD`` (default is "deverloperpass")
+
+  Password to use for a secure webui test
+
+``WEBUI_TEST_RESOURCES`` (default is local tools/resources.yaml)
+
+  The resources.yaml file used to set up test resources. The value
+  may be a file path, or it may be a url such as
+  https://radanalytics.io/resources.yaml.
+
+### Dependencies for end to end tests
+
+The end to end tests require a number of dependencies.
+The `test/e2e-setup.sh` script has been provided to install
+the dependencies and setup an oshinko-webui repository
+for testing. This is especially helpful when setting up
+a clean machine.
+
+Note, `test/e2e-setup.sh` assumes passwordless sudo.
+
+You can look through the script and see what it installs
+and make sure those things are installed yourself or you
+can do this:
+
+```bash
+$ test/e2e-setup.sh  # from the oshinko-webui main directory
+```
+
+The script should be idempotent.
