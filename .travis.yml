@@ -64,8 +64,6 @@ before_install:
   - echo ${IP}
   - IPSTR=`sudo oc login -u developer -p test`
   - echo $IPSTR
-  - echo "****Building oshinko-webui docker image****"
-  - docker build -t oshinko-webui .
   - echo "My token is set to-  $(oc whoami -t)"
 install:
   - npm install
@@ -80,9 +78,9 @@ before_script:
 script:
   - |
       if [ "$TO_TEST" = "secure" ]; then
-          WEBUI_START_XVFB=false  WEBUI_TEST_SECURE=true test/e2e.sh
+          WEBUI_START_XVFB=false make test-e2e-secure
       else
-          WEBUI_START_XVFB=false test/e2e.sh
+          WEBUI_START_XVFB=false make test-e2e
       fi
 ## uncomment the following 3 lines for debugging purposes
 #  - export PODNAME=`oc get pods --template='{{range .items}}{{.metadata.name}}{{end}}'`
