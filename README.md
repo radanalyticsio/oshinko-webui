@@ -176,10 +176,29 @@ The `test/e2e.sh` script will create a serviceaccount,
 templates, a configmap, etc in the current project as part
 of the test.
 
+As a convenience, the *test-e2e* and *test-e2e-secure* make
+targets can be used to run the test. These targets will
+first build a local image and then run the test with defaults.
+For example:
+
 ```sh
 $ oc new-project mywebuitest
-$ test/e2e.sh
+$ make test-e2e
+...
+$
+$ oc new-project mysecuretest
+$ make test-e2e-secure
+...
 ```
+
+The environment variables below can be set for the call
+to make, for example:
+
+```sh
+$ WEBUI_START_XVFB=false make test-e2e
+```
+
+#### Environment variables for test configuration
 
 There are several enviroment variables that you can set
 to configure the tests:
@@ -249,7 +268,7 @@ $ WEBUI_TEST_INTEGRATED_REGISTRY=172.123.456.89:5000 test/e2e.sh
   may be a file path, or it may be a url such as
   https://radanalytics.io/resources.yaml.
 
-### Dependencies for end to end tests
+#### Dependencies for end to end tests
 
 The end to end tests require a number of dependencies.
 The `test/e2e-setup.sh` script has been provided to install
