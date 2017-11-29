@@ -3,7 +3,10 @@
  */
 
 'use strict';
-
+// This file is meant to be mirrored in both oshinko web interfaces,
+// oshinko-console and oshinko-webui.  The only difference is the
+// following line.  Any other changes should be mirrored to the
+// other repo.
 angular.module('Oshinko')
   .filter('depName', function () {
     var labelMap = {
@@ -22,7 +25,7 @@ angular.module('Oshinko')
     };
   })
   .factory('clusterData',
-    function ($http, $q, DataService, DeploymentsService, $filter) {
+    function ($http, $q, DataService, DeploymentsService) {
       // Start delete-related functions
       function deleteObject(name, resourceType, context) {
         // noops below are to suppress any warnings when deleting a non-existant object
