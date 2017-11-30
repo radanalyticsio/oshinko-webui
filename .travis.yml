@@ -53,7 +53,7 @@ before_install:
   - export HOST_IP_ADDRESS="$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)"
   - echo "Host IP is $HOST_IP_ADDRESS"
 ## below cmd is important to get oc working in ubuntu
-  - sudo docker run -v /:/rootfs -ti --rm --entrypoint=/bin/bash --privileged openshift/origin:v3.6.0 -c "mv /rootfs/bin/findmnt /rootfs/bin/findmnt.backup"
+  - sudo docker run -v /:/rootfs -ti --rm --entrypoint=/bin/bash --privileged openshift/origin:$OC_VERSION -c "mv /rootfs/bin/findmnt /rootfs/bin/findmnt.backup"
   - sudo oc cluster up --host-config-dir=/home/travis/origin --public-hostname=$HOST_IP_ADDRESS
   - sudo chmod -R a+rwX /home/travis/.kube
   - sudo ls -l /home/travis/origin
