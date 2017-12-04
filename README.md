@@ -34,80 +34,18 @@ administrator.
 Before performing the following instructions, you must be logged in to
 your account and project using the `oc` tool.
 
-**Step 1. Create a service account**
+**Step 1. Create the service account and template**
 
 For oshinko-webui to interact with OpenShift and control the Spark resources
-you will create, it needs a service account in your project. To create this
-account, run the following command:
+you will create, it needs a service account in your project. The service account
+is created with edit permissions along with the oshinko-webui template by issuing
+the following command:
 
-    $ oc create sa oshinko
+    oc create -f https://raw.githubusercontent.com/radanalyticsio/oshinko-webui/master/tools/ui-template.yaml
 
-**Step 2. Add edit privileges to service account**
+**Step 2. Run oshinko-webui**
 
-That service account will need to have edit privilages in your project. This
-command will allow the service account to make the necessary requests to
-OpenShift:
-
-    $ oc policy add-role-to-user edit -z oshinko
-
-**Step 3. Install oshinko-webui**
-
-With the service account properly configured, you can now install and run
-the oshinko-webui application from within a pod in your project. The
-`oc new-app` command is used to deploy the application from a template which
-defines the necessary OpenShift objects.
-
-There is one choice to make when deploying oshinko-webui, and it will define
-how you access the browser interface. Please choose ONE of the following
-options:
-
-**Option 1. Expose a route**
-
-This option will expose a named route through the OpenShift edge router to
-allow for domain name association with a Kubernetes service. Please keep in
-mind that you should only do this for routes that you can limit access to as
-this will create a public route to your oshinko-webui. If you want to run the
-app with an exposed route, run the following:
-
-    $ oc new-app -f https://raw.githubusercontent.com/radanalyticsio/oshinko-webui/master/tools/ui-template.yaml
-
-To confirm that oshinko-webui is being deployed into your project, you can
-check the OpenShift status to inspect the state of the pod. To check
-the status run `oc status` and inspect the output, it should appear similar
-to the following:
-
-    $ oc status
-    In project oshinko on server https://10.0.1.109:8443
-
-    http://oshinko-web-oshinko.10.0.1.109.xip.io (svc/oshinko-web)
-      dc/oshinko deploys docker.io/radanalyticsio/oshinko-webui:latest
-          deployment #1 deployed 16 seconds ago - 1 pod
-
-
-The default route is:  `http://oshinko-web-<projectname>.<hostIp>.xip.io` and
-that is where you will be able to access the oshinko-webui browser interface.
-
-**Option 2. Use a custom port-forward**
-
-Or, if you'd prefer to not expose a route, you can run the app and then set
-up a port-forward to allow you to access the app. To install oshinko-webui
-without an exposed route, run the following:
-
-    $ oc new-app -f https://raw.githubusercontent.com/radanalyticsio/oshinko-webui/master/tools/ui-template-no-route.yaml
-
-To create the port-forward, you will need to know the name of the pod where
-oshinko-webui is running, this line will give you the pod name:
-
-    $ oc get pods -o jsonpath --selector='name=oshinko-web' --no-headers  --template='{.items[*].metadata.name}'
-
-Use the output from the above line as the pod name in the following line.
-The listen port can be any open port on your machine. 8080 is the port
-where oshinko-webui is listening in the pod.
-
-    $ oc port-forward <pod name> <listen port>:8080
-
-You can then access the oshinko-webui browser interface at
-http://localhost:<listen port>
+    oc new-app --template=oshinko-webui
 
 ## Developer instructions
 
