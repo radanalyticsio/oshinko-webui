@@ -1,131 +1,159 @@
-kind: Template
+kind: List
 apiVersion: v1
-template: oshinko-webui
-metadata:
-  name: oshinko-webui
-objects:
+metadata: {}
 
-- kind: Service
-  apiVersion: v1
-  metadata:
-    name: ${PROXY_SERVICE_NAME}
-    labels:
-      name: ${PROXY_SERVICE_NAME}
-  spec:
-    ports:
-    - name: oc-proxy-port
-      protocol: TCP
-      port: 8001
-      targetPort: 8001
-    selector:
-      name: ${OSHINKO_WEB_NAME}
-- kind: Service
-  apiVersion: v1
-  metadata:
-    name: ${OSHINKO_WEB_NAME}
-    labels:
-      name: ${OSHINKO_WEB_NAME}
-  spec:
-    ports:
-      - name: o-web-port
-        protocol: TCP
-        port: 8080
-        targetPort: 8080
-    selector:
-      name: ${OSHINKO_WEB_NAME}
+items:
 
-- kind: DeploymentConfig
-  apiVersion: v1
-  metadata:
-    name: ${OSHINKO_DEPLOYMENT_NAME}
-  spec:
-    strategy:
-      type: Rolling
-    triggers:
-      - type: ConfigChange
-    replicas: 1
-    selector:
-      name: ${OSHINKO_WEB_NAME}
-    template:
-      metadata:
-        labels:
+  - apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: oshinko
+      annotations:
+        serviceaccounts.openshift.io/oauth-redirectreference.first: '{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"oshinko-web-oaproxy"}}'
+
+  - apiVersion: v1
+    kind: RoleBinding
+    metadata:
+      name: oshinko-edit
+    roleRef:
+      name: edit
+    subjects:
+      - kind: ServiceAccount
+        name: oshinko
+
+  - apiVersion: v1
+    kind: Template
+    template: oshinko-webui
+    metadata:
+      name: oshinko-webui
+    objects:
+      - kind: Service
+        apiVersion: v1
+        metadata:
+          name: ${OSHINKO_WEB_NAME}-proxy
+          labels:
+            name: ${OSHINKO_WEB_NAME}-proxy
+        spec:
+          ports:
+          - name: oc-proxy-port
+            protocol: TCP
+            port: 8001
+            targetPort: 8001
+          selector:
+            name: ${OSHINKO_WEB_NAME}
+      - kind: Service
+        apiVersion: v1
+        metadata:
           name: ${OSHINKO_WEB_NAME}
-      spec:
-        containers:
-          - name: oc-proxy
-            image: docker.io/crobby/oc-proxy
-            imagePullPolicy: IfNotPresent
-            args:
-              - proxy
-              - "-p"
-              - '8001'
-              - "--address=0.0.0.0"
-              - "--disable-filter=true"
-              - "--api-prefix=/proxy"
-            ports:
-              - name: oc-proxy-port
-                containerPort: 8001
-                protocol: TCP
-            volumes:
-              - name: test-volume
-                emptyDir: {}
-          - name: ${OSHINKO_WEB_NAME}
-            image: ${OSHINKO_WEB_IMAGE}
-            ports:
-              - name: o-web-port
-                containerPort: 8080
-                protocol: TCP
-            env:
-              - name: OSHINKO_SPARK_IMAGE
-                value: ${OSHINKO_CLUSTER_IMAGE}
-              - name: OSHINKO_REFRESH_INTERVAL
-                value: ${OSHINKO_REFRESH_INTERVAL}
-            readinessProbe:
-              failureThreshold: 3
-              httpGet:
-                path: /
-                port: 8080
-                scheme: HTTP
-              periodSeconds: 10
-              successThreshold: 1
-              timeoutSeconds: 1
-            livenessProbe:
-              failureThreshold: 3
-              httpGet:
-                path: /
-                port: 8080
-                scheme: HTTP
-              periodSeconds: 10
-              successThreshold: 1
-              timeoutSeconds: 1
-        serviceAccount: oshinko
-
-- kind: Route
-  apiVersion: v1
-  metadata:
-    name: ${OSHINKO_WEB_NAME}
-  spec:
-    host: ${OSHINKO_WEB_ROUTE_HOSTNAME}
-    to:
-      kind: Service
-      name: ${OSHINKO_WEB_NAME}
-
-parameters:
-- name: OSHINKO_CLUSTER_IMAGE
-  description: Full name of the spark image to use when creating clusters
-  required: false
-- name: OSHINKO_WEB_NAME
-  description: Name of the oshinko web service
-  value: "oshinko-web"
-- name: OSHINKO_WEB_IMAGE
-  description: Full name of the oshinko web image
-  required: true
-  value: radanalyticsio/oshinko-webui
-- name: OSHINKO_WEB_ROUTE_HOSTNAME
-  description: The hostname used to create the external route for the webui
-- name: OSHINKO_DEPLOYMENT_NAME
-  description: Name of the oshinko deployment
-  value: "oshinko"
-- name: OSHINKO_REFRESH_INTERVAL
-  value: "5"
-  description: Refresh interval for updating cluster list in seconds
+          labels:
+            name: ${OSHINKO_WEB_NAME}
+        spec:
+          ports:
+            - name: o-web-port
+              protocol: TCP
+              port: 8080
+              targetPort: 8080
+          selector:
+            name: ${OSHINKO_WEB_NAME}
+      - kind: Route
+        apiVersion: v1
+        metadata:
+          name: ${OSHINKO_WEB_NAME}
+        spec:
+          host: ${OSHINKO_WEB_ROUTE_HOSTNAME}
+          path: /webui
+          to:
+            kind: Service
+            name: ${OSHINKO_WEB_NAME}
+          alternateBackends:
+            - kind: Service
+              name: ${OSHINKO_WEB_NAME}
+      - kind: DeploymentConfig
+        apiVersion: v1
+        metadata:
+          name: ${OSHINKO_WEB_NAME}
+        spec:
+          strategy:
+            type: Rolling
+          triggers:
+            - type: ConfigChange
+          replicas: 1
+          selector:
+            name: ${OSHINKO_WEB_NAME}
+          template:
+            metadata:
+              labels:
+                name: ${OSHINKO_WEB_NAME}
+            spec:
+              containers:
+                - name: ${OSHINKO_WEB_NAME}
+                  image: ${OSHINKO_WEB_IMAGE}
+                  imagePullPolicy: Always
+                  ports:
+                    - name: o-web-port
+                      containerPort: 8080
+                      protocol: TCP
+                  env:
+                    - name: SPARK_DEFAULT
+                      value: ${SPARK_DEFAULT}
+                    - name: OSHINKO_REFRESH_INTERVAL
+                      value: ${OSHINKO_REFRESH_INTERVAL}
+                    - name: WEB_ROUTE_NAME
+                      value: ${OSHINKO_WEB_NAME}
+                    - name: INSECURE_WEBUI
+                      value: "true"
+                    - name: CURRENT_NAMESPACE
+                      valueFrom:
+                        fieldRef:
+                          fieldPath: metadata.namespace
+                  readinessProbe:
+                    failureThreshold: 3
+                    httpGet:
+                      path: /webui
+                      port: 8080
+                      scheme: HTTP
+                    periodSeconds: 10
+                    successThreshold: 1
+                    timeoutSeconds: 1
+                    initialDelaySeconds: 20
+                  livenessProbe:
+                    failureThreshold: 3
+                    httpGet:
+                      path: /webui
+                      port: 8080
+                      scheme: HTTP
+                    periodSeconds: 10
+                    successThreshold: 1
+                    timeoutSeconds: 1
+                    initialDelaySeconds: 20
+                - name: oc-proxy
+                  image: radanalyticsio/oc-proxy:stable
+                  imagePullPolicy: IfNotPresent
+                  args:
+                    - proxy
+                    - "-p"
+                    - '8001'
+                    - "--address=0.0.0.0"
+                    - "--disable-filter=true"
+                    - "--api-prefix=/proxy"
+                  ports:
+                    - name: oc-proxy-port
+                      containerPort: 8001
+                      protocol: TCP
+              serviceAccount: oshinko
+    parameters:
+      - name: SPARK_DEFAULT
+        description: Full name of the spark image to use when creating clusters
+        required: false
+      - name: OSHINKO_WEB_NAME
+        description: Name of the oshinko web service
+        value: "oshinko-web"
+      - name: OSHINKO_WEB_IMAGE
+        description: Full name of the oshinko web image
+        required: true
+        value: radanalyticsio/oshinko-webui:stable
+      - name: OSHINKO_WEB_ROUTE_HOSTNAME
+        description: The hostname used to create the external route for the webui
+      - name: OSHINKO_REFRESH_INTERVAL
+        value: "5"
+        description: Refresh interval for updating cluster list in seconds
