@@ -362,6 +362,7 @@ module.controller('ClusterNewCtrl', function ($q, $scope, dialogData, clusterDat
         workerConfigName: $scope.advanced ? $scope.fields.workerconfigname : null,
         exposewebui: $scope.advanced ? $scope.fields.exposewebui : true,
         sparkImage: $scope.advanced && $scope.fields.sparkimage !== "" ? $scope.fields.sparkimage  : "SPARK_DEFAULT",
+        sparkDefaultUsed: $scope.advanced && $scope.fields.sparkimage !== "" ? false  : true,
         metrics: true
       };
 

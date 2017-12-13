@@ -394,7 +394,13 @@ angular.module('Oshinko')
               finalConfig["workerConfigName"] = cm.data["sparkworkerconfig"];
             }
             if (cm.data["sparkimage"]) {
-              finalConfig["sparkImage"] = cm.data["sparkimage"];
+              if (origConfig.sparkImage  && !origConfig.sparkDefaultUsed) {
+                finalConfig["sparkImage"] = origConfig.sparkImage;
+              } else {
+                finalConfig["sparkImage"] = cm.data["sparkimage"];
+              }
+            } else {
+              finalConfig["sparkImage"] = origConfig.sparkImage;
             }
             if (cm.data["exposeui"]) {
               finalConfig["exposewebui"] = cm.data["exposeui"];
@@ -410,9 +416,6 @@ angular.module('Oshinko')
             }
             if (origConfig.masterConfigName) {
               finalConfig["masterConfigName"] = origConfig.masterConfigName;
-            }
-            if (origConfig.sparkImage) {
-              finalConfig["sparkImage"] = origConfig.sparkImage;
             }
             deferred.resolve(finalConfig);
           }).catch(function () {
