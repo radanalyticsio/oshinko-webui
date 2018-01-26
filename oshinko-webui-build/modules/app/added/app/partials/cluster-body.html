@@ -1,0 +1,32 @@
+<div class="listing-ct-body cluster-panel">
+    <table listing-table class="listing-ct cluster-body">
+        <thead ng-if="cluster_details.allPods">
+            <tr >
+                <th translatable="yes">Pods</th>
+                <th translatable="yes">Type</th>
+                <th translatable="yes">Status</th>
+            </tr>
+        </thead>
+        <tbody colspan="3" ng-repeat="pod in cluster_details.allPods" >
+            <tr class="listing-ct-item inner-project-listing">
+                <td>
+                    <div>
+                        <i class="fa fa-cubes"></i>
+                        {{pod.status.podIP}}
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        {{pod.metadata.labels["oshinko-type"]}}
+                    </div>
+                </td>
+                <td ng-switch="pod.status.phase">
+                    <span ng-switch-when="Running">{{pod.status.phase}}</span>
+                    <span ng-switch-when="Error">{{pod.status.phase}}</span>
+                    <span ng-switch-when="Scaling">{{pod.status.phase}}</span>
+                    <span ng-switch-default>{{pod.status.phase}}</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,884 @@
+/*
+ * This file is part of Oshinko.
+  * This file was orginally part of Cockpit.
+ *
+ * Copyright (C) 2016 Red Hat, Inc.
+ *
+ */
+
+
+
+a {
+    cursor: pointer;
+}
+
+.disabled {
+    pointer-events: auto;
+}
+
+.btn.disabled {
+    pointer-events: auto;
+}
+
+.btn.disabled:hover {
+  z-index: auto;
+}
+
+.dropdown-menu > li > a.disabled,
+.dropdown-menu > li > a.disabled:hover,
+.dropdown-menu > li > a.disabled:focus {
+  color: #999999;
+}
+
+.dropdown-menu > li > a.disabled:hover,
+.dropdown-menu > li > a.disabled:focus {
+  text-decoration: none;
+  background-color: transparent;
+  background-image: none;
+  border-color: transparent;
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+  cursor: default;
+}
+
+/* Panels don't draw borders between them */
+.panel > .table > tbody:first-child td {
+    border-top: 1px solid rgb(221, 221, 221);
+}
+
+/* Table headers should not generate a double border */
+.panel .table thead tr th {
+    border-bottom: none;
+}
+
+.panel-heading {
+    background: #F5F5F5;
+    height: 44px;
+}
+
+/* Vertically center dropdown buttons in panel headers */
+.panel-heading .btn {
+    margin-top: -3px;
+}
+
+/* HACK: Workaround for https://github.com/patternfly/patternfly/issues/174*/
+
+.page-ct {
+    margin-top: 20px;
+}
+
+/* Break up sidebar in columns in smaller sizes*/
+
+@media (min-width: 992px) {
+    .info-table-ct-container .info-table-ct {
+        table-layout: fixed;
+        width: 100%;
+    }
+}
+
+.info-table-ct td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 0.75em;
+    padding-top: 0.25em;
+    vertical-align: top;
+    line-height: 26px;
+}
+
+.info-table-ct td:first-child {
+    text-align: right;
+    color: #888888;
+}
+
+.info-table-ct td:not(:first-child) {
+    color: black;
+}
+
+.info-table-ct td button {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.form-table-ct {
+    width: 100%;
+}
+
+.form-table-ct td {
+    padding-left: 0.75em;
+    padding-top: 0.25em;
+    line-height: 26px;
+}
+
+.form-table-ct td.top {
+    vertical-align: top;
+}
+
+.form-table-ct td:first-child {
+    text-align: right;
+    white-space: nowrap;
+    color: #888888;
+    width: 5px; /* will be expanded by nowrap */
+}
+
+.form-table-ct td[colspan] {
+    text-align: inherit;
+}
+
+.form-table-ct td {
+    height: 26px;
+}
+
+.form-table-ct td.header {
+    font-weight: bold;
+    text-align: left;
+    color: #4D5258;
+    padding: 20px 0 10px 0;
+}
+
+.form-table-ct label input[type='radio'],
+.form-table-ct label input[type='checkbox'] {
+    margin-right: 4px;
+}
+
+.form-table-ct label {
+    margin-bottom: 0px;
+}
+
+.form-table-ct label span {
+    vertical-align: super;
+}
+
+/*
+ * Control buttons such as play and stop
+ * Used with .btn .btn-default
+ */
+
+.btn-control-ct,
+.btn-control-ct:hover {
+    background-position: center center;
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-image: none;
+    -webkit-border-radius: 2;
+    -moz-border-radius: 2;
+    border-radius: 2px;
+    height: 28px;
+    width: 28px;
+    box-shadow: none;
+}
+
+.btn-control-ct {
+    background-color: #eeeeee;
+}
+
+.btn-control-ct:hover {
+   background-color: #e0e0e0;
+}
+
+.highlight-ct {
+    background-color: #d4edfa;
+}
+
+/*
+ * Fix up table row hovering.
+ *
+ * When you hover over table rows it's because they're clickable.
+ * Make the table row hover color match the list-group-item.
+ */
+.table-hover > tbody > tr > td,
+.table-hover > tbody > tr > th,
+.dialog-list-ct .list-group-item {
+    cursor: pointer;
+}
+.table-hover > tbody > tr:hover > td,
+.table-hover > tbody > tr:hover > th,
+.dialog-list-ct .list-group-item:hover:not(.active) {
+    background-color: #d4edfa;
+}
+
+/* Override patternfly to fit buttons and such */
+.table > thead > tr > th,
+.table > tbody > tr > td {
+    padding: 8px;
+}
+
+/* Override the heavy patternfly headers */
+.table > thead {
+    background-image: none;
+    background-color: #fff;
+}
+
+/* Make things line up */
+.table tbody tr td:first-child,
+.table thead tr th:first-child {
+    padding-left: 15px;
+}
+
+.table tbody tr td:last-child,
+.table thead tr th:last-child {
+    padding-right: 15px;
+}
+
+/* Ensure that btn-default is at least as wide as tall
+ * Avoids the problem with short labels */
+
+.btn {
+    min-height: 26px;
+    min-width: 26px;
+}
+
+.list-group h4 {
+    margin-top: 0px;
+    margin-bottom: 5px;
+}
+
+.list-group p {
+    margin: 0px;
+}
+
+/* Well and Blankslate */
+
+.curtains-ct {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+}
+
+.panel .well {
+    margin-bottom: 0px;
+    border: none;
+    border-radius: 0px;
+    background-color: #FAFAFA;
+}
+
+.well.blank-slate-pf {
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05) inset;
+    padding-top: 40px;
+}
+
+.blank-slate-pf .spinner-lg {
+    height: 58px;
+    width: 58px;
+}
+
+/* Alert fixups */
+
+.modal-content .alert {
+    text-align: left;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.modal-content .alert .fa {
+    position: absolute;
+    left: 10px;
+    top: 6px;
+    font-size: 20px;
+}
+
+.modal-content .alert .pficon {
+    top: 5px;
+}
+
+.alert.alert-danger .fa {
+    color: #af151a;
+}
+
+/* Dialog patterns */
+
+.dialog-wait-ct {
+    margin-top: 3px;
+}
+
+.dialog-wait-ct .spinner {
+    display: inline-block;
+}
+
+.dialog-wait-ct span {
+    vertical-align: 4px;
+    padding-left: 10px;
+}
+
+/* Our terminal or logs */
+.console-ct {
+    font-family: Menlo, Monaco, Consolas, monospace;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 10px;
+    text-align: center;
+    line-height: 1;
+}
+
+@media (min-width: 568px) {
+    .console-ct {
+        font-size: 12px;
+    }
+}
+
+.console-ct > pre {
+    padding: 10px;
+    text-align: left;
+    display: block;
+    font-family: inherit;
+    font-size: inherit;
+    width: 48em;
+    height: 310px;
+    overflow-y: scroll;
+    white-space: pre-wrap;
+    margin: 0 auto;
+}
+
+.console-ct > .terminal {
+    color: #F0F0F0;
+    text-align: left;
+    outline: medium none;
+    background-color: black;
+    border: 1px solid black;
+    padding: 10px;
+    display: inline-block; /* size DIV to contents */
+}
+
+.console-ct .terminal-cursor {
+    color: #000;
+    background: #f0f0f0;
+}
+
+.console-ct-container {
+    display: table;
+    margin: 1em auto;
+}
+
+/* On/off switch */
+
+.btn-onoff-ct {
+    margin: 1px 0px;
+    text-transform: uppercase;
+}
+
+.btn-onoff-ct .btn {
+    color: transparent;
+    border-color: #B7B7B7;
+    padding: 2px 6px 1px 6px;
+    background-color: white;
+    background-image: linear-gradient(to bottom, rgb(250, 250, 250) 0px, rgb(237, 237, 237) 100%);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    width: 37px;
+}
+
+.btn-onoff-ct .btn:first-child {
+    border-right: #00435F;
+}
+
+.btn-onoff-ct .btn:last-child {
+    border-left: #00435F;
+    padding-left: 5px;
+}
+
+.btn-onoff-ct .btn.active {
+    background-image: none;
+    width: 36px;
+}
+
+.btn-onoff-ct .btn.active:first-child {
+    background-color: #0086CF;
+    color: white;
+    border-right: 1px solid #0071b0;
+}
+
+.btn-onoff-ct .btn.active:last-child {
+    color: #000;
+    border-left: 1px solid #d6d6d6;
+}
+
+.btn-onoff-ct .btn.disabled {
+    pointer-events: none;
+    color: transparent !important;
+}
+
+.btn-onoff-ct .btn.active.disabled {
+    background-color: #888 !important;
+    color: white !important;
+}
+
+/* Listing pattern */
+
+table.listing-ct {
+    margin-top: 15px;
+    min-width: 65%;
+}
+
+table.listing-ct > caption,
+table.listing-ct > thead h3 {
+    font-size: 22px;
+    padding: 10px 0px 10px;
+    font-weight: 300;
+    margin-top: 0px;
+}
+
+table.listing-ct > caption {
+    color: inherit;
+    line-height: 1.1;
+}
+
+table.listing-ct > thead td {
+    padding-top: 20px;
+}
+
+table.listing-ct > thead:first-child td {
+    padding-top: 0px;
+}
+
+table.listing-ct > thead td > a {
+    line-height: 30px;
+    padding: 10px 0px 10px;
+}
+
+table.listing-ct thead th {
+    border-top: 1px solid #eee;
+    font-weight: normal;
+    padding: 10px;
+    color: #888;
+}
+
+table.listing-ct thead th:first-child {
+    padding-left: 20px;
+}
+
+table.listing-ct thead th:last-child {
+    text-align: right;
+}
+
+/* A listing item is a row in the table */
+tbody tr.listing-ct-item {
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+table.listing-ct tbody:last-child {
+    border-bottom: 1px solid #eee;
+}
+table.listing-ct tbody + thead {
+    border-top: 1px solid #eee;
+}
+table.listing-ct tbody.open:last-child {
+    border-bottom: none;
+}
+table.listing-ct tbody.open + thead {
+    border-top: none;
+}
+
+tbody.open tr.listing-ct-item {
+    background-color: #ededed;
+    border-bottom: none;
+    border-top: none;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+
+tbody.open tr.listing-ct-item td,
+tbody.open tr.listing-ct-item th {
+    border-top: 1px solid #ccc;
+}
+
+tbody.open td div.listing-ct-head {
+    background-color: white;
+}
+
+tbody.open .listing-ct-panel {
+    border: 1px solid #ccc;
+}
+
+tbody.open .listing-ct-panel .listing-ct-body {
+    border: none;
+}
+
+tbody.open tr.listing-ct-panel + tr.listing-ct-body {
+    border-top: none;
+}
+
+tbody.open tr.listing-ct-panel td div.listing-ct-head {
+    border: none;
+    border-bottom: 1px solid #ccc;
+}
+
+/* only highlight the row if navigation is available */
+tbody.open tr.listing-ct-item:not(.listing-ct-nonavigate):hover,
+tr.listing-ct-item:not(.listing-ct-nonavigate):hover {
+    background-color: #d4edfa;
+}
+
+/* use gray for a row if navigation isn't available */
+tr.listing-ct-item.listing-ct-nonavigate:hover {
+    background-color: #ededed;
+}
+
+/* if we can't navigate to a row but expand is available, highlight the caret */
+tr.listing-ct-item.listing-ct-nonavigate:hover td.listing-ct-toggle {
+    color: #65bedf;
+}
+
+tr.listing-ct-item .listing-ct-toggle {
+    padding: 0 !important;
+    width: 35px;
+    color: #000000;
+}
+
+table.listing-ct thead .listing-ct-toggle + th,
+tr.listing-ct-item .listing-ct-toggle + td,
+tr.listing-ct-item .listing-ct-toggle + th {
+    padding-left: 10px;
+}
+
+td.listing-ct-toggle:hover {
+    color: #65bedf;
+    background-color: #ededed;
+}
+
+td.listing-ct-toggle i {
+    font-size: 24px;
+    visibility: hidden;
+}
+
+tr.listing-ct-item:hover td.listing-ct-toggle i,
+tr.listing-ct-item td.listing-ct-toggle:hover i {
+    visibility: visible;
+}
+
+td.listing-ct-toggle i:before {
+    content: "\f105";
+}
+
+tbody.open td.listing-ct-toggle i {
+    visibility: visible;
+}
+
+tbody.open td.listing-ct-toggle i:before {
+    content: "\f107";
+}
+
+td.listing-ct-toggle:hover ~ td,
+td.listing-ct-toggle:hover ~ th
+{
+    background-color: #ededed;
+}
+
+
+/* Listing items have decent padding ... */
+tr.listing-ct-item td {
+    padding: 10px;
+}
+
+tr.listing-ct-item th {
+    padding: 10px 10px 10px 15px;
+}
+
+/* Listing caption is text next to the actions, text should be similar to nav (.nav-tabs-pf > li > a)*/
+.listing-ct-actions > .listing-ct-caption {
+    font-size: 13px;
+    vertical-align: middle;
+    color: #4d5258;
+    padding-right: 5px;
+}
+
+/* Listing actions can be used directly as a cell */
+tr.listing-ct-item td.listing-ct-actions,
+td.listing-ct-actions {
+    padding: 5px 10px;
+    text-align: right;
+    float: none;
+}
+
+.listing-ct-head .listing-ct-actions {
+    margin-top: -7px;
+}
+
+tr.listing-ct-item td:first-child {
+    padding-left: 20px;
+}
+
+/* The last column of a listing is always right aligned */
+tr.listing-ct-item td:last-child {
+    text-align: right;
+}
+
+div.listing-ct-panel {
+    box-shadow: 1px 1px 1px 1px #f5f5f5;
+    margin-bottom: 15px;
+}
+
+div.listing-ct-maybe {
+    border: 1px dashed #ddd;
+    box-shadow: none;
+}
+
+div.listing-ct-head {
+    padding: 10px 10px 0px 10px;
+    background-color: #f6f6f6;
+    border-color: #ccc;
+    border-style: solid;
+    border-width: 1px 1px 0px 1px;
+    overflow: hidden;
+}
+
+div.listing-ct-head:last-child {
+    padding-bottom: 10px;
+}
+
+div.listing-ct-maybe div.listing-ct-head,
+div.listing-ct-maybe div.listing-ct-body {
+    background-color: white;
+    border: none;
+}
+
+tbody.active .listing-ct-head {
+    border-top: 3px solid #0099d3;
+}
+
+.listing-ct-head h3 {
+    font-weight: normal;
+    font-size: 18px;
+    margin-top: 0px;
+    margin-left: 5px;
+    margin-bottom: 10px;
+}
+
+.listing-ct-head h3 i {
+    float: left;
+    padding-right: 7px;
+}
+
+.listing-ct-head .nav li a {
+    padding-top: 0px;
+    font-size: 13px;
+}
+
+.listing-ct-head .nav-tabs {
+    border-bottom: none;
+}
+
+.listing-ct-head .nav-tabs-pf {
+    margin-left: -10px;
+}
+
+/* To display info instead of tabs */
+.listing-ct-head dl {
+    display: inline-block;
+    height: 1.6em;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    margin-right: 45px;
+    margin-left: 5px;
+}
+
+.listing-ct-head dt {
+    font-weight: normal;
+    display: inline;
+    margin-right: 0.5em;
+    color: #888;
+}
+
+.listing-ct-head dd {
+    display: inline;
+    color: black;
+}
+
+.listing-ct-body {
+    padding: 20px 25px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    background-color: white;
+}
+
+.listing-ct-inline > .listing-ct-body {
+    border: none;
+    padding-top: 0px;
+    padding-left: 20px;
+    padding-bottom: 0px;
+}
+
+.listing-ct-inline > h3 {
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+    margin-top: 30px;
+}
+
+.listing-ct-inline > h3:first-child {
+    border-top: none;
+    padding-top: 0px;
+    margin-top: 20px;
+}
+
+.listing-ct-actions {
+    float: right;
+    min-height: 26px;
+}
+
+.listing-ct-status {
+    float: right;
+    clear: right;
+}
+
+.listing-ct-error {
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+
+.listing-ct-error.alert {
+    margin-bottom: 0;
+}
+
+.listing-ct-body tt {
+    font-size: 12px
+}
+
+.listing-ct-body dl {
+    margin: 0;
+}
+
+.listing-ct-body dl dd dl.inline-dl dt,
+.listing-ct-body dt {
+    clear: left;
+    float: left;
+    width: 100px;
+    min-height: 26px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #888;
+    font-weight: normal;
+}
+
+.listing-ct-body dt {
+    text-align: right;
+}
+
+.listing-ct-body dl dd dl dt {
+    text-align: left;
+}
+
+.listing-ct-body dd {
+    margin-left: 110px;
+    min-height: 26px;
+    max-width: 1000px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.listing-ct-body dl.full-width dt {
+    text-align: left;
+    min-width: none;
+    max-width: none;
+    float: none;
+    width: auto;
+}
+
+.listing-ct-body dl.full-width dd {
+    margin-left: 0px;
+}
+
+table.listing-ct tbody.open {
+    box-shadow: 1px 1px 1px 1px #f5f5f5;
+}
+
+/* By default these thincgs are hidden */
+tbody tr.listing-ct-panel,
+tbody tr.listing-ct-body {
+    display: none;
+}
+
+/* ... unless they are in the right state */
+tbody.open tr.listing-ct-head,
+tbody.open tr.listing-ct-panel,
+tbody.open tr.listing-ct-body {
+    display: table-row;
+}
+
+tbody.open tr.listing-ct-head {
+    border-color: #ccc;
+    border-style: solid;
+    border-width: 1px 1px 0px 1px;
+    border-top: 3px solid #0099d3;
+    background-color: #f6f6f6;
+}
+
+tr.listing-ct-head + tr.listing-ct-head {
+    border-top: none;
+}
+
+tr.listing-ct-head + tr.listing-ct-head td {
+    padding: 0px 10px 0px 10px;
+}
+
+tr.listing-ct-body td {
+    padding: 20px 25px;
+    font-size: 13px;
+}
+
+.listing-ct-empty {
+    color: #888;
+    text-align: center;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+/* Used at the end of a group of tbody to show an 'empty' message */
+thead.listing-ct-empty td,
+table.listing-ct > thead.listing-ct-empty td {
+    padding: 10px;
+}
+
+tbody + thead.listing-ct-empty {
+    display: none;
+}
+
+/* Listing pattern defaults to using full width of parent */
+.listing-ct-wide {
+    width: 100%;
+}
+
+
+/* Fix up nav-tabs-pf to work properly */
+
+.nav-tabs-pf > li:first-child a {
+    margin-left: 0px !important;
+    padding-left: 15px !important;
+}
+
+.nav-tabs-pf > li a:before {
+    right: 0px !important;
+}
+
+.nav-tabs-pf > li > a:active:before,
+.nav-tabs-pf > li > a:focus:before,
+.nav-tabs-pf > li > a:hover:before,
+.nav-tabs-pf > li.active a:before {
+    height: 3px;
+    left: 0px;
+}
+
+/* Small list inside a dialog */
+.dialog-list-ct {
+    max-height: 230px;
+    overflow-x: auto;
+    border: 1px solid #CCC;
+    margin-bottom: 0px;
+}
+
+/* HACK: https://github.com/patternfly/patternfly/issues/255 */
+input[type=number] {
+  padding: 0 0 0 5px;
+}
+
+/* Make a dialog visible */
+.dialog-ct-visible {
+    display: block;
+}
+
+/* Align these buttons more nicely */
+.btn.fa-minus,
+.btn.fa-plus {
+    padding-top: 4px;
+}

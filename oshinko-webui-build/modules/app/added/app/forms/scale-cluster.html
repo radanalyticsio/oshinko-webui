@@ -1,0 +1,31 @@
+<!--
+/*
+ * This file is part of Oshinko.
+ *
+ * Copyright (C) 2016 Red Hat, Inc.
+ *
+ */
+-->
+<modal-dialog>
+    <div class="modal-header">
+        <h4 class="modal-title" translatable="yes">Scale cluster {{clusterName}}</h4>
+    </div>
+    <div class="modal-body" ng-keyup="submitForm($event, 'scaleCluster', workerCount)">
+        <form>
+            <fieldset ng-disabled="disableInputs">
+                <div class="form-group">
+                    <label for="nummasters" id="nummasters">Number of masters</label>
+                    <input name="nummasters" class="form-control input-lg" type="number" min="0" max="1" ng-model="masterCount" value="{{masterCount}}"/>
+                </div>
+                <div class="form-group">
+                    <label for="numworkers" id="numworkers">Number of workers</label>
+                    <input name="numworkers" class="form-control input-lg" type="number" min="0" ng-model="workerCount" value="{{workerCount}}"/>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button id="cancelbutton" class="btn btn-default btn-cancel" translatable="yes">Cancel</button>
+        <button id="scalebutton" class="btn btn-primary" translatable="yes" ng-click="complete(scaleCluster(clusterName, workerCount, masterCount))">Scale</button>
+    </div>
+</modal-dialog>

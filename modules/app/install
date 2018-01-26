@@ -1,0 +1,14 @@
+#!/bin/sh
+set -u
+set -e
+
+SRC=/tmp/scripts/app/added
+
+cd $SRC/app
+
+cp -a css /usr/src/app/app
+cp -a js /usr/src/app/app
+cp -a partials /usr/src/app/app
+cp -a forms /usr/src/app/app
+cp -a config.template /usr/src/app/app
+cp -a *.html /usr/src/app/app

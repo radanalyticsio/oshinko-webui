@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if ! [ -s "$1" ]; then
+    filename=$(basename $1)
+    version=$(echo $filename | cut -d '-' -f5)
+    ref=$(echo $filename | cut -d '-' -f6)
+    wget https://github.com/openshift/origin/releases/download/$version/openshift-origin-client-tools-$version-$ref-linux-64bit.tar.gz -O $1
+fi

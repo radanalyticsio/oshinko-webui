@@ -1,0 +1,27 @@
+schema_version: 1
+
+version: 0.4.3
+release: community
+name: oshinko-webui-openshift
+from: nodesource/centos7:6.3.1
+ports:
+  - value: 8080
+modules:
+  install:
+    - name: npm_bower
+    - name: launch
+    - name: oc
+    - name: app
+    - name: chown
+packages:
+  install:
+    - wget
+    - git
+    - bzip2
+artifacts:
+    - url: https://github.com/openshift/origin/releases/download/v3.7.0/openshift-origin-client-tools-v3.7.0-7ed6862-linux-64bit.tar.gz
+      md5: b1f6357fc37614d01569fe792d8eb922
+run:
+  cmd:
+    - "/usr/src/app/launch.sh"
+  workdir: /usr/src/app
