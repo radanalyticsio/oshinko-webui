@@ -1,0 +1,20 @@
+<!--
+/*
+ * This file is part of Oshinko.
+ *
+ * Copyright (C) 2016 Red Hat, Inc.
+ *
+ */
+-->
+<modal-dialog>
+    <div class="modal-header">
+        <h4 class="modal-title" translatable="yes">Delete cluster</h4>
+    </div>
+    <div class="modal-body">
+        <span>Do you want to delete cluster: {{clusterName}}?</span>
+    </div>
+    <div class="modal-footer">
+        <button id="cancelbutton" class="btn btn-default btn-cancel" translatable="yes">Cancel</button>
+        <button id="deletebutton" class="btn btn-danger" translatable="yes" ng-click="complete(deleteCluster())">Delete</button>
+    </div>
+</modal-dialog>

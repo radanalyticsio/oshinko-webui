@@ -1,0 +1,282 @@
+/*
+ * This file is part of Oshinko.
+ *
+ * Copyright (C) 2016 Red Hat, Inc.
+ *
+ */
+
+
+/* app css stylesheet */
+
+.login-pf {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  position: absolute;
+  top: 40px;
+  width: 100%;
+  padding-top:30px;
+}
+
+.login-pf .details {
+    border-left: 1px solid #474747;
+    padding-left: 40px;
+}
+
+.newbutton {
+  padding-right: 20px;
+}
+
+.capitalize {
+   text-transform: capitalize;
+}
+
+.nav-tabs {
+  margin-bottom:20px !important;
+}
+
+/* login page css */
+.login-pf {
+  height: 100%;
+}
+.login-pf .container {
+  background-color: #181818;
+  background-color: rgba(255, 255, 255, 0.055);
+  clear: right;
+  padding-bottom: 40px;
+  padding-top: 20px;
+  width: auto;
+}
+
+.login-pf .container .details p:first-child {
+  border-top: 1px solid #474747;
+  padding-top: 25px;
+  margin-top: 25px;
+}
+
+.login-pf .container .details p {
+  margin-bottom: 2px;
+}
+.login-pf .container .form-horizontal .control-label {
+  font-size: 13px;
+  font-weight: 400;
+  text-align: left;
+}
+.login-pf .container .form-horizontal .form-group:last-child,
+.login-pf .container .form-horizontal .form-group:last-child .help-block:last-child {
+  margin-bottom: 0;
+}
+.login-pf .container .help-block {
+  color: #fff;
+}
+.login-button-container{
+    float: right;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 25%;
+}
+/* login page css */
+
+
+
+/* landing page css */
+
+.container-cards-pf {
+    display: flex;
+    margin-top: 10px;
+}
+
+.card-pf {
+    flex-grow: 1;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    flex-basis: 25%;
+}
+
+.card-pf-aggregate-status .card-pf-body {
+    margin-bottom: 0px;
+}
+
+.card-pf-wide {
+    flex-basis: ~"calc(75% + 20px)";
+}
+
+.card-pf-double {
+    flex-basis: ~"calc(66% - 76px)";
+}
+
+.dashboard-cards {
+    width: 100%;
+    max-width: 1024px;
+    padding-right: 7px;
+    padding-left: 20px;
+}
+
+.card-pf-aggregate-status-notification .spinner {
+    display: inline-block;
+    margin-right: 7px;
+}
+
+.card-pf-aggregate-status-text {
+    font-size: 13px;
+    vertical-align: 3px;
+}
+
+.card-pf-heading {
+    margin-bottom: 0px;
+
+    button {
+        margin: 15px 0px;
+    }
+
+    i {
+        font-size: 24px;
+        line-height: 16px;
+        vertical-align: top;
+        padding-right: 5px;
+    }
+}
+
+.card-pf-footer {
+    min-height: 5em;
+}
+
+.card-pf-body {
+    margin-top: 10px;
+    margin-bottom: auto;
+}
+
+.card-pf-body.blank-slate-pf {
+    background: transparent;
+    padding-top: 20px;
+}
+
+.card-pf-body table.listing-ct {
+    margin-top: 0px;
+    width: 100%;
+}
+
+.card-pf-body table.listing-ct thead th {
+    border-top: none;
+}
+
+.card-pf-body table.listing-ct tbody:last-child {
+    border-bottom: none;
+}
+
+.card-pf-body table.listing-ct tbody:last-child tr:last-child {
+    border-bottom: none;
+}
+
+
+/* cluster-panel css */
+.cluster-panel {
+    padding-right: 25px;
+    padding-top: 5px;
+}
+
+.cluster-panel-actions {
+    padding-right: 5px;
+    padding-top: 5px;
+}
+
+table.cluster-body {
+    margin-top: 0px;
+
+    thead.th {
+        border-top:0px;
+        font-size: 12px;
+    }
+
+    tr {
+        display: table-row;
+        vertical-align: inherit;
+        border-color: inherit;
+    }
+
+    tr.listing-ct-item {
+        border-top: 1px solid color("#eee");
+        border-bottom: 1px solid color("#eee");
+        cursor: pointer;
+    }
+}
+table.cluster-listing {
+    max-width: 2000px;
+    min-width: 85%;
+
+    thead {
+        th {
+            border-top: 0px;
+        }
+    }
+
+    tr {
+        display: table-row;
+        vertical-align: inherit;
+        border-color: inherit;
+    }
+
+    .details-listing {
+        min-width: 70% !important;
+    }
+
+    tr.listing-ct-item {
+        border-top: 1px solid color("#eee");
+        border-bottom: 1px solid color("#eee");
+        cursor: pointer;
+    }
+
+    tr.inner-project-listing {
+        display: table-row;
+    }
+
+    tbody.first {
+        tr.tag-item td {
+            padding-top: 20px;
+        }
+    }
+
+    tbody.last {
+        tr.listing-ct-item.tag-item td:first-child {
+            background-size: 100% 20px;
+            background-repeat: no-repeat;
+        }
+    }
+
+    tr.tag-item td {
+        padding-bottom: 0px;
+    }
+
+    tr.listing-ct-item tt {
+        color: @metadata-color;
+    }
+}
+
+.dl-horizontal dt{
+    text-align: left !important;
+    width: auto;
+    padding-right: 1em;
+}
+
+.dl-horizontal dd{
+    margin-left: 0;
+    margin-bottom: 0;
+}
+
+.close-icon {
+    color:#000000;
+}
+
+/* Making table appearance similar to console */
+.table.table-bordered > tbody > tr td, .table.table-bordered > tbody > tr th, .table.table-bordered > thead > tr td, .table.table-bordered > thead > tr th {
+    border-left: 0;
+    border-right: 0;
+    padding-bottom: 8px;
+    padding-top: 8px;
+    vertical-align: middle
+}
+
+/* Removing outline when details tabs are focused */
+.nav-tabs > li > a:focus {
+    outline: 0;
+}

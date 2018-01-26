@@ -1,0 +1,73 @@
+<!--
+/*
+ * This file is part of Oshinko.
+ *
+ * Copyright (C) 2016 Red Hat, Inc.
+ *
+ */
+-->
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <base href="/webui">
+        <title>Spark Cluster Management</title>
+        <link rel="stylesheet" href="/webui/css/app.css"/>
+        <link rel="stylesheet" href="/webui/css/cockpit.css"/>
+        <link rel="stylesheet" href="/webui/bower_components/patternfly/dist/css/patternfly.min.css">
+        <link rel="stylesheet" href="/webui/bower_components/patternfly/dist/css/patternfly-additions.min.css">
+        <link rel="stylesheet" href="/webui/bower_components/angular-patternfly/dist/styles/angular-patternfly.min.css">
+        <script src="/webui/bower_components/jquery/dist/jquery.js"></script>
+        <script src="/webui/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="/webui/bower_components/patternfly/dist/js/patternfly.min.js"></script>
+        <script src="/webui/bower_components/angular/angular.js"></script>
+        <script src="/webui/bower_components/angular-patternfly/dist/angular-patternfly.min.js"></script>
+        <script src="/webui/bower_components/uri.js/src/URI.js"></script>
+        <script src="/webui/bower_components/uri.js/src/URITemplate.js"></script>
+        <script src="/webui/bower_components/uri.js/src/jquery.URI.js"></script>
+        <script src="/webui/bower_components/uri.js/src/URI.fragmentURI.js"></script>
+        <script src="/webui/bower_components/angular-route/angular-route.js"></script>
+        <script src="/webui/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+        <script src="/webui/bower_components/angular-animate/angular-animate.min.js"></script>
+        <script src="/webui/bower_components/angular-sanitize/angular-sanitize.js"></script>
+        <script src="/webui/config.local.js"></script>
+        <script src="/webui/bower_components/js-logger/src/logger.js"></script>
+        <script src="/webui/bower_components/hawtio-core/dist/hawtio-core.js"></script>
+        <script src="/webui/bower_components/hawtio-extension-service/dist/hawtio-extension-service.js"></script>
+        <script src="/webui/bower_components/lodash/lodash.js"></script>
+        <script src="/webui/bower_components/angular-utf8-base64/angular-utf8-base64.js"></script>
+        <script src="/webui/bower_components/kubernetes-label-selector/labelSelector.js"></script>
+        <script src="/webui/js/app.js"></script>
+        <script src="/webui/js/listing.js"></script>
+        <script src="/webui/js/dialog.js"></script>
+        <script src="/webui/js/DataService.js"></script>
+        <script src="/webui/js/clusterops.js"></script>
+        <script src="/webui/js/controllers.js"></script>
+        <script src="/webui/js/directives.js"></script>
+        <script src="/webui/js/factories.js"></script>
+
+
+    </head>
+    <body ng-controller="NavCtrl">
+        <nav class="navbar navbar-default navbar-pf" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Oshinko Spark Cluster Management</a>
+            </div>
+            <div class="collapse navbar-collapse navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-primary">
+                    <li ng-class="{active: isActive('/clusters')}">
+                        <a href="#/clusters">Clusters</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div ng-view></div>
+    </body>
+</html>

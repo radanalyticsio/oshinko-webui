@@ -1,0 +1,6 @@
+#!/bin/sh
+set -u
+set -e
+
+mkdir -p /usr/src/app
+chmod a+rwX -R /usr/src/app
