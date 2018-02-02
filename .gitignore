@@ -44,7 +44,8 @@ target/
 .ipynb_checkpoints
 
 # Development related
-.idea/
+.idea/*
+*.iml
 node_modules/
 debug
 test/localconf.js
