@@ -41,6 +41,8 @@ def prepareTests() {
 
 	// login to openshift instance
 	sh('oc login https://$OCP_HOSTNAME:8443 -u $OCP_USER -p $OCP_PASSWORD --insecure-skip-tls-verify=true')
+	// let's start on a specific project, to prevent start on a random project which could be deleted in the meantime
+	sh('oc project testsuite')
 
 	// start xvfb
 	sh('Xvfb -ac :99 -screen 0 1280x1024x16 &')
@@ -71,9 +73,6 @@ parallel testStandard: {
 				try {
 					prepareTests()
 
-					sh('oc project webui-standard')
-					sh('oc delete all --all')
-
 					// run tests
 					dir('oshinko-webui') {
 						sh('make test-e2e | tee -a test-standard.log && exit ${PIPESTATUS[0]}')
@@ -87,7 +86,6 @@ parallel testStandard: {
 					throw err
 				} finally {
 					dir('oshinko-webui') {
-						sh('oc delete all --all')
 						archiveArtifacts(allowEmptyArchive: true, artifacts: 'test-standard.log')
 					}
 				}
@@ -102,9 +100,6 @@ parallel testStandard: {
 				try {
 					prepareTests()
 
-					sh('oc project webui-secure')
-					sh('oc delete all --all')
-
 					// run tests
 					dir('oshinko-webui') {
 						sh('make test-e2e-secure | tee -a test-secure.log && exit ${PIPESTATUS[0]}')
@@ -118,7 +113,6 @@ parallel testStandard: {
 					throw err
 				} finally {
 					dir('oshinko-webui') {
-						sh('oc delete all --all')
 						archiveArtifacts(allowEmptyArchive: true, artifacts: 'test-secure.log')
 					}
 				}
