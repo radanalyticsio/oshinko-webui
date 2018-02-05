@@ -35,6 +35,6 @@
   "resolutions": {
     "angular": "1.5.11",
     "jquery": "2.1.4",
-    "lodash": "4.17.4"
+    "lodash": "4.17.5"
   }
 }
