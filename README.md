@@ -116,15 +116,14 @@ of the test.
 
 As a convenience, the *test-e2e* and *test-e2e-secure* make
 targets can be used to run the test. These targets will
-first build a local image and then run the test with defaults.
+first create a new OpenShift project with prefix *webui-*,
+ build a local image and then run the test with defaults.
 For example:
 
 ```sh
-$ oc new-project mywebuitest
 $ make test-e2e
 ...
 $
-$ oc new-project mysecuretest
 $ make test-e2e-secure
 ...
 ```
