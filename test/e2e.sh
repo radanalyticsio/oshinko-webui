@@ -221,8 +221,6 @@ set +e # For some reason the result here from head is not 0 even though we get t
 namespace=${name}-$(date -Ins | md5sum | tr -dc 'a-z0-9' | fold -w 6 | head -n 1)
 set -e
 oc new-project $namespace &> /dev/null
-oc create sa oshinko &> /dev/null
-oc policy add-role-to-user admin system:serviceaccount:$namespace:oshinko &> /dev/null
 echo Using project $namespace
 
 
