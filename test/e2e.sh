@@ -213,6 +213,19 @@ function check_for_xvfb {
     fi
 }
 
+orig_project=$(oc project -q)
+
+# Create the project here
+name="webui"
+set +e # For some reason the result here from head is not 0 even though we get the desired result
+namespace=${name}-$(date -Ins | md5sum | tr -dc 'a-z0-9' | fold -w 6 | head -n 1)
+set -e
+oc new-project $namespace &> /dev/null
+oc create sa oshinko &> /dev/null
+oc policy add-role-to-user admin system:serviceaccount:$namespace:oshinko &> /dev/null
+echo Using project $namespace
+
+
 # Modify the template if we're using a local image with no registry, i.e. we're in an oc cluster up case
 # In this case we don't need a push at all, but we need to have a pullpolicy of IfNotPresent
 print_test_env
@@ -239,3 +252,7 @@ if [ "$WEBUI_TEST_SECURE" == true ]; then
 else
     protractor test/conf.js --baseUrl="http://$TESTROUTE/webui" --specs=test/spec/all-functionality-insecure.js
 fi
+
+# Cleanup
+oc project $orig_project
+oc delete project $namespace
