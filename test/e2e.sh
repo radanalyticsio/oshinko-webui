@@ -216,9 +216,9 @@ function check_for_xvfb {
 orig_project=$(oc project -q)
 
 # Create the project here
-name="webui"
+proj_name_prefix="webui"
 set +e # For some reason the result here from head is not 0 even though we get the desired result
-namespace=${name}-$(date -Ins | md5sum | tr -dc 'a-z0-9' | fold -w 6 | head -n 1)
+namespace=${proj_name_prefix}-$(date -Ins | md5sum | tr -dc 'a-z0-9' | fold -w 6 | head -n 1)
 set -e
 oc new-project $namespace &> /dev/null
 echo Using project $namespace
