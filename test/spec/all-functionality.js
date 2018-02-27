@@ -16,7 +16,6 @@ describe('Initial page functionality', function () {
   it('should login and display the clusters page', function () {
     browser.waitForAngularEnabled(false);
     browser.get('/webui');
-    element(by.tagName("button")).click();
     element(by.name('username')).sendKeys(browser.params.securelogin.name);
     element(by.name('password')).sendKeys(browser.params.securelogin.password);
     element(by.tagName("button")).click();
