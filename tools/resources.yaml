@@ -653,7 +653,7 @@ items:
             spec:
               containers:
                 - name: oauth-proxy
-                  image: openshift/oauth-proxy:v1.0.0
+                  image: openshift/oauth-proxy:v1.1.0
                   imagePullPolicy: IfNotPresent
                   ports:
                   - containerPort: 8443
@@ -666,6 +666,7 @@ items:
                     - --tls-cert=/etc/tls/private/tls.crt
                     - --tls-key=/etc/tls/private/tls.key
                     - --cookie-secret=SECRET
+                    - --skip-provider-button
                     - -openshift-sar={"namespace":"$(CURRENT_NAMESPACE)","resource":"services","name":"${OSHINKO_WEB_NAME}","verb":"get"}
                     - --proxy-prefix=/webui
                     - -cookie-expire=24h0m0s
