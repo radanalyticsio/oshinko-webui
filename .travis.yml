@@ -10,6 +10,7 @@ addons:
   apt:
     packages:
       - net-tools
+  chrome: stable
 matrix:
   # no need to include the build target at present because the template
   # tests perform builds from the local source to do the tests
