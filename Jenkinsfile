@@ -53,7 +53,7 @@ def buildUrl
 def globalEnvVariables = ["WEBUI_TEST_EXTERNAL_REGISTRY=$EXTERNAL_DOCKER_REGISTRY", "WEBUI_TEST_EXTERNAL_USER=$EXTERNAL_DOCKER_REGISTRY_USER", "WEBUI_TEST_EXTERNAL_PASSWORD=$EXTERNAL_DOCKER_REGISTRY_PASSWORD", "DISPLAY=:99.0"]
 
 
-node {
+node('radanalytics-test') {
 	stage('init') {
 		// generate build url
 		buildUrl = sh(script: 'curl https://url.corp.redhat.com/new?$BUILD_URL', returnStdout: true)
@@ -66,7 +66,7 @@ node {
 }
 
 parallel testStandard: {
-	node {
+	node('radanalytics-test') {
 		stage('Test standard') {
 			withEnv(globalEnvVariables + ["GOPATH=$WORKSPACE", "KUBECONFIG=$WORKSPACE/client/kubeconfig", "PATH+OC_PATH=$WORKSPACE/client"]) {
 
@@ -93,7 +93,7 @@ parallel testStandard: {
 		}
 	}
 }, testSecure: {
-	node {
+	node('radanalytics-test') {
 		stage('Test secure') {
 			withEnv(globalEnvVariables + ["GOPATH=$WORKSPACE", "KUBECONFIG=$WORKSPACE/client/kubeconfig", "PATH+OC_PATH=$WORKSPACE/client", "WEBUI_TEST_SECURE_USER=$OCP_USER", "WEBUI_TEST_SECURE_PASSWORD=$OCP_PASSWORD"]) {
 
