@@ -21,8 +21,8 @@ FROM nodesource/centos7:6.3.1
 
 # Labels
 LABEL \
-      io.cekit.version="2.0.0rc1"  \
-      org.concrt.version="2.0.0rc1" 
+      io.cekit.version="2.0.0rc4"  \
+      org.concrt.version="2.0.0rc4" 
 
 # Exposed ports
 EXPOSE 8080
