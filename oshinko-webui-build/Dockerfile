@@ -24,8 +24,10 @@ ENV JBOSS_IMAGE_NAME="oshinko-webui-openshift" \
 # Labels
 LABEL name="$JBOSS_IMAGE_NAME" \
       version="$JBOSS_IMAGE_VERSION" \
-      architecture="x86_64" \
-      com.redhat.component="oshinko-webui-openshift"
+      architecture="x86_64"  \
+      com.redhat.component="oshinko-webui-openshift"  \
+      org.concrt.version="1.4.1"
+
 # Exposed ports
 EXPOSE 8080
 
