@@ -99,8 +99,7 @@ module.controller('ClusterCtrl',
         $scope.cluster_details['allPods'].push(Object.values($scope.cluster_details.master.pod)[0]);
         $scope.cluster_details['containers'] = clusterName + "-m|" + clusterName + "-w";
         var masterPodName = Object.keys($scope.cluster_details.master.pod)[0];
-        var clusterMetrics = $scope.cluster_details.master.pod[masterPodName].metadata.labels["oshinko-metrics-enabled"] && $scope.cluster_details.master.pod[masterPodName].metadata.labels["oshinko-metrics-enabled"] === "true";
-        $scope.metricsAvailable = clusterMetrics && $scope.OSmetricsAvailable ? true : false;
+        $scope.metricsAvailable = $scope.cluster_details.master.pod[masterPodName].metadata.labels["oshinko-metrics-enabled"] && $scope.cluster_details.master.pod[masterPodName].metadata.labels["oshinko-metrics-enabled"] === "true";
       } catch (e) {
         // most likely recently deleted
         $scope.cluster_details = null;
@@ -294,7 +293,8 @@ module.controller('ClusterNewCtrl', function ($q, $scope, dialogData, clusterDat
       masterconfigname: null,
       workerconfigname: null,
       exposewebui: true,
-      sparkimage: ""
+      sparkimage: "",
+      enablemetrics: true
     };
     $scope.advanced = false;
     $scope.context = {
@@ -363,7 +363,7 @@ module.controller('ClusterNewCtrl', function ($q, $scope, dialogData, clusterDat
         exposewebui: $scope.advanced ? $scope.fields.exposewebui : true,
         sparkImage: $scope.advanced && $scope.fields.sparkimage !== "" ? $scope.fields.sparkimage  : "SPARK_DEFAULT",
         sparkDefaultUsed: $scope.advanced && $scope.fields.sparkimage !== "" ? false  : true,
-        metrics: true
+        metrics: $scope.advanced && !$scope.fields.enablemetrics ? false : true,
       };
 
       validate(name, workersInt)

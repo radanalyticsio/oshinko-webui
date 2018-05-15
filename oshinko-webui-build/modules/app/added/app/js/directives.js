@@ -64,7 +64,7 @@ module.directive('clusterPanel', [
             scope.cluster_details['containers'] = clusterName + "-m|" + clusterName + "-w";
             var masterPodName = Object.keys(scope.cluster_details.master.pod)[0];
             var clusterMetrics = scope.cluster_details.master.pod[masterPodName].metadata.labels["oshinko-metrics-enabled"] && scope.cluster_details.master.pod[masterPodName].metadata.labels["oshinko-metrics-enabled"] === "true";
-            scope.metricsAvailable = clusterMetrics && scope.OSmetricsAvailable ? true : false;
+            scope.metricsAvailable = clusterMetrics;
           } catch (e) {
             // most likely recently deleted
             scope.cluster_details = null;
