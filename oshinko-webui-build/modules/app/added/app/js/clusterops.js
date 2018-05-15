@@ -253,7 +253,7 @@ angular.module('Oshinko')
         };
       }
 
-      function sparkDC(image, clusterName, sparkType, workerCount, ports, metrics, sparkConfig, clusterConfig) {
+      function sparkDC(image, clusterName, sparkType, workerCount, ports, sparkConfig, clusterConfig) {
         var suffix = sparkType === "master" ? "-m" : "-w";
         var input = {
           deploymentConfig: {
@@ -265,7 +265,7 @@ angular.module('Oshinko')
           labels: {
             "oshinko-cluster": clusterName,
             "oshinko-type": sparkType,
-            "oshinko-metrics-enabled": metrics ? "true" : "false"
+            "oshinko-metrics-enabled": clusterConfig.metrics ? "true" : "false"
           },
           annotations: {
             "created-by": "oshinko-webui",
@@ -283,11 +283,11 @@ angular.module('Oshinko')
         if (sparkConfig) {
           input.deploymentConfig.envVars.SPARK_CONF_DIR = "/etc/oshinko-spark-configs";
         }
-        if (metrics) {
+        if (clusterConfig.metrics) {
           input.deploymentConfig.envVars.SPARK_METRICS_ON = "true";
         }
         input.scaling.replicas = workerCount ? workerCount : 1;
-        var dc = makeDeploymentConfig(input, image, ports, sparkConfig, metrics);
+        var dc = makeDeploymentConfig(input, image, ports, sparkConfig, clusterConfig.metrics);
         return dc;
       }
 
@@ -510,8 +510,6 @@ angular.module('Oshinko')
           }
         ];
 
-        var enableMetrics = clusterConfigs.metrics;
-
         var sm = null;
         var sw = null;
         var smService = null;
@@ -520,8 +518,8 @@ angular.module('Oshinko')
         var clusterMetricsConfig = null;
         var deferred = $q.defer();
         getFinalConfigs(clusterConfigs, context).then(function (finalConfigs) {
-          sm = sparkDC(finalConfigs.sparkImage, clusterConfigs.clusterName, "master", null, masterPorts, enableMetrics, finalConfigs["masterConfigName"], finalConfigs);
-          sw = sparkDC(finalConfigs.sparkImage, clusterConfigs.clusterName, "worker", finalConfigs["workerCount"], workerPorts, enableMetrics, finalConfigs["workerConfigName"], finalConfigs);
+          sm = sparkDC(finalConfigs.sparkImage, clusterConfigs.clusterName, "master", null, masterPorts, finalConfigs["masterConfigName"], finalConfigs);
+          sw = sparkDC(finalConfigs.sparkImage, clusterConfigs.clusterName, "worker", finalConfigs["workerCount"], workerPorts, finalConfigs["workerConfigName"], finalConfigs);
           smService = sparkService(clusterConfigs.clusterName, clusterConfigs.clusterName, "master", masterServicePort);
           suiService = sparkService(clusterConfigs.clusterName + "-ui", clusterConfigs.clusterName, "webui", uiServicePort);
 
