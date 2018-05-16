@@ -38,7 +38,7 @@ RUN yum install -y wget git bzip2 \
 # Add all artifacts to the /tmp/artifacts
 # directory
 COPY \
-    openshift-origin-client-tools-v3.7.0-7ed6862-linux-64bit.tar.gz \
+    openshift-origin-client-tools-v3.9.0-191fece-linux-64bit.tar.gz \
     /tmp/artifacts/
 
 # Add scripts used to configure the image
