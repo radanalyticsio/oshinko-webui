@@ -18,15 +18,11 @@
 
 FROM nodesource/centos7:6.3.1
 
-# Environment variables
-ENV JBOSS_IMAGE_NAME="oshinko-webui-openshift" \
-    JBOSS_IMAGE_VERSION="0.4.3" 
+
 # Labels
-LABEL name="$JBOSS_IMAGE_NAME" \
-      version="$JBOSS_IMAGE_VERSION" \
-      architecture="x86_64"  \
-      com.redhat.component="oshinko-webui-openshift"  \
-      org.concrt.version="1.4.1"
+LABEL \
+      io.cekit.version="2.0.0rc1"  \
+      org.concrt.version="2.0.0rc1" 
 
 # Exposed ports
 EXPOSE 8080
@@ -35,14 +31,14 @@ USER root
 
 
 # Install required RPMs and ensure that the packages were installed
-RUN yum install -y  wget git bzip2 \
-    && yum clean all && \
+RUN yum install -y wget git bzip2 \
+    && yum clean all && rm -rf /var/cache/yum && \
     rpm -q  wget git bzip2
 
 # Add all artifacts to the /tmp/artifacts
 # directory
 COPY \
-    openshift-origin-client-tools-v3.7.0-7ed6862-linux-64bit.tar.gz \
+    openshift-origin-client-tools-v3.9.0-191fece-linux-64bit.tar.gz \
     /tmp/artifacts/
 
 # Add scripts used to configure the image
