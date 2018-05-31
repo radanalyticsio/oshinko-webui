@@ -56,7 +56,7 @@ if [ "$nodeversion" -lt 6 ]; then
 fi
 
 
-sudo webdriver-manager update
+sudo webdriver-manager update --gecko=false
 npm install
 bower install
 
