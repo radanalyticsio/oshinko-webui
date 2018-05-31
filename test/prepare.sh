@@ -10,6 +10,7 @@ function prepare() {
   oc login -u system:admin
   export REGISTRY_URL=$(oc get svc -n default docker-registry -o jsonpath='{.spec.clusterIP}:{.spec.ports[0].port}')
   oc login -u developer -p developer
+  docker pull radanalyticsio/openshift-spark:2.3-latest
 }
 
 prepare
