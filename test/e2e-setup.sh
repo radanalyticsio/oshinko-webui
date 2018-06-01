@@ -55,10 +55,8 @@ if [ "$nodeversion" -lt 6 ]; then
     exit 1
 fi
 
-
+echo "Updating webdriver"
 sudo webdriver-manager update --gecko=false
-npm install
-bower install
 
 which docker
 if [ "$?" -ne 0 ]; then
