@@ -6,16 +6,19 @@ SCRIPT_DIR=$(dirname $0)
 ADDED_DIR=${SCRIPT_DIR}/added
 ARTIFACTS_DIR=/tmp/artifacts
 
-DISTRO_NAME=openshift-origin-client-tools-v3.9.0-191fece-linux-64bit
+fullname=$(find $ARTIFACTS_DIR -name openshift-origin-client-tools-v[0-9.]*-linux-64bit\.tar\.gz)
+filename=$(basename $fullname)
+noextension="${filename%.*.*}"
 
 # If there is a zero-length oshinko-cli tarball, find the verison in the
 # name and download from github
-fullname=$(find $ARTIFACTS_DIR -name openshift-origin-client-tools-v[0-9.]*-linux-64bit\.tar\.gz)
+
 /bin/sh -x $SCRIPT_DIR/check_for_download $fullname
 
 # unpack the oc tool
 {
     cd /tmp/artifacts
-    tar xzf "$DISTRO_NAME.tar.gz"
-    mv "$DISTRO_NAME"/oc /usr/src/app/oc
+    tar xzf "$filename"
+    mv "$noextension"/oc /usr/src/app/oc
 }
+
