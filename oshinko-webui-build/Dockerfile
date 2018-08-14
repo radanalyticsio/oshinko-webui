@@ -14,15 +14,21 @@
 #
 # ------------------------------------------------------------------------
 #
-# This is a Dockerfile for the oshinko-webui-openshift:0.4.3 image.
+# This is a Dockerfile for the oshinko-webui-openshift:0.5.4 image.
 
 FROM nodesource/centos7:6.3.1
 
+# Environment variables
+ENV \
+    JBOSS_IMAGE_NAME="oshinko-webui-openshift" \
+    JBOSS_IMAGE_VERSION="0.5.4" 
 
 # Labels
 LABEL \
-      io.cekit.version="2.0.0rc4"  \
-      org.concrt.version="2.0.0rc4" 
+      io.cekit.version="2.0.0"  \
+      name="oshinko-webui-openshift"  \
+      org.concrt.version="2.0.0"  \
+      version="0.5.4" 
 
 # Exposed ports
 EXPOSE 8080
@@ -38,7 +44,7 @@ RUN yum install -y wget git bzip2 \
 # Add all artifacts to the /tmp/artifacts
 # directory
 COPY \
-    openshift-origin-client-tools-v3.9.0-191fece-linux-64bit.tar.gz \
+    openshift-origin-client-tools-v3.10.0-dd10d17-linux-64bit.tar.gz \
     /tmp/artifacts/
 
 # Add scripts used to configure the image
