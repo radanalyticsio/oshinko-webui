@@ -16,7 +16,7 @@
 #
 # This is a Dockerfile for the oshinko-webui-openshift:0.5.4 image.
 
-FROM nodesource/centos7:6.3.1
+FROM centos:7
 
 # Environment variables
 ENV \
@@ -35,11 +35,14 @@ EXPOSE 8080
 
 USER root
 
+RUN yum install -y centos-release-scl \
+    && yum clean all && rm -rf /var/cache/yum
+
 
 # Install required RPMs and ensure that the packages were installed
-RUN yum install -y wget git bzip2 \
+RUN yum install -y wget git bzip2 rh-nodejs8 \
     && yum clean all && rm -rf /var/cache/yum && \
-    rpm -q  wget git bzip2
+    rpm -q  wget git bzip2 rh-nodejs8
 
 # Add all artifacts to the /tmp/artifacts
 # directory
