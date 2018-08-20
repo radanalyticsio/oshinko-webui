@@ -74,7 +74,7 @@ RUN rm -rf /tmp/scripts
 USER root
 RUN rm -rf /tmp/artifacts
 
-USER root
+USER 185
 
 # Specify the working directory
 WORKDIR /usr/src/app
