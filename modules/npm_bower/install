@@ -13,6 +13,9 @@ cp -pt /usr/src/app \
 
 echo '{ "allow_root": true, "directory": "app/bower_components" }' > /usr/src/app/.bowerrc
 
+MANPATH=
+. /opt/rh/rh-nodejs8/enable
+
 cd /usr/src/app
 npm install
 npm install -g bower
