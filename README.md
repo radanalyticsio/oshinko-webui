@@ -1,5 +1,6 @@
 [![Build status](https://travis-ci.org/radanalyticsio/oshinko-webui.svg?branch=master)](https://travis-ci.org/radanalyticsio/oshinko-webui)
 [![Docker build](https://img.shields.io/docker/automated/radanalyticsio/oshinko-webui.svg)](https://hub.docker.com/r/radanalyticsio/oshinko-webui)
+[![Known Vulnerabilities](https://snyk.io/test/github/radanalyticsio/oshinko-webui/badge.svg)](https://snyk.io/test/github/radanalyticsio/oshinko-webui)
 
 # oshinko-webui
 
