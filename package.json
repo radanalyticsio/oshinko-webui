@@ -16,7 +16,7 @@
   "engines": {
     "node": "8.9.4"
   },
-  "main": "scripts/server.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   }
