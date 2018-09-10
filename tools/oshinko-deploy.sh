@@ -73,7 +73,7 @@ while getopts :dc:u:p:s:w:r:o:t:ih opt; do
             echo "  -s IMAGE      spark docker image to use for clusters (default: $DEFAULT_SPARK_IMAGE)"
             echo "  -w IMAGE      oshinko-webui docker image to use for deployment (default: $DEFAULT_OSHINKO_WEB_IMAGE)"
             echo "  -o HOSTNAME   hostname to use in exposed route to oshinko-web"
-            echo "  -t TEMPLATE   an OpenShift template file to deploy oshinko (default: tools/ui-template.yaml curl'd from upstream)"
+            echo "  -t TEMPLATE   an OpenShift template file to deploy oshinko (default: https://radanalytics.io/resources.yaml curl'd from upstream)"
             echo "  -i            do not load the oshinko s2i templates into the project (default: curl from the oshinko-s2i upstream repo)"
             echo
             exit
@@ -138,7 +138,7 @@ if [ -n "$ALT_TEMPLATE" ]
 then
     oc create -n $PROJECT -f $ALT_TEMPLATE
 else
-    curl -s https://raw.githubusercontent.com/radanalyticsio/oshinko-webui/master/tools/ui-template.yaml \
+    curl -s https://radanalytics.io/resources.yaml \
   | oc create -n $PROJECT -f -
 fi
 
