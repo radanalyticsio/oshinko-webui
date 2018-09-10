@@ -42,7 +42,7 @@ you will create, it needs a service account in your project. The service account
 is created with edit permissions along with the oshinko-webui template by issuing
 the following command:
 
-    oc create -f https://raw.githubusercontent.com/radanalyticsio/oshinko-webui/master/tools/ui-template.yaml
+    oc create -f https://radanalytics.io/resources.yaml
 
 **Step 2. Run oshinko-webui**
 

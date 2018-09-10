@@ -138,7 +138,7 @@ fi
 
 cd $SRCDIR/oshinko-webui
 
-oc process -f tools/ui-template.yaml \
+oc process -f tools/resources.yaml \
 OSHINKO_CLUSTER_IMAGE=$REGISTRY/oshinko/oshinko-spark \
 OSHINKO_WEB_IMAGE=$REGISTRY/oshinko/oshinko-webui \
 OSHINKO_WEB_ROUTE_HOSTNAME=$ROUTEVALUE > $CURRDIR/oshinko-template.json
