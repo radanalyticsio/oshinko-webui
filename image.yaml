@@ -1,6 +1,6 @@
 schema_version: 1
 
-version: 0.5.4
+version: 0.5.5
 release: community
 name: oshinko-webui-openshift
 from: centos:7
