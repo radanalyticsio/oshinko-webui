@@ -14,21 +14,22 @@
 #
 # ------------------------------------------------------------------------
 #
-# This is a Dockerfile for the oshinko-webui-openshift:0.5.4 image.
+# This is a Dockerfile for the oshinko-webui-openshift:0.5.5 image.
 
 FROM centos:7
 
 # Environment variables
 ENV \
     JBOSS_IMAGE_NAME="oshinko-webui-openshift" \
-    JBOSS_IMAGE_VERSION="0.5.4" 
+    JBOSS_IMAGE_VERSION="0.5.5" 
 
 # Labels
 LABEL \
-      io.cekit.version="2.0.0"  \
+      io.cekit.version="2.1.4"  \
+      io.openshift.expose-services="8080/tcp:webcache"  \
       name="oshinko-webui-openshift"  \
-      org.concrt.version="2.0.0"  \
-      version="0.5.4" 
+      org.concrt.version="2.1.4"  \
+      version="0.5.5" 
 
 # Exposed ports
 EXPOSE 8080
@@ -81,3 +82,4 @@ WORKDIR /usr/src/app
 
 
 CMD ["/usr/src/app/launch.sh"]
+
