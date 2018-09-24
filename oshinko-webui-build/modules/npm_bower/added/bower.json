@@ -27,7 +27,7 @@
     "angular-notification-icons": "0.4.4",
     "angular-hint": "0.3.8",
     "uri.js": "1.18.0",
-    "hawtio-core": "~2.0.37",
+    "hawtio-core": "2.0.37",
     "hawtio-extension-service": "2.0.2",
     "angular-utf8-base64": "0.0.5",
     "kubernetes-label-selector": "2.0.0"
