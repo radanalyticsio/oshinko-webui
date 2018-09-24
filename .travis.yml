@@ -24,12 +24,10 @@ before_install:
   - ./test/prepare.sh
 install:
   - npm install -g protractor
-  - npm install -g karma-cli
 before_script:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
   - webdriver-manager update --gecko=false
-  - webdriver-manager start &
 script:
   - |
       if [ "$TO_TEST" = "secure" ]; then
