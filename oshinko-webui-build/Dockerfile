@@ -56,6 +56,9 @@ COPY modules /tmp/scripts
 
 # Custom scripts
 USER root
+RUN [ "bash", "-x", "/tmp/scripts/update_os/install" ]
+
+USER root
 RUN [ "bash", "-x", "/tmp/scripts/npm_bower/install" ]
 
 USER root

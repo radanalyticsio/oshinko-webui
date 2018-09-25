@@ -1,0 +1,6 @@
+#!/bin/bash
+set -u
+set -e
+
+yum update -y && yum clean all && rm -rf /var/cache/yum
+

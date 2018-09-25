@@ -8,6 +8,7 @@ ports:
   - value: 8080
 modules:
   install:
+    - name: update_os
     - name: npm_bower
     - name: launch
     - name: oc
