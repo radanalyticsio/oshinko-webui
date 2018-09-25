@@ -131,7 +131,7 @@ function tweak_template {
         # !b;n;s throws away the current processing, reads the next line, and starts a new substitution
         # Ultimately, this sets the pull policy for the web image to IfNotPresent so that an 'oc cluster up'
         # case can just reference the image from the host
-        sed -i -r '/image.*OSHINKO_WEB_IMAGE/!b;n;s/(.*imagePullPolicy: *)Always/\1IfNotPresent/' `pwd`/test/scratch/resources_mod.yaml
+        sed -i -r '/image.*OSHINKO_WEB_IMAGE/!b;n;s/(.*imagePullPolicy: *)1IfNotPresent/\Always/' `pwd`/test/scratch/resources_mod.yaml
         WEBUI_TEST_RESOURCES=`pwd`/test/scratch/resources_mod.yaml
     fi
 }
