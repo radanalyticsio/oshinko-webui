@@ -17,7 +17,7 @@ clean-context:
 	-rm -rf $(DOCKERFILE_CONTEXT)/*.tar.gz
 
 context: clean-context
-	concreate generate --descriptor=image.yaml
+	cekit generate --descriptor=image.yaml
 	cp -R target/image/* $(DOCKERFILE_CONTEXT)
 	$(MAKE) zero-tarballs
 
