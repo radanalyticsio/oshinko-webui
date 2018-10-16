@@ -24,8 +24,8 @@ packages:
     - bzip2
     - rh-nodejs8
 artifacts:
-    - url: https://github.com/openshift/origin/releases/download/v3.10.0/openshift-origin-client-tools-v3.10.0-dd10d17-linux-64bit.tar.gz
-      md5: ae438dbb853847e9b6bc3136a29a2a8f
+    - url: https://github.com/openshift/origin/releases/download/v3.11.0/openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz
+      md5: edc8566e6168bd645a7f46d2e7b48663
 run:
   user: 185
   cmd:
