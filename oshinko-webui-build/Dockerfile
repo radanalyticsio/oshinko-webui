@@ -48,7 +48,7 @@ RUN yum install -y wget git bzip2 rh-nodejs8 \
 # Add all artifacts to the /tmp/artifacts
 # directory
 COPY \
-    openshift-origin-client-tools-v3.10.0-dd10d17-linux-64bit.tar.gz \
+    openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz \
     /tmp/artifacts/
 
 # Add scripts used to configure the image
