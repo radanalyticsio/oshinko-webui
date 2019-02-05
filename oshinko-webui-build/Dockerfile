@@ -18,32 +18,18 @@
 
 FROM centos:7
 
-# Environment variables
-ENV \
-    JBOSS_IMAGE_NAME="oshinko-webui-openshift" \
-    JBOSS_IMAGE_VERSION="0.5.5" 
-
-# Labels
-LABEL \
-      io.cekit.version="2.1.4"  \
-      io.openshift.expose-services="8080/tcp:webcache"  \
-      name="oshinko-webui-openshift"  \
-      org.concrt.version="2.1.4"  \
-      version="0.5.5" 
-
-# Exposed ports
-EXPOSE 8080
-
 USER root
 
 RUN yum install -y centos-release-scl \
     && yum clean all && rm -rf /var/cache/yum
 
 
+
 # Install required RPMs and ensure that the packages were installed
 RUN yum install -y wget git bzip2 rh-nodejs8 \
-    && yum clean all && rm -rf /var/cache/yum && \
-    rpm -q  wget git bzip2 rh-nodejs8
+    && yum clean all && rm -rf /var/cache/yum \
+    && rpm -q wget git bzip2 rh-nodejs8
+
 
 # Add all artifacts to the /tmp/artifacts
 # directory
@@ -51,6 +37,15 @@ COPY \
     openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz \
     /tmp/artifacts/
 
+
+
+# Labels
+LABEL \
+      io.cekit.version="2.2.5"  \
+      org.concrt.version="2.2.5" 
+
+# Exposed ports
+EXPOSE 8080
 # Add scripts used to configure the image
 COPY modules /tmp/scripts
 
