@@ -33,6 +33,7 @@
     "kubernetes-label-selector": "2.0.0"
   },
   "resolutions": {
+    "bootstrap": "3.3.7",
     "angular": "1.5.11",
     "jquery": "2.1.4",
     "lodash": "4.17.11"
