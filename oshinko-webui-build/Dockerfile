@@ -38,11 +38,18 @@ COPY \
     /tmp/artifacts/
 
 
+# Environment variables
+ENV \
+    JBOSS_IMAGE_NAME="oshinko-webui-openshift" \
+    JBOSS_IMAGE_VERSION="0.5.5" 
 
 # Labels
 LABEL \
-      io.cekit.version="2.2.5"  \
-      org.concrt.version="2.2.5" 
+      io.cekit.version="2.2.7"  \
+      io.openshift.expose-services="8080/tcp:webcache"  \
+      name="oshinko-webui-openshift"  \
+      org.concrt.version="2.2.7"  \
+      version="0.5.5" 
 
 # Exposed ports
 EXPOSE 8080
